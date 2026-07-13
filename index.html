@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Týždenný prehľad potravinových akcií — reálne vs. umelé zľavy, plán nákupu.">
+<title>Letákový prehľad</title>
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --panel2:#eef0f3;
+  --text:#1a1d21; --muted:#5c6470; --line:#dde1e6;
+  --green:#177245; --green-bg:#e3f4ea;
+  --red:#b3261e; --red-bg:#fbe9e7;
+  --amber:#9a6700; --amber-bg:#fff3d6; --amber-line:#e0b64f;
+  --accent:#0b57d0; --accent-bg:#e7efff;
+  --shadow:0 1px 3px rgba(0,0,0,.08);
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#111418; --panel:#1b2026; --panel2:#232a32;
+    --text:#e6e9ec; --muted:#98a1ac; --line:#323a44;
+    --green:#4cc38a; --green-bg:#15311f;
+    --red:#f2867e; --red-bg:#3a1c19;
+    --amber:#e8b755; --amber-bg:#33290f; --amber-line:#8a6d1f;
+    --accent:#8ab4f8; --accent-bg:#1c2b45;
+    --shadow:0 1px 3px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+a{color:var(--accent)}
+.wrap{max-width:780px; margin:0 auto; padding:0 12px 48px}
+
+/* ---------- hlavička ---------- */
+header.site{padding:14px 0 10px; display:flex; flex-wrap:wrap; gap:8px 14px; align-items:baseline}
+header.site h1{font-size:17px; margin:0; letter-spacing:.2px}
+.week-line{display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 14px; width:100%}
+.week-big{font-size:22px; font-weight:700}
+.gen-time{color:var(--muted); font-size:12.5px}
+.arch-box{margin-left:auto; display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted)}
+select,input[type=search]{
+  background:var(--panel); color:var(--text); border:1px solid var(--line);
+  border-radius:8px; padding:6px 8px; font:inherit; font-size:13.5px;
+}
+.arch-banner{
+  background:var(--amber-bg); border:1px solid var(--amber-line); color:var(--amber);
+  border-radius:var(--radius); padding:8px 12px; margin:8px 0; font-size:13.5px; font-weight:600;
+}
+
+/* ---------- lišta s filtrami ---------- */
+.toolbar{
+  position:sticky; top:0; z-index:20; background:var(--bg);
+  padding:8px 0 10px; border-bottom:1px solid var(--line); margin-bottom:14px;
+}
+.toolbar .row1{display:flex; gap:8px; margin-bottom:8px}
+.toolbar input[type=search]{flex:1; min-width:0}
+.filters{display:flex; gap:6px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.fbtn{
+  flex:0 0 auto; border:1px solid var(--line); background:var(--panel); color:var(--text);
+  border-radius:999px; padding:6px 12px; font:inherit; font-size:13px; cursor:pointer; white-space:nowrap;
+}
+.fbtn.active{background:var(--accent-bg); border-color:var(--accent); color:var(--accent); font-weight:600}
+.match-info{font-size:12px; color:var(--muted); margin-top:6px}
+
+/* ---------- sekcie ---------- */
+section{margin-bottom:26px}
+h2{font-size:14px; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); margin:0 0 10px; display:flex; align-items:center; gap:8px}
+h2 .count{font-weight:400; text-transform:none; letter-spacing:0}
+
+/* ---------- promo ---------- */
+.promo-grid{display:grid; gap:10px}
+.promo-card{
+  background:linear-gradient(135deg,var(--amber-bg),var(--panel));
+  border:2px solid var(--amber-line); border-radius:var(--radius);
+  padding:12px 14px; box-shadow:var(--shadow); position:relative;
+}
+.promo-shop{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--amber)}
+.promo-card .txt{font-size:16.5px; font-weight:700; margin:3px 0 6px; line-height:1.3}
+.promo-card .meta{display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:12.5px; color:var(--muted)}
+.badge-last{
+  background:var(--red); color:#fff; font-size:11px; font-weight:800; letter-spacing:.5px;
+  border-radius:6px; padding:2px 8px; display:inline-block;
+}
+.badge-ended{background:var(--muted); color:var(--bg); font-size:11px; font-weight:800; border-radius:6px; padding:2px 8px}
+.promo-card.ended{opacity:.55; filter:grayscale(.4)}
+.chip{
+  display:inline-block; background:var(--amber-bg); color:var(--amber); border:1px solid var(--amber-line);
+  border-radius:6px; padding:1px 7px; font-size:11.5px; font-weight:600; white-space:nowrap;
+}
+.chip.time{font-variant-numeric:tabular-nums}
+.chip.urgent{background:var(--red-bg); color:var(--red); border-color:var(--red)}
+
+/* ---------- TOP 5 ---------- */
+.top-grid{display:grid; gap:8px; grid-template-columns:1fr}
+@media(min-width:560px){.top-grid{grid-template-columns:1fr 1fr}}
+.top-card{
+  background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+  padding:10px 12px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:4px;
+}
+.top-card .head{display:flex; justify-content:space-between; gap:8px; font-size:12px; color:var(--muted)}
+.top-card .rank{font-weight:800; color:var(--accent)}
+.top-card .nm{font-weight:700; font-size:15px; line-height:1.25}
+.top-card .prices{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap}
+.p-now{font-size:20px; font-weight:800; font-variant-numeric:tabular-nums}
+.p-old{color:var(--muted); text-decoration:line-through; font-size:13px; font-variant-numeric:tabular-nums}
+.p-pct{color:var(--green); font-weight:800; font-size:14px}
+.top-card .note{font-size:12px; color:var(--muted)}
+
+/* ---------- obchody ---------- */
+.shop{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:14px; overflow:hidden}
+.shop-head{
+  display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--panel2);
+  border-bottom:1px solid var(--line); cursor:pointer; user-select:none;
+}
+.shop-head h3{margin:0; font-size:16px}
+.shop-head .n{font-size:12px; color:var(--muted)}
+.shop-head a{font-size:12.5px; margin-left:auto; white-space:nowrap}
+.shop-head .caret{color:var(--muted); font-size:12px; transition:transform .15s}
+.shop.collapsed .caret{transform:rotate(-90deg)}
+.shop.collapsed .items,.shop.collapsed .shop-note,.shop.collapsed .empty{display:none}
+.shop-note{padding:6px 12px; font-size:12.5px; color:var(--amber); background:var(--amber-bg); border-bottom:1px solid var(--line)}
+.items{list-style:none; margin:0; padding:0}
+.item{
+  display:grid; grid-template-columns:auto 1fr auto; gap:2px 10px; align-items:baseline;
+  padding:8px 12px; border-bottom:1px solid var(--line);
+}
+.item:last-child{border-bottom:none}
+.v-badge{font-size:14px; line-height:1; align-self:center}
+.item .mid{min-width:0}
+.item .nm{font-weight:700; font-size:14.5px; line-height:1.3}
+.item .sub{display:flex; flex-wrap:wrap; gap:5px; margin-top:2px; font-size:11.5px; color:var(--muted); align-items:center}
+.item .right{text-align:right; white-space:nowrap}
+.item .p-now{font-size:17px}
+.item .p-row{display:flex; gap:6px; align-items:baseline; justify-content:flex-end}
+.item .dph{display:block; font-size:11.5px; color:var(--muted); font-variant-numeric:tabular-nums}
+.v-realna .p-pct{color:var(--green)}
+.v-umela .p-pct{color:var(--red)}
+.v-neoverene .p-pct{color:var(--muted)}
+.v-tag{border-radius:6px; padding:1px 7px; font-size:11px; font-weight:700}
+.v-tag.realna{background:var(--green-bg); color:var(--green)}
+.v-tag.umela{background:var(--red-bg); color:var(--red)}
+.v-tag.neoverene{background:var(--panel2); color:var(--muted)}
+.empty{padding:14px 12px; font-size:13px; color:var(--muted); font-style:italic}
+
+/* ---------- plán nákupu ---------- */
+.plan{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+.stop{display:flex; gap:12px; padding:10px 12px; border-bottom:1px solid var(--line); align-items:flex-start}
+.stop .no{
+  flex:0 0 26px; height:26px; border-radius:50%; background:var(--accent-bg); color:var(--accent);
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; margin-top:2px;
+}
+.stop .nm{font-weight:700}
+.stop .meta{font-size:12.5px; color:var(--muted); margin-top:1px}
+.stop .eur{margin-left:auto; font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap}
+.plan-sum{display:flex; flex-wrap:wrap; gap:8px 18px; align-items:center; padding:12px; background:var(--panel2)}
+.plan-sum .tot{font-weight:800; font-size:16px}
+.plan-sum .sav{color:var(--green); font-weight:700}
+.maps-btn{
+  margin-left:auto; background:var(--accent); color:#fff; text-decoration:none; font-weight:700;
+  border-radius:8px; padding:9px 16px; font-size:14px; display:inline-block;
+}
+.maps-btn:active{opacity:.85}
+
+/* ---------- pätička ---------- */
+footer.site{border-top:1px solid var(--line); margin-top:10px; padding-top:14px; font-size:12.5px; color:var(--muted)}
+.src-list{display:flex; flex-wrap:wrap; gap:6px 16px; margin-bottom:12px}
+.src{display:flex; align-items:center; gap:6px}
+.dot{width:8px; height:8px; border-radius:50%; display:inline-block}
+.dot.ok{background:var(--green)} .dot.fail{background:var(--red)}
+.legend{display:grid; gap:4px}
+.legend div{display:flex; gap:8px; align-items:baseline}
+
+/* ---------- stavy ---------- */
+.msg{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:20px 16px; text-align:center; color:var(--muted); margin:30px 0}
+.msg.err{border-color:var(--red); color:var(--red)}
+.msg .retry{margin-top:10px}
+.retry button{background:var(--accent); color:#fff; border:none; border-radius:8px; padding:8px 16px; font:inherit; font-weight:700; cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <h1>🛒 Letákový prehľad</h1>
+    <div class="week-line">
+      <span class="week-big" id="hd-week"></span>
+      <span class="gen-time" id="hd-gen"></span>
+      <span class="arch-box">
+        <label for="arch-sel">Týždeň:</label>
+        <select id="arch-sel" aria-label="Výber týždňa"><option value="latest">najnovší</option></select>
+      </span>
+    </div>
+  </header>
+  <div id="arch-banner"></div>
+
+  <div class="toolbar" id="toolbar" hidden>
+    <div class="row1">
+      <input type="search" id="q" placeholder="Hľadať položku…" aria-label="Hľadať položku">
+      <select id="sort" aria-label="Triedenie">
+        <option value="default">Poradie v letáku</option>
+        <option value="zlava">Najväčšia zľava</option>
+        <option value="cena">Najnižšia cena</option>
+        <option value="nazov">Podľa názvu</option>
+      </select>
+    </div>
+    <div class="filters" role="tablist">
+      <button class="fbtn active" data-f="vsetko">Všetko</button>
+      <button class="fbtn" data-f="realne">✅ Reálne</button>
+      <button class="fbtn" data-f="umele">❌ Umelé</button>
+      <button class="fbtn" data-f="konci">⏰ Končí čoskoro</button>
+    </div>
+    <div class="match-info" id="match-info"></div>
+  </div>
+
+  <main id="app"><div class="msg">Načítavam dáta…</div></main>
+  <footer class="site" id="foot"></footer>
+</div>
+
+<script>
+'use strict';
+(function(){
+  /* ================= stav ================= */
+  const state = { data:null, week:'latest', filter:'vsetko', search:'', sort:'default' };
+
+  const VERDIKT = {
+    realna:    {ikona:'✅', text:'reálna',    cls:'realna'},
+    umela:     {ikona:'❌', text:'umelá',     cls:'umela'},
+    neoverene: {ikona:'➖', text:'neoverené', cls:'neoverene'}
+  };
+  const KONCI_DNI = 2;        // filter „Končí čoskoro“: plati_do do 2 dní
+  const POSLEDNE_DNI = 3;     // promo „POSLEDNÉ DNI“: plati_do do 3 dní
+
+  /* ================= pomocníci ================= */
+  const $ = s => document.querySelector(s);
+  function el(tag, cls, text){
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  const eurFmt = new Intl.NumberFormat('sk-SK', {style:'currency', currency:'EUR'});
+  const fmtEur = n => (typeof n === 'number' && isFinite(n)) ? eurFmt.format(n) : '';
+  function parseDen(s){
+    if (typeof s !== 'string') return null;
+    const d = new Date(s + 'T00:00:00');
+    return isNaN(d) ? null : d;
+  }
+  function dniDo(s){
+    const d = parseDen(s);
+    if (!d) return null;
+    const today = new Date(); today.setHours(0,0,0,0);
+    return Math.round((d - today) / 86400000);
+  }
+  function fmtDen(s){
+    const d = parseDen(s);
+    return d ? d.getDate() + '. ' + (d.getMonth()+1) + '.' : '';
+  }
+  const norm = s => (s||'').toLocaleLowerCase('sk');
+  const isArr = a => Array.isArray(a) && a.length > 0;
+
+  /* ================= filtrovanie / triedenie ================= */
+  function passes(item){
+    if (state.search && !norm(item.nazov).includes(norm(state.search))) return false;
+    switch (state.filter){
+      case 'realne': return item.verdikt === 'realna';
+      case 'umele':  return item.verdikt === 'umela';
+      case 'konci': {
+        const d = dniDo(item.plati_do);
+        return d !== null && d >= 0 && d <= KONCI_DNI;
+      }
+      default: return true;
+    }
+  }
+  function sorted(items){
+    const arr = items.slice();
+    if (state.sort === 'zlava') arr.sort((a,b)=>(b.zlava_pct||0)-(a.zlava_pct||0));
+    else if (state.sort === 'cena') arr.sort((a,b)=>(a.cena??Infinity)-(b.cena??Infinity));
+    else if (state.sort === 'nazov') arr.sort((a,b)=>(a.nazov||'').localeCompare(b.nazov||'','sk'));
+    return arr;
+  }
+
+  /* ================= render: hlavička ================= */
+  function renderHead(d){
+    const w = [d.tyzden, d.obdobie].filter(Boolean).join(' · ');
+    $('#hd-week').textContent = w || 'Prehľad akcií';
+    let gen = '';
+    if (d.generovane){
+      const g = new Date(d.generovane);
+      if (!isNaN(g)) gen = 'generované ' + new Intl.DateTimeFormat('sk-SK',
+        {day:'numeric', month:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit'}).format(g);
+    }
+    $('#hd-gen').textContent = gen;
+    const b = $('#arch-banner');
+    b.textContent = '';
+    if (state.week !== 'latest'){
+      b.appendChild(el('div','arch-banner','📁 Prezeráš archívny týždeň ' + state.week + ' — akcie už nemusia platiť.'));
+    }
+  }
+
+  /* ================= render: promo ================= */
+  function renderPromo(promo){
+    if (!isArr(promo)) return null;
+    const sec = el('section'); sec.appendChild(el('h2', null, '🎁 Promo akcie'));
+    const grid = el('div','promo-grid');
+    for (const p of promo){
+      const card = el('div','promo-card');
+      if (p.obchod) card.appendChild(el('div','promo-shop', p.obchod));
+      card.appendChild(el('div','txt', p.text || ''));
+      const meta = el('div','meta');
+      const d = dniDo(p.plati_do);
+      if (d !== null && d < 0){
+        card.classList.add('ended');
+        meta.appendChild(el('span','badge-ended','SKONČILO'));
+      } else if (d !== null && d <= POSLEDNE_DNI){
+        meta.appendChild(el('span','badge-last','⏰ POSLEDNÉ DNI'));
+      }
+      if (p.plati_do) meta.appendChild(el('span','chip time','⏰ do ' + fmtDen(p.plati_do)));
+      if (p.podmienka) meta.appendChild(el('span','chip', p.podmienka));
+      if (meta.childNodes.length) card.appendChild(meta);
+      grid.appendChild(card);
+    }
+    sec.appendChild(grid);
+    return sec;
+  }
+
+  /* ================= render: TOP ================= */
+  function renderTop(top){
+    if (!isArr(top)) return null;
+    const sec = el('section'); sec.appendChild(el('h2', null, '🏆 TOP ' + top.length + ' týždňa'));
+    const grid = el('div','top-grid');
+    top.forEach((t,i)=>{
+      const c = el('div','top-card');
+      const head = el('div','head');
+      head.appendChild(el('span','rank','#' + (i+1)));
+      if (t.obchod) head.appendChild(el('span', null, t.obchod));
+      c.appendChild(head);
+      c.appendChild(el('div','nm', t.nazov || ''));
+      const pr = el('div','prices');
+      pr.appendChild(el('span','p-now', fmtEur(t.cena)));
+      if (t.cena_povodna != null) pr.appendChild(el('span','p-old', fmtEur(t.cena_povodna)));
+      if (t.zlava_pct != null) pr.appendChild(el('span','p-pct','−' + t.zlava_pct + ' %'));
+      c.appendChild(pr);
+      const sub = el('div','note');
+      const parts = [];
+      const v = VERDIKT[t.verdikt];
+      if (v) parts.push(v.ikona + ' ' + v.text);
+      if (t.podmienka) parts.push(t.podmienka);
+      if (t.plati_do) parts.push('do ' + fmtDen(t.plati_do));
+      if (t.poznamka) parts.push(t.poznamka);
+      sub.textContent = parts.join(' · ');
+      if (parts.length) c.appendChild(sub);
+      grid.appendChild(c);
+    });
+    sec.appendChild(grid);
+    return sec;
+  }
+
+  /* ================= render: obchody ================= */
+  function renderItem(it, jeMetro){
+    const li = el('li','item ' + (VERDIKT[it.verdikt] ? 'v-' + VERDIKT[it.verdikt].cls : ''));
+    li.appendChild(el('span','v-badge', VERDIKT[it.verdikt] ? VERDIKT[it.verdikt].ikona : '➖'));
+
+    const mid = el('div','mid');
+    mid.appendChild(el('div','nm', it.nazov || ''));
+    const sub = el('div','sub');
+    if (VERDIKT[it.verdikt]) sub.appendChild(el('span','v-tag ' + VERDIKT[it.verdikt].cls, VERDIKT[it.verdikt].text));
+    if (it.podmienka) sub.appendChild(el('span','chip', it.podmienka));
+    if (it.plati_do){
+      const d = dniDo(it.plati_do);
+      const urgent = d !== null && d >= 0 && d <= KONCI_DNI;
+      sub.appendChild(el('span','chip time' + (urgent ? ' urgent' : ''), '⏰ do ' + fmtDen(it.plati_do)));
+    }
+    if (it.poznamka) sub.appendChild(el('span', null, it.poznamka));
+    if (sub.childNodes.length) mid.appendChild(sub);
+    li.appendChild(mid);
+
+    const right = el('div','right');
+    const prow = el('div','p-row');
+    if (it.zlava_pct != null) prow.appendChild(el('span','p-pct','−' + it.zlava_pct + ' %'));
+    if (it.cena_povodna != null) prow.appendChild(el('span','p-old', fmtEur(it.cena_povodna)));
+    prow.appendChild(el('span','p-now', fmtEur(it.cena)));
+    right.appendChild(prow);
+    if (jeMetro || it.cena_s_dph != null){
+      const txt = it.cena_s_dph != null
+        ? 'bez DPH · ' + fmtEur(it.cena_s_dph) + ' s DPH'
+        : 'cena bez DPH';
+      right.appendChild(el('span','dph', txt));
+    }
+    li.appendChild(right);
+    return li;
+  }
+
+  function renderShops(obchody){
+    if (!isArr(obchody)) return null;
+    const sec = el('section'); sec.id = 'shops';
+    sec.appendChild(el('h2', null, '🏬 Obchody'));
+    let shown = 0, total = 0;
+    for (const o of obchody){
+      const box = el('div','shop');
+      const head = el('div','shop-head');
+      head.appendChild(el('span','caret','▼'));
+      head.appendChild(el('h3', null, o.nazov || o.id || 'Obchod'));
+      const all = Array.isArray(o.polozky) ? o.polozky : [];
+      const vis = sorted(all.filter(passes));
+      total += all.length; shown += vis.length;
+      head.appendChild(el('span','n', vis.length + ' / ' + all.length));
+      if (o.letak_url){
+        const a = el('a', null, 'leták ↗');
+        a.href = o.letak_url; a.target = '_blank'; a.rel = 'noopener';
+        a.addEventListener('click', e => e.stopPropagation());
+        head.appendChild(a);
+      }
+      head.addEventListener('click', () => box.classList.toggle('collapsed'));
+      box.appendChild(head);
+      if (o.poznamka) box.appendChild(el('div','shop-note','ℹ️ ' + o.poznamka));
+      if (vis.length){
+        const ul = el('ul','items');
+        const jeMetro = (o.id === 'metro') || /metro/i.test(o.nazov || '');
+        for (const it of vis) ul.appendChild(renderItem(it, jeMetro));
+        box.appendChild(ul);
+      } else {
+        box.appendChild(el('div','empty','Žiadna položka nezodpovedá filtru.'));
+      }
+      sec.appendChild(box);
+    }
+    const info = $('#match-info');
+    if (info) info.textContent = (state.filter !== 'vsetko' || state.search)
+      ? 'Zobrazených ' + shown + ' z ' + total + ' položiek'
+      : total + ' položiek v ' + obchody.length + ' obchodoch';
+    return sec;
+  }
+
+  /* ================= render: plán ================= */
+  function renderPlan(plan){
+    if (!plan || !isArr(plan.zastavky)) return null;
+    const sec = el('section'); sec.appendChild(el('h2', null, '🗺️ Plán nákupu'));
+    const box = el('div','plan');
+    for (const z of plan.zastavky){
+      const s = el('div','stop');
+      s.appendChild(el('span','no', String(z.poradie ?? '·')));
+      const mid = el('div');
+      mid.appendChild(el('div','nm', z.nazov || ''));
+      const meta = [];
+      if (z.den) meta.push('📅 ' + z.den);
+      if (z.poznamka) meta.push(z.poznamka);
+      if (meta.length) mid.appendChild(el('div','meta', meta.join(' — ')));
+      s.appendChild(mid);
+      if (z.odhad_eur != null) s.appendChild(el('span','eur','~' + fmtEur(z.odhad_eur)));
+      box.appendChild(s);
+    }
+    const sum = el('div','plan-sum');
+    if (plan.spolu_eur != null) sum.appendChild(el('span','tot','Spolu ~' + fmtEur(plan.spolu_eur)));
+    if (plan.uspora_eur != null) sum.appendChild(el('span','sav','úspora ' + fmtEur(plan.uspora_eur)));
+    if (plan.maps_url){
+      const a = el('a','maps-btn','🧭 Otvoriť trasu v Mapách');
+      a.href = plan.maps_url; a.target = '_blank'; a.rel = 'noopener';
+      sum.appendChild(a);
+    }
+    if (sum.childNodes.length) box.appendChild(sum);
+    sec.appendChild(box);
+    return sec;
+  }
+
+  /* ================= render: pätička ================= */
+  function renderFoot(d){
+    const f = $('#foot'); f.textContent = '';
+    if (isArr(d.zdroje_stav)){
+      const list = el('div','src-list');
+      list.appendChild(el('strong', null, 'Zdroje:'));
+      for (const z of d.zdroje_stav){
+        const s = el('span','src');
+        s.appendChild(el('span','dot ' + (z.ok ? 'ok' : 'fail')));
+        s.appendChild(el('span', null, (z.zdroj || '?') + (z.ok ? '' : ' (nedostupný)')));
+        list.appendChild(s);
+      }
+      f.appendChild(list);
+    }
+    const lg = el('div','legend');
+    const rows = [
+      ['✅', 'reálna zľava — cena je skutočne nižšia než bežná predajná cena'],
+      ['❌', 'umelá zľava — „pôvodná“ cena je nadsadená alebo sa akcia stále opakuje'],
+      ['➖', 'neoverené — chýba cenová história na posúdenie'],
+      ['⏰', 'časové obmedzenie; „Končí čoskoro“ = platí už len ' + KONCI_DNI + ' dni alebo menej'],
+      ['🏷️', 'Metro: ceny bez DPH, cena s DPH uvedená pod cenou']
+    ];
+    for (const [ic, tx] of rows){
+      const r = el('div');
+      r.appendChild(el('span', null, ic));
+      r.appendChild(el('span', null, tx));
+      lg.appendChild(r);
+    }
+    f.appendChild(lg);
+  }
+
+  /* ================= hlavný render ================= */
+  function renderAll(){
+    const d = state.data;
+    const app = $('#app'); app.textContent = '';
+    if (!d){ app.appendChild(el('div','msg','Žiadne dáta.')); return; }
+    renderHead(d);
+    $('#toolbar').hidden = false;
+    for (const s of [renderPromo(d.promo), renderTop(d.top), renderShops(d.obchody), renderPlan(d.plan)]){
+      if (s) app.appendChild(s);
+    }
+    renderFoot(d);
+  }
+  function rerenderShops(){
+    const old = document.getElementById('shops');
+    const fresh = state.data ? renderShops(state.data.obchody) : null;
+    if (old && fresh) old.replaceWith(fresh);
+    else if (old && !fresh) old.remove();
+  }
+
+  /* ================= načítanie dát ================= */
+  function showError(msg){
+    const app = $('#app'); app.textContent = '';
+    const box = el('div','msg err');
+    box.appendChild(el('div', null, '⚠️ ' + msg));
+    const r = el('div','retry');
+    const b = el('button', null, 'Skúsiť znova');
+    b.addEventListener('click', () => load(state.week));
+    r.appendChild(b); box.appendChild(r);
+    app.appendChild(box);
+    $('#toolbar').hidden = true;
+  }
+  async function load(week){
+    state.week = week;
+    $('#app').textContent = '';
+    $('#app').appendChild(el('div','msg','Načítavam dáta…'));
+    const url = week === 'latest'
+      ? 'data/latest.json'
+      : 'data/archive/' + encodeURIComponent(week) + '.json';
+    try{
+      const res = await fetch(url + '?t=' + Date.now(), {cache:'no-store'});
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      state.data = await res.json();
+      renderAll();
+    }catch(e){
+      showError('Dáta sa nepodarilo načítať (' + url + ' — ' + e.message + '). Skús to o chvíľu, alebo skontroluj pripojenie.');
+    }
+  }
+  async function loadArchiveIndex(){
+    try{
+      const res = await fetch('data/archive/index.json?t=' + Date.now(), {cache:'no-store'});
+      if (!res.ok) return;
+      const weeks = await res.json();
+      if (!Array.isArray(weeks)) return;
+      const sel = $('#arch-sel');
+      weeks.slice().sort().reverse().forEach(w => {
+        if (typeof w !== 'string') return;
+        const o = el('option', null, w); o.value = w;
+        sel.appendChild(o);
+      });
+    }catch(e){ /* archív je voliteľný */ }
+  }
+
+  /* ================= udalosti ================= */
+  $('#arch-sel').addEventListener('change', e => load(e.target.value));
+  $('#sort').addEventListener('change', e => { state.sort = e.target.value; rerenderShops(); });
+  let qT;
+  $('#q').addEventListener('input', e => {
+    clearTimeout(qT);
+    qT = setTimeout(() => { state.search = e.target.value.trim(); rerenderShops(); }, 150);
+  });
+  document.querySelectorAll('.fbtn').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.fbtn').forEach(x => x.classList.toggle('active', x === b));
+    state.filter = b.dataset.f;
+    rerenderShops();
+  }));
+
+  /* ================= štart ================= */
+  loadArchiveIndex();
+  load('latest');
+})();
+</script>
+</body>
+</html>

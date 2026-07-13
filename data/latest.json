@@ -1,0 +1,103 @@
+{
+  "tyzden": "2026-W29",
+  "obdobie": "20.–26. júl 2026",
+  "generovane": "2026-07-22T07:00:00+02:00",
+  "promo": [
+    {"obchod": "Metro", "text": "Sekt Hubert zdarma k nákupu nad 150 € bez DPH", "plati_do": "2026-07-26", "podmienka": "1× na zákazníka"},
+    {"obchod": "Kaufland", "text": "20 % zľava na všetky syry s Kaufland Card", "plati_do": "2026-07-22", "podmienka": "len s Kaufland Card"},
+    {"obchod": "Lidl", "text": "Kupón −5 € pri nákupe nad 40 € cez Lidl Plus", "plati_do": "2026-07-26", "podmienka": "1× na účet v aplikácii"}
+  ],
+  "top": [
+    {"nazov": "Bravčové karé bez kosti 1 kg", "obchod": "Kaufland", "cena": 3.49, "cena_povodna": 5.99, "zlava_pct": 42, "verdikt": "realna", "podmienka": null, "plati_do": "2026-07-22", "poznamka": "najnižšia cena za 6 mesiacov"},
+    {"nazov": "Melón červený 1 kg", "obchod": "Lidl", "cena": 0.59, "cena_povodna": 0.99, "zlava_pct": 40, "verdikt": "realna", "podmienka": null, "plati_do": "2026-07-22", "poznamka": "sezónne minimum"},
+    {"nazov": "Káva zrnková 500 g", "obchod": "Kaufland", "cena": 6.99, "cena_povodna": 10.99, "zlava_pct": 36, "verdikt": "realna", "podmienka": "s Kaufland Card", "plati_do": "2026-07-26", "poznamka": null},
+    {"nazov": "Kuracie prsia 1 kg", "obchod": "Kaufland", "cena": 4.99, "cena_povodna": 7.49, "zlava_pct": 33, "verdikt": "realna", "podmienka": "od 2 ks", "plati_do": "2026-07-23", "poznamka": null},
+    {"nazov": "Losos celý chladený 1 kg", "obchod": "Metro", "cena": 9.99, "cena_povodna": 13.50, "zlava_pct": 26, "verdikt": "realna", "podmienka": null, "plati_do": "2026-07-21", "poznamka": "cena bez DPH (10,49 € s DPH)"}
+  ],
+  "obchody": [
+    {
+      "id": "kaufland",
+      "nazov": "Kaufland",
+      "letak_url": "https://predajne.kaufland.sk/aktualna-ponuka/letak.html",
+      "poznamka": null,
+      "polozky": [
+        {"nazov": "Bravčové karé bez kosti 1 kg", "cena": 3.49, "cena_povodna": 5.99, "zlava_pct": 42, "verdikt": "realna", "podmienka": null, "plati_do": "2026-07-22", "cena_s_dph": null, "poznamka": "najnižšia cena za 6 mesiacov"},
+        {"nazov": "Rajčiny 1 kg", "cena": 1.49, "cena_povodna": 2.49, "zlava_pct": 40, "verdikt": "realna", "podmienka": null, "plati_do": "2026-07-22", "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Toaletný papier 3-vrstvový 16 ks", "cena": 4.99, "cena_povodna": 7.99, "zlava_pct": 38, "verdikt": "realna", "podmienka": null, "plati_do": "2026-07-26", "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Káva zrnková 500 g", "cena": 6.99, "cena_povodna": 10.99, "zlava_pct": 36, "verdikt": "realna", "podmienka": "s Kaufland Card", "plati_do": "2026-07-26", "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Coca-Cola 2 l", "cena": 1.79, "cena_povodna": 2.75, "zlava_pct": 35, "verdikt": "umela", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": "bežná akciová cena"},
+        {"nazov": "Jogurt biely 150 g", "cena": 0.39, "cena_povodna": 0.59, "zlava_pct": 34, "verdikt": "realna", "podmienka": "od 4 ks", "plati_do": null, "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Kuracie prsia 1 kg", "cena": 4.99, "cena_povodna": 7.49, "zlava_pct": 33, "verdikt": "realna", "podmienka": "od 2 ks", "plati_do": "2026-07-23", "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Zemiaky konzumné 5 kg", "cena": 3.99, "cena_povodna": 5.99, "zlava_pct": 33, "verdikt": "realna", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Pilsner Urquell 0,5 l", "cena": 0.99, "cena_povodna": 1.45, "zlava_pct": 32, "verdikt": "umela", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": "cena sa opakuje každé 3 týždne"},
+        {"nazov": "Hovädzie zadné 1 kg", "cena": 8.99, "cena_povodna": 12.99, "zlava_pct": 31, "verdikt": "realna", "podmienka": null, "plati_do": "2026-07-24", "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Maslo 82 % 250 g", "cena": 1.99, "cena_povodna": 2.89, "zlava_pct": 31, "verdikt": "realna", "podmienka": null, "plati_do": "2026-07-26", "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Špagety semolinové 500 g", "cena": 0.79, "cena_povodna": 1.09, "zlava_pct": 28, "verdikt": "neoverene", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Slnečnicový olej 1 l", "cena": 1.59, "cena_povodna": 2.19, "zlava_pct": 27, "verdikt": "umela", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": "pôvodná cena nadsadená"},
+        {"nazov": "Eidam plátky 45 % 100 g", "cena": 0.89, "cena_povodna": 1.19, "zlava_pct": 25, "verdikt": "neoverene", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Mlieko trvanlivé 1,5 % 1 l", "cena": 0.75, "cena_povodna": 0.95, "zlava_pct": 21, "verdikt": "neoverene", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": null}
+      ]
+    },
+    {
+      "id": "lidl",
+      "nazov": "Lidl",
+      "letak_url": "https://www.lidl.sk/c/letaky",
+      "poznamka": "časť akcií len cez Lidl Plus",
+      "polozky": [
+        {"nazov": "Melón červený 1 kg", "cena": 0.59, "cena_povodna": 0.99, "zlava_pct": 40, "verdikt": "realna", "podmienka": null, "plati_do": "2026-07-22", "cena_s_dph": null, "poznamka": "sezónne minimum"},
+        {"nazov": "Prací gél 3 l", "cena": 7.99, "cena_povodna": 12.99, "zlava_pct": 38, "verdikt": "umela", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": "trvalo nadsadená pôvodná cena"},
+        {"nazov": "Broskyne 1 kg", "cena": 1.79, "cena_povodna": 2.79, "zlava_pct": 36, "verdikt": "realna", "podmienka": null, "plati_do": "2026-07-26", "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Zmrzlina vanilková 1 l", "cena": 1.99, "cena_povodna": 2.99, "zlava_pct": 33, "verdikt": "neoverene", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Chlieb pšenično-ražný 500 g", "cena": 0.69, "cena_povodna": 0.99, "zlava_pct": 30, "verdikt": "neoverene", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Kuracie stehná 1 kg", "cena": 2.79, "cena_povodna": 3.99, "zlava_pct": 30, "verdikt": "realna", "podmienka": "len ŠT–SO", "plati_do": "2026-07-25", "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Grana Padano 200 g", "cena": 2.99, "cena_povodna": 4.29, "zlava_pct": 30, "verdikt": "realna", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Mozzarella 125 g", "cena": 0.69, "cena_povodna": 0.99, "zlava_pct": 30, "verdikt": "realna", "podmienka": "od 3 ks", "plati_do": null, "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Olivový olej extra virgin 750 ml", "cena": 5.99, "cena_povodna": 8.49, "zlava_pct": 29, "verdikt": "realna", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Vajcia M 30 ks", "cena": 4.49, "cena_povodna": 6.29, "zlava_pct": 29, "verdikt": "realna", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Losos filet 250 g", "cena": 3.99, "cena_povodna": 5.49, "zlava_pct": 27, "verdikt": "realna", "podmienka": null, "plati_do": "2026-07-23", "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Pivo Zlatý Bažant 12 % 0,5 l", "cena": 0.89, "cena_povodna": 1.19, "zlava_pct": 25, "verdikt": "umela", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": "bežná akciová cena"},
+        {"nazov": "Mleté mäso mix 500 g", "cena": 2.49, "cena_povodna": 3.29, "zlava_pct": 24, "verdikt": "realna", "podmienka": "len ŠT–SO", "plati_do": "2026-07-25", "cena_s_dph": null, "poznamka": null},
+        {"nazov": "Nutella 600 g", "cena": 3.79, "cena_povodna": 4.99, "zlava_pct": 24, "verdikt": "umela", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": "rovnaká akcia ako pred 2 týždňami"},
+        {"nazov": "Bryndza 250 g", "cena": 2.29, "cena_povodna": 2.99, "zlava_pct": 23, "verdikt": "neoverene", "podmienka": null, "plati_do": null, "cena_s_dph": null, "poznamka": null}
+      ]
+    },
+    {
+      "id": "metro",
+      "nazov": "Metro",
+      "letak_url": "https://www.metro.sk/aktualna-ponuka",
+      "poznamka": "ceny bez DPH; nákup len s Metro kartou",
+      "polozky": [
+        {"nazov": "Prací prášok gastro 10 kg", "cena": 18.90, "cena_povodna": 27.90, "zlava_pct": 32, "verdikt": "umela", "podmienka": null, "plati_do": null, "cena_s_dph": 23.25, "poznamka": "pôvodná cena dlhodobo neplatí"},
+        {"nazov": "Kávové zrná gastro 1 kg", "cena": 10.90, "cena_povodna": 15.90, "zlava_pct": 31, "verdikt": "realna", "podmienka": null, "plati_do": null, "cena_s_dph": 12.97, "poznamka": null},
+        {"nazov": "Coca-Cola 2 l (balenie 6 ks)", "cena": 1.49, "cena_povodna": 2.05, "zlava_pct": 27, "verdikt": "umela", "podmienka": "cena za kus, od 1 balenia", "plati_do": null, "cena_s_dph": 1.83, "poznamka": "bežná veľkoobchodná cena"},
+        {"nazov": "Bravčové stehno bez kosti 1 kg", "cena": 3.19, "cena_povodna": 4.29, "zlava_pct": 26, "verdikt": "realna", "podmienka": "od 5 kg", "plati_do": "2026-07-21", "cena_s_dph": 3.35, "poznamka": null},
+        {"nazov": "Losos celý chladený 1 kg", "cena": 9.99, "cena_povodna": 13.50, "zlava_pct": 26, "verdikt": "realna", "podmienka": null, "plati_do": "2026-07-21", "cena_s_dph": 10.49, "poznamka": null},
+        {"nazov": "Slnečnicový olej 10 l", "cena": 14.90, "cena_povodna": 19.90, "zlava_pct": 25, "verdikt": "realna", "podmienka": "od 2 ks", "plati_do": null, "cena_s_dph": 17.73, "poznamka": null},
+        {"nazov": "Mrazené hranolky 2,5 kg", "cena": 2.99, "cena_povodna": 3.99, "zlava_pct": 25, "verdikt": "neoverene", "podmienka": null, "plati_do": null, "cena_s_dph": 3.56, "poznamka": null},
+        {"nazov": "Hovädzia sviečkovica 1 kg", "cena": 24.90, "cena_povodna": 32.90, "zlava_pct": 24, "verdikt": "realna", "podmienka": null, "plati_do": "2026-07-26", "cena_s_dph": 26.15, "poznamka": null},
+        {"nazov": "Kuracie prsia chladené 1 kg", "cena": 3.89, "cena_povodna": 4.99, "zlava_pct": 22, "verdikt": "realna", "podmienka": "od 10 kg", "plati_do": null, "cena_s_dph": 4.08, "poznamka": null},
+        {"nazov": "Ryža jazmínová 5 kg", "cena": 8.99, "cena_povodna": 11.50, "zlava_pct": 22, "verdikt": "neoverene", "podmienka": null, "plati_do": null, "cena_s_dph": 10.70, "poznamka": null},
+        {"nazov": "Eidam blok 45 % 1 kg", "cena": 5.49, "cena_povodna": 6.99, "zlava_pct": 21, "verdikt": "realna", "podmienka": null, "plati_do": null, "cena_s_dph": 5.76, "poznamka": null},
+        {"nazov": "Maslo 82 % 250 g", "cena": 1.69, "cena_povodna": 2.15, "zlava_pct": 21, "verdikt": "realna", "podmienka": "od 10 ks", "plati_do": null, "cena_s_dph": 1.77, "poznamka": null},
+        {"nazov": "Tuniak v oleji 1,7 kg", "cena": 12.90, "cena_povodna": 15.90, "zlava_pct": 19, "verdikt": "neoverene", "podmienka": null, "plati_do": null, "cena_s_dph": 15.35, "poznamka": null},
+        {"nazov": "Mlieko UHT 3,5 % 1 l (balenie 12 ks)", "cena": 0.72, "cena_povodna": 0.89, "zlava_pct": 19, "verdikt": "realna", "podmienka": "cena za kus", "plati_do": null, "cena_s_dph": 0.76, "poznamka": null},
+        {"nazov": "Sud Pilsner Urquell 30 l", "cena": 89.00, "cena_povodna": 109.00, "zlava_pct": 18, "verdikt": "umela", "podmienka": "záloha na sud 50 €", "plati_do": null, "cena_s_dph": 109.47, "poznamka": "cena kolíše minimálne"}
+      ]
+    }
+  ],
+  "plan": {
+    "zastavky": [
+      {"poradie": 1, "nazov": "Metro – Ivanská cesta", "den": "PO–UT", "poznamka": "objemný nákup; nad 150 € sekt zdarma; losos a stehno len do utorka", "odhad_eur": 87},
+      {"poradie": 2, "nazov": "Kaufland – Trnavská cesta", "den": "ST", "poznamka": "karé, rajčiny a syry v akcii len do stredy", "odhad_eur": 24},
+      {"poradie": 3, "nazov": "Lidl – Rožňavská", "den": "ŠT–SO", "poznamka": "mleté mäso a kuracie stehná len ŠT–SO; kupón −5 € cez Lidl Plus", "odhad_eur": 12}
+    ],
+    "maps_url": "https://www.google.com/maps/dir/?api=1&origin=Bratislava&waypoints=Metro%20Ivansk%C3%A1%20cesta%20Bratislava%7CKaufland%20Trnavsk%C3%A1%20cesta%20Bratislava&destination=Lidl%20Ro%C5%BE%C5%88avsk%C3%A1%20Bratislava&travelmode=driving",
+    "spolu_eur": 123,
+    "uspora_eur": 41
+  },
+  "zdroje_stav": [
+    {"zdroj": "idemnanakup.sk", "ok": true},
+    {"zdroj": "zlacnene.sk", "ok": true},
+    {"zdroj": "kaufland.sk (leták)", "ok": true}
+  ]
+}
