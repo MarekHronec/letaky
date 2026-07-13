@@ -1,129 +1,173 @@
-# 🛒 letaky — týždenný prehľad potravinových akcií
+# Letákový prehľad
 
-Statická stránka (GitHub Pages) s prehľadom akcií z letákov: promo akcie, TOP zľavy týždňa,
-položky po obchodoch s verdiktom **reálna / umelá / neoverená zľava**, plán nákupu s trasou
-a archív starších týždňov.
+Responzívna statická aplikácia na prehľad potravinových akcií, rozlíšenie reálnych a podozrivých zliav a praktický nákupný zoznam.
 
 **Live:** https://marekhronec.github.io/letaky/
 
+## Čo aplikácia robí
+
+- **Prehľad:** najlepšie overené ponuky, špeciálne akcie, stav zdrojov a odporúčaný plán nákupu.
+- **Všetky akcie:** vyhľadávanie, obchodné filtre, verdikt zľavy a triedenie.
+- **Môj zoznam:** položky z akcií aj ručne zadané položky, množstvo, odškrtávanie a rozdelenie podľa obchodov.
+- **Detail produktu:** podmienky akcie a porovnanie rovnakého `product_id` medzi obchodmi.
+- **PWA/offline:** stránku možno pridať na plochu mobilu; posledné načítané dáta a nákupný zoznam fungujú aj bez signálu.
+- **Súkromie:** žiadne účty, cookies ani analytika. Zoznam sa ukladá iba do `localStorage` daného prehliadača.
+
 ## Architektúra
 
-- **Žiadny build step, žiadne frameworky, žiadne npm.** Celá aplikácia je jeden súbor
-  [`index.html`](index.html) (vanilla JS + CSS), ktorý fetchne `./data/latest.json`
-  a vyrenderuje obsah čisto na klientovi.
-- **Dáta aktualizuje externá automatizácia** (Claude routine) commitom cez GitHub API.
-  Stránka sa vyrenderuje z akéhokoľvek validného JSON podľa schémy nižšie — chýbajúce
-  polia/sekcie sa jednoducho vynechajú.
-- **GitHub Pages:** deploy from branch `main`, root (`/`). Každý commit = automatické
-  prenasadenie (typicky do ~1 minúty).
+Projekt nemá build step, framework ani npm závislosti. GitHub Pages servuje priamo tieto súbory:
 
-```
-index.html                  # celá aplikácia (HTML + CSS + JS)
+```text
+index.html                  # UI, štýly a aplikačná logika
+manifest.webmanifest        # PWA manifest
+sw.js                       # offline cache
+icons/app-icon.svg          # ikona aplikácie
 data/latest.json            # aktuálny týždeň
-data/archive/index.json     # zoznam archívnych týždňov, napr. ["2026-W29"]
-data/archive/2026-W29.json  # archívna kópia daného týždňa
+data/schema-v2.json         # odporúčaná schéma pre routine
+data/archive/index.json     # zoznam archívnych týždňov
+data/archive/2026-W29.json  # archívna kópia týždňa
 ```
 
-## Funkcie stránky
+GitHub Pages je nastavený na deploy z `main`, root `/`. Každý push do `main` spustí automatické prenasadenie.
 
-- mobile-first, automatický dark mode (`prefers-color-scheme`), systémové fonty
-- filtre: **Všetko / ✅ Reálne / ❌ Umelé / ⏰ Končí čoskoro** (platí ≤ 2 dni)
-- fulltextové hľadanie a triedenie (poradie v letáku / najväčšia zľava / najnižšia cena / názov)
-- zbaliteľné sekcie obchodov, Metro ceny bez DPH + s DPH
-- prepínač archívu (dropdown z `data/archive/index.json`)
-- žiadne CDN, analytics ani cookies
+## Nákupný zoznam
 
-## JSON schéma (`data/latest.json`)
+Zoznam sa ukladá pod kľúčom `letaky.shoppingList.v2`. Pri pridaní akcie sa uloží snapshot produktu, nie iba referencia na aktuálny JSON. Položka preto zostane čitateľná aj po výmene týždenných dát.
 
 ```json
 {
-  "tyzden": "2026-W29",
-  "obdobie": "20.–26. júl 2026",
-  "generovane": "2026-07-22T07:00:00+02:00",
+  "id": "lokalne-uuid",
+  "source": "deal",
+  "offerId": "lidl|lidl-maslo-82-250g-2026-w30",
+  "productId": "maslo-82-250g",
+  "name": "Maslo 82 %",
+  "amount": "250 g",
+  "store": "Lidl",
+  "price": 1.59,
+  "originalPrice": 2.39,
+  "quantity": 2,
+  "checked": false,
+  "addedAt": "2026-07-13T18:20:00.000Z"
+}
+```
+
+Ručné položky majú `source: "manual"` a môžu mať `store` aj `price` prázdne. Export/import JSON slúži ako jednoduchá záloha alebo prenos medzi zariadeniami.
+
+## Odporúčaná dátová schéma v2
+
+Aplikácia zostáva spätne kompatibilná s pôvodným JSON-om v repozitári. Nové Claude routines by však mali generovať `schema_version: 2` podľa [`data/schema-v2.json`](data/schema-v2.json).
+
+Najdôležitejšie zmeny oproti pôvodnému návrhu:
+
+1. `id` jednoznačne identifikuje konkrétnu ponuku.
+2. `product_id` zostáva rovnaké pre ten istý produkt naprieč obchodmi a týždňami; vďaka nemu funguje porovnanie cien.
+3. `top_ids` odkazuje na položky v `obchody[].polozky` a neduplikuje celé objekty.
+4. `zlava_letak_pct` a `zlava_realna_pct` sú oddelené. Marketingové percento z letáku sa nesmie zameniť za reálnu úsporu oproti historickej cene.
+5. `mnozstvo`, `jednotkova_cena`, `jednotka` a `obrazok_url` sú voliteľné, ale výrazne zlepšia UI.
+6. Metro môže mať cenu bez DPH v `cena` a spotrebiteľskú cenu v `cena_s_dph`; UI uprednostní cenu s DPH.
+
+Minimálny odporúčaný príklad:
+
+```json
+{
+  "schema_version": 2,
+  "tyzden": "2026-W30",
+  "obdobie": "27. júl – 2. august 2026",
+  "generovane": "2026-07-27T07:00:00+02:00",
+  "top_ids": ["lidl-maslo-82-250g-2026-w30"],
   "promo": [
-    {"obchod": "Metro", "text": "Sekt Hubert zdarma k nákupu nad 150 € bez DPH",
-     "plati_do": "2026-07-26", "podmienka": "1× na zákazníka"}
-  ],
-  "top": [
-    {"nazov": "Bravčové karé bez kosti 1 kg", "obchod": "Kaufland", "cena": 3.49,
-     "cena_povodna": 5.99, "zlava_pct": 42, "verdikt": "realna", "podmienka": null,
-     "plati_do": "2026-07-22", "poznamka": "najnižšia cena za 6 mesiacov"}
+    {
+      "id": "lidl-plus-5-eur-w30",
+      "obchod": "Lidl",
+      "text": "Kupón −5 € pri nákupe nad 40 €",
+      "plati_do": "2026-08-02",
+      "podmienka": "Lidl Plus"
+    }
   ],
   "obchody": [
     {
-      "id": "kaufland", "nazov": "Kaufland",
-      "letak_url": "https://...", "poznamka": null,
+      "id": "lidl",
+      "nazov": "Lidl",
+      "letak_url": "https://www.lidl.sk/c/letaky",
       "polozky": [
-        {"nazov": "…", "cena": 3.49, "cena_povodna": 5.99, "zlava_pct": 42,
-         "verdikt": "realna", "podmienka": null, "plati_do": "2026-07-22",
-         "cena_s_dph": null, "poznamka": null}
+        {
+          "id": "lidl-maslo-82-250g-2026-w30",
+          "product_id": "maslo-82-250g",
+          "nazov": "Maslo 82 %",
+          "mnozstvo": "250 g",
+          "cena": 1.59,
+          "cena_povodna": 2.39,
+          "jednotkova_cena": 6.36,
+          "jednotka": "kg",
+          "zlava_letak_pct": 33,
+          "zlava_realna_pct": 24,
+          "bezna_cena_60d": 2.09,
+          "verdikt": "realna",
+          "dovod_verdiktu": "24 % pod 60-dňovým priemerom",
+          "plati_od": "2026-07-27",
+          "plati_do": "2026-08-02",
+          "podmienka": null,
+          "obrazok_url": null,
+          "poznamka": "najnižšia cena za 90 dní"
+        }
       ]
     }
   ],
-  "plan": {
-    "zastavky": [
-      {"poradie": 1, "nazov": "Metro – Ivanská cesta", "den": "PO–UT",
-       "poznamka": "objemný nákup", "odhad_eur": 87}
-    ],
-    "maps_url": "https://www.google.com/maps/dir/?api=1&origin=...&waypoints=...&destination=...&travelmode=driving",
-    "spolu_eur": 123, "uspora_eur": 41
-  },
-  "zdroje_stav": [{"zdroj": "idemnanakup.sk", "ok": true}]
+  "zdroje_stav": [
+    { "zdroj": "lidl.sk", "ok": true }
+  ]
 }
 ```
 
-Pravidlá:
+### Pravidlá pre routine
 
-- `verdikt`: `"realna"` | `"umela"` | `"neoverene"`
-- Metro položky: `cena` a `cena_povodna` sú **bez DPH** a `cena_s_dph` je vyplnené;
-  ostatné obchody majú `cena_s_dph: null`
-- dátumy `plati_do` vo formáte `YYYY-MM-DD`, `generovane` ako ISO 8601 s časovou zónou
-- akékoľvek pole môže chýbať alebo byť `null` — stránka danú informáciu/sekciu vynechá
+- `verdikt` je presne `realna`, `umela` alebo `neoverene`.
+- `id` musí byť unikátne v celom týždennom súbore. Praktický formát je `<obchod>-<product_id>-<tyzden>`.
+- `product_id` sa nemení iba preto, že sa zmenila cena, obchod alebo týždeň. Variant s inou gramážou má iné `product_id`.
+- Peňažné hodnoty sú JSON čísla bez symbolu meny; mena je vždy EUR.
+- Dátumy používajú `YYYY-MM-DD`, `generovane` ISO 8601 s časovou zónou.
+- Ak história nestačí na reálnu zľavu, použi `verdikt: "neoverene"` a `zlava_realna_pct: null`.
+- `top_ids` má obsahovať len existujúce `id` z `obchody[].polozky`.
+- Chýbajúce voliteľné hodnoty majú byť `null`, nie vymyslené.
 
-## Ako automatizácia commituje nové dáta
+## Ako routine aktualizuje dáta
 
-Routine každý týždeň zapíše tri súbory cez [GitHub Contents API](https://docs.github.com/en/rest/repos/contents).
-Update existujúceho súboru **vyžaduje `sha` aktuálnej verzie** — najprv GET, potom PUT:
+Kompletný týždenný update vytvorí alebo upraví tri súbory cez GitHub Contents API:
 
-```
-# 1) zisti sha existujúceho súboru
-GET /repos/{owner}/letaky/contents/data/latest.json
-→ response.sha
+1. `data/latest.json` — nový týždeň.
+2. `data/archive/<tyzden>.json` — identická archívna kópia.
+3. `data/archive/index.json` — pridanie nového týždňa do poľa.
 
-# 2) zapíš nový obsah (base64)
-PUT /repos/{owner}/letaky/contents/data/latest.json
+Pri aktualizácii existujúceho súboru treba najprv načítať jeho aktuálne `sha` a poslať ho v `PUT` požiadavke:
+
+```text
+GET /repos/MarekHronec/letaky/contents/data/latest.json
+
+PUT /repos/MarekHronec/letaky/contents/data/latest.json
 {
   "message": "data: týždeň 2026-W30",
-  "content": "<base64 nového JSON>",
-  "sha": "<sha z kroku 1>"
+  "content": "<base64 JSON>",
+  "sha": "<sha z GET odpovede>"
 }
 ```
 
-Kompletný týždenný update = 3 zápisy:
+Po commite nie je potrebný samostatný deploy príkaz. GitHub Pages nasadí nový obsah z `main` automaticky.
 
-1. **`data/latest.json`** — nový týždeň (PUT so `sha` starej verzie)
-2. **`data/archive/<tyzden>.json`** — kópia nového latest, napr. `data/archive/2026-W30.json`
-   (nový súbor ⇒ PUT bez `sha`)
-3. **`data/archive/index.json`** — pridať nový týždeň do poľa, napr. `["2026-W29","2026-W30"]`
-   (PUT so `sha` starej verzie)
+## Token pre automatizáciu
 
-Príklad s `curl`:
+Použi fine-grained GitHub token obmedzený iba na tento repozitár:
 
-```bash
-SHA=$(curl -s -H "Authorization: Bearer $TOKEN" \
-  https://api.github.com/repos/MarekHronec/letaky/contents/data/latest.json | jq -r .sha)
+- **Repository access:** iba `letaky`
+- **Repository permissions:** Contents — Read and write
+- token patrí do secrets automatizácie, nikdy do repozitára
+- po expirácii ho treba v routine vymeniť
 
-curl -X PUT -H "Authorization: Bearer $TOKEN" \
-  https://api.github.com/repos/MarekHronec/letaky/contents/data/latest.json \
-  -d "{\"message\":\"data: týždeň 2026-W30\",\"content\":\"$(base64 -w0 latest.json)\",\"sha\":\"$SHA\"}"
+## Lokálne spustenie
+
+Kvôli `fetch()` a service workeru neotváraj `index.html` priamo cez `file://`. Spusti v koreňovom priečinku jednoduchý HTTP server, napríklad:
+
+```powershell
+python -m http.server 8000
 ```
 
-Po commite GitHub Pages stránku automaticky prenasadí — netreba nič ďalšie.
-
-## Token pre automatizáciu (fine-grained PAT)
-
-1. GitHub → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**
-2. **Repository access:** *Only select repositories* → vyber **len `letaky`**
-3. **Permissions → Repository permissions → Contents: Read and write** (nič iné)
-4. **Expiration:** 90 dní (po expirácii vygeneruj nový a vymeň ho v automatizácii)
-5. Token ulož do secrets automatizácie — nikdy ho necommituj do repa.
+Potom otvor `http://127.0.0.1:8000/`.

@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://marekhronec.github.io/letaky/data/schema-v2.json",
+  "title": "Letákový prehľad – týždenné dáta v2",
+  "type": "object",
+  "required": ["schema_version", "tyzden", "obchody"],
+  "properties": {
+    "schema_version": { "const": 2 },
+    "tyzden": { "type": "string", "pattern": "^[0-9]{4}-W[0-9]{2}$" },
+    "obdobie": { "type": ["string", "null"] },
+    "generovane": { "type": "string", "format": "date-time" },
+    "promo": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/promo" }
+    },
+    "top_ids": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "obchody": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/store" }
+    },
+    "plan": { "$ref": "#/$defs/plan" },
+    "zdroje_stav": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["zdroj", "ok"],
+        "properties": {
+          "zdroj": { "type": "string" },
+          "ok": { "type": "boolean" },
+          "url": { "type": ["string", "null"], "format": "uri" },
+          "poznamka": { "type": ["string", "null"] }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "promo": {
+      "type": "object",
+      "required": ["id", "obchod", "text"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "obchod": { "type": "string" },
+        "text": { "type": "string" },
+        "plati_od": { "type": ["string", "null"], "format": "date" },
+        "plati_do": { "type": ["string", "null"], "format": "date" },
+        "podmienka": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "offer": {
+      "type": "object",
+      "required": ["id", "product_id", "nazov", "cena", "verdikt"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "description": "Unikátne ID konkrétnej ponuky." },
+        "product_id": { "type": "string", "minLength": 1, "description": "Stabilné ID rovnakého produktu naprieč obchodmi a týždňami." },
+        "nazov": { "type": "string", "minLength": 1 },
+        "mnozstvo": { "type": ["string", "null"], "examples": ["250 g"] },
+        "kategoria": { "type": ["string", "null"] },
+        "obrazok_url": { "type": ["string", "null"], "format": "uri" },
+        "cena": { "type": "number", "minimum": 0 },
+        "cena_s_dph": { "type": ["number", "null"], "minimum": 0 },
+        "cena_povodna": { "type": ["number", "null"], "minimum": 0 },
+        "cena_povodna_s_dph": { "type": ["number", "null"], "minimum": 0 },
+        "jednotkova_cena": { "type": ["number", "null"], "minimum": 0 },
+        "jednotka": { "type": ["string", "null"], "examples": ["kg", "l", "ks"] },
+        "zlava_letak_pct": { "type": ["number", "null"], "minimum": 0 },
+        "zlava_realna_pct": { "type": ["number", "null"], "description": "Rozdiel oproti historickej bežnej cene." },
+        "bezna_cena_60d": { "type": ["number", "null"], "minimum": 0 },
+        "verdikt": { "enum": ["realna", "umela", "neoverene"] },
+        "dovod_verdiktu": { "type": ["string", "null"] },
+        "podmienka": { "type": ["string", "null"] },
+        "plati_od": { "type": ["string", "null"], "format": "date" },
+        "plati_do": { "type": ["string", "null"], "format": "date" },
+        "poznamka": { "type": ["string", "null"] },
+        "zdroj_url": { "type": ["string", "null"], "format": "uri" },
+        "historia_cien": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["datum", "cena"],
+            "properties": {
+              "datum": { "type": "string", "format": "date" },
+              "cena": { "type": "number", "minimum": 0 },
+              "obchod": { "type": ["string", "null"] }
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "store": {
+      "type": "object",
+      "required": ["id", "nazov", "polozky"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "nazov": { "type": "string", "minLength": 1 },
+        "letak_url": { "type": ["string", "null"], "format": "uri" },
+        "poznamka": { "type": ["string", "null"] },
+        "polozky": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/offer" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "plan": {
+      "type": ["object", "null"],
+      "properties": {
+        "zastavky": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["poradie", "nazov"],
+            "properties": {
+              "poradie": { "type": "integer", "minimum": 1 },
+              "nazov": { "type": "string" },
+              "den": { "type": ["string", "null"] },
+              "poznamka": { "type": ["string", "null"] },
+              "odhad_eur": { "type": ["number", "null"], "minimum": 0 }
+            }
+          }
+        },
+        "maps_url": { "type": ["string", "null"], "format": "uri" },
+        "spolu_eur": { "type": ["number", "null"], "minimum": 0 },
+        "uspora_eur": { "type": ["number", "null"], "minimum": 0 }
+      },
+      "additionalProperties": true
+    }
+  }
+}
