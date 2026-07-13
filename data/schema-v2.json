@@ -86,7 +86,9 @@
             "properties": {
               "datum": { "type": "string", "format": "date" },
               "cena": { "type": "number", "minimum": 0 },
-              "obchod": { "type": ["string", "null"] }
+              "cena_s_dph": { "type": ["number", "null"], "minimum": 0, "description": "Spotrebiteľská cena pre Metro; graf ju uprednostní pred cenou bez DPH." },
+              "obchod": { "type": ["string", "null"] },
+              "zdroj_url": { "type": ["string", "null"], "format": "uri" }
             }
           }
         }

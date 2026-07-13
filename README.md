@@ -7,7 +7,7 @@ Responzívna statická aplikácia na prehľad potravinových akcií, rozlíšeni
 ## Čo aplikácia robí
 
 - **Prehľad:** najlepšie overené ponuky, špeciálne akcie, stav zdrojov a odporúčaný plán nákupu.
-- **Všetky akcie:** vyhľadávanie, obchodné filtre, verdikt zľavy a triedenie.
+- **Všetky akcie:** vyhľadávanie, obchodné filtre, verdikt zľavy, triedenie a minimalistický vývoj ceny z overenej histórie.
 - **Môj zoznam:** položky z akcií aj ručne zadané položky, množstvo, odškrtávanie bez presúvania a rozdelenie podľa obchodov.
 - **Detail produktu:** podmienky akcie a porovnanie rovnakého `product_id` medzi obchodmi.
 - **PWA/offline:** stránku možno pridať na plochu mobilu; posledné načítané dáta a nákupný zoznam fungujú aj bez signálu.
@@ -69,6 +69,7 @@ Najdôležitejšie zmeny oproti pôvodnému návrhu:
 5. `mnozstvo`, `jednotkova_cena` a `jednotka` sú voliteľné, ale výrazne zlepšia porovnávanie cien. Produktové obrázky UI zámerne nepoužíva.
 6. Metro môže mať cenu bez DPH v `cena` a spotrebiteľskú cenu v `cena_s_dph`; UI uprednostní cenu s DPH.
 7. `obchody[].plati_od` a `obchody[].plati_do` určujú spoločnú platnosť letáka. Produkt ich zdedí; vlastné `polozky[].plati_od` alebo `plati_do` použije iba vtedy, keď má kratšiu či odlišnú platnosť.
+8. `historia_cien` obsahuje iba skutočne pozorované ceny rovnakého `product_id` v rovnakom obchode. UI vykreslí graf až od dvoch meraní; pôvodná prečiarknutá cena sa za historické meranie nepovažuje.
 
 Minimálny odporúčaný príklad:
 
@@ -133,6 +134,7 @@ Minimálny odporúčaný príklad:
 - Dátumy používajú `YYYY-MM-DD`, `generovane` ISO 8601 s časovou zónou.
 - Pri každom obchode uveď spoločnú platnosť letáka cez `plati_od` a `plati_do`. Na produkte dátumy opakuj iba pri odlišnej platnosti.
 - Množstevné, kartové a aplikačné obmedzenia zapisuj doslovne do `podmienka`, napríklad `od 3 ks`, `len s Kaufland Card` alebo `cena za kus, od 1 balenia`.
+- Do `historia_cien` prenes najviac posledných 16 overených meraní toho istého produktu a obchodu. Deduplikuj ich podľa dátumu; pri Metro doplň aj `cena_s_dph`.
 - Ak história nestačí na reálnu zľavu, použi `verdikt: "neoverene"` a `zlava_realna_pct: null`.
 - `top_ids` má obsahovať len existujúce `id` z `obchody[].polozky`.
 - Chýbajúce voliteľné hodnoty majú byť `null`, nie vymyslené.
