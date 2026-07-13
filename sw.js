@@ -1,4 +1,4 @@
-const CACHE = "letaky-app-v3";
+const CACHE = "letaky-app-v4";
 const SHELL = [
   "./",
   "./index.html",

@@ -8,10 +8,10 @@ Responzívna statická aplikácia na prehľad potravinových akcií, rozlíšeni
 
 - **Prehľad:** najlepšie overené ponuky, špeciálne akcie, stav zdrojov a odporúčaný plán nákupu.
 - **Všetky akcie:** vyhľadávanie, obchodné filtre, verdikt zľavy a triedenie.
-- **Môj zoznam:** položky z akcií aj ručne zadané položky, množstvo, odškrtávanie a rozdelenie podľa obchodov.
+- **Môj zoznam:** položky z akcií aj ručne zadané položky, množstvo, odškrtávanie bez presúvania a rozdelenie podľa obchodov.
 - **Detail produktu:** podmienky akcie a porovnanie rovnakého `product_id` medzi obchodmi.
 - **PWA/offline:** stránku možno pridať na plochu mobilu; posledné načítané dáta a nákupný zoznam fungujú aj bez signálu.
-- **Súkromie:** žiadne účty, cookies ani analytika. Zoznam sa ukladá iba do `localStorage` daného prehliadača.
+- **Súkromie:** žiadne účty, cookies ani analytika. Zoznam sa ukladá iba do `localStorage` daného prehliadača; medzi zariadeniami sa dá jednorazovo preniesť linkom.
 
 ## Architektúra
 
@@ -45,13 +45,16 @@ Zoznam sa ukladá pod kľúčom `letaky.shoppingList.v2`. Pri pridaní akcie sa 
   "store": "Lidl",
   "price": 1.59,
   "originalPrice": 2.39,
+  "condition": "od 2 ks",
+  "validFrom": "2026-07-27",
+  "validTo": "2026-08-02",
   "quantity": 2,
   "checked": false,
   "addedAt": "2026-07-13T18:20:00.000Z"
 }
 ```
 
-Ručné položky majú `source: "manual"` a môžu mať `store` aj `price` prázdne. Export/import JSON slúži ako jednoduchá záloha alebo prenos medzi zariadeniami.
+Ručné položky majú `source: "manual"` a môžu mať `store` aj `price` prázdne. Tlačidlo **Zdieľať link** vloží snapshot zoznamu do URL fragmentu `#share=…`; fragment sa neposiela GitHub Pages serveru. Po otvorení na inom zariadení aplikácia zoznam uloží do jeho `localStorage`. Kto má link, môže jeho obsah načítať, preto ho treba zdieľať ako nákupný zoznam, nie ako tajnú informáciu. Export/import JSON zostáva ako záloha a riešenie pre veľmi dlhé zoznamy.
 
 ## Odporúčaná dátová schéma v2
 
@@ -65,6 +68,7 @@ Najdôležitejšie zmeny oproti pôvodnému návrhu:
 4. `zlava_letak_pct` a `zlava_realna_pct` sú oddelené. Marketingové percento z letáku sa nesmie zameniť za reálnu úsporu oproti historickej cene.
 5. `mnozstvo`, `jednotkova_cena` a `jednotka` sú voliteľné, ale výrazne zlepšia porovnávanie cien. Produktové obrázky UI zámerne nepoužíva.
 6. Metro môže mať cenu bez DPH v `cena` a spotrebiteľskú cenu v `cena_s_dph`; UI uprednostní cenu s DPH.
+7. `obchody[].plati_od` a `obchody[].plati_do` určujú spoločnú platnosť letáka. Produkt ich zdedí; vlastné `polozky[].plati_od` alebo `plati_do` použije iba vtedy, keď má kratšiu či odlišnú platnosť.
 
 Minimálny odporúčaný príklad:
 
@@ -88,6 +92,8 @@ Minimálny odporúčaný príklad:
     {
       "id": "lidl",
       "nazov": "Lidl",
+      "plati_od": "2026-07-27",
+      "plati_do": "2026-08-02",
       "letak_url": "https://www.lidl.sk/c/letaky",
       "polozky": [
         {
@@ -125,6 +131,8 @@ Minimálny odporúčaný príklad:
 - `product_id` sa nemení iba preto, že sa zmenila cena, obchod alebo týždeň. Variant s inou gramážou má iné `product_id`.
 - Peňažné hodnoty sú JSON čísla bez symbolu meny; mena je vždy EUR.
 - Dátumy používajú `YYYY-MM-DD`, `generovane` ISO 8601 s časovou zónou.
+- Pri každom obchode uveď spoločnú platnosť letáka cez `plati_od` a `plati_do`. Na produkte dátumy opakuj iba pri odlišnej platnosti.
+- Množstevné, kartové a aplikačné obmedzenia zapisuj doslovne do `podmienka`, napríklad `od 3 ks`, `len s Kaufland Card` alebo `cena za kus, od 1 balenia`.
 - Ak história nestačí na reálnu zľavu, použi `verdikt: "neoverene"` a `zlava_realna_pct: null`.
 - `top_ids` má obsahovať len existujúce `id` z `obchody[].polozky`.
 - Chýbajúce voliteľné hodnoty majú byť `null`, nie vymyslené.

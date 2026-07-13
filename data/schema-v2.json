@@ -99,6 +99,8 @@
       "properties": {
         "id": { "type": "string", "minLength": 1 },
         "nazov": { "type": "string", "minLength": 1 },
+        "plati_od": { "type": ["string", "null"], "format": "date", "description": "Predvolený začiatok platnosti letáka pre položky bez vlastného dátumu." },
+        "plati_do": { "type": ["string", "null"], "format": "date", "description": "Predvolený koniec platnosti letáka pre položky bez vlastného dátumu." },
         "letak_url": { "type": ["string", "null"], "format": "uri" },
         "poznamka": { "type": ["string", "null"] },
         "polozky": {

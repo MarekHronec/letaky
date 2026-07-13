@@ -18,6 +18,8 @@
     {
       "id": "kaufland",
       "nazov": "Kaufland",
+      "plati_od": "2026-07-20",
+      "plati_do": "2026-07-26",
       "letak_url": "https://predajne.kaufland.sk/aktualna-ponuka/letak.html",
       "poznamka": null,
       "polozky": [
@@ -41,6 +43,8 @@
     {
       "id": "lidl",
       "nazov": "Lidl",
+      "plati_od": "2026-07-20",
+      "plati_do": "2026-07-26",
       "letak_url": "https://www.lidl.sk/c/letaky",
       "poznamka": "časť akcií len cez Lidl Plus",
       "polozky": [
@@ -64,6 +68,8 @@
     {
       "id": "metro",
       "nazov": "Metro",
+      "plati_od": "2026-07-20",
+      "plati_do": "2026-07-26",
       "letak_url": "https://www.metro.sk/aktualna-ponuka",
       "poznamka": "ceny bez DPH; nákup len s Metro kartou",
       "polozky": [
