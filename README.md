@@ -63,7 +63,7 @@ Najdôležitejšie zmeny oproti pôvodnému návrhu:
 2. `product_id` zostáva rovnaké pre ten istý produkt naprieč obchodmi a týždňami; vďaka nemu funguje porovnanie cien.
 3. `top_ids` odkazuje na položky v `obchody[].polozky` a neduplikuje celé objekty.
 4. `zlava_letak_pct` a `zlava_realna_pct` sú oddelené. Marketingové percento z letáku sa nesmie zameniť za reálnu úsporu oproti historickej cene.
-5. `mnozstvo`, `jednotkova_cena`, `jednotka` a `obrazok_url` sú voliteľné, ale výrazne zlepšia UI.
+5. `mnozstvo`, `jednotkova_cena` a `jednotka` sú voliteľné, ale výrazne zlepšia porovnávanie cien. Produktové obrázky UI zámerne nepoužíva.
 6. Metro môže mať cenu bez DPH v `cena` a spotrebiteľskú cenu v `cena_s_dph`; UI uprednostní cenu s DPH.
 
 Minimálny odporúčaný príklad:
@@ -107,7 +107,6 @@ Minimálny odporúčaný príklad:
           "plati_od": "2026-07-27",
           "plati_do": "2026-08-02",
           "podmienka": null,
-          "obrazok_url": null,
           "poznamka": "najnižšia cena za 90 dní"
         }
       ]

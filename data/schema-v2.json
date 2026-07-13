@@ -62,7 +62,6 @@
         "nazov": { "type": "string", "minLength": 1 },
         "mnozstvo": { "type": ["string", "null"], "examples": ["250 g"] },
         "kategoria": { "type": ["string", "null"] },
-        "obrazok_url": { "type": ["string", "null"], "format": "uri" },
         "cena": { "type": "number", "minimum": 0 },
         "cena_s_dph": { "type": ["number", "null"], "minimum": 0 },
         "cena_povodna": { "type": ["number", "null"], "minimum": 0 },
