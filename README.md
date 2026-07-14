@@ -8,8 +8,9 @@ Responzívna statická aplikácia na prehľad potravinových akcií, rozlíšeni
 
 - **Prehľad:** najlepšie overené ponuky, špeciálne akcie, stav zdrojov a odporúčaný plán nákupu.
 - **Všetky akcie:** vyhľadávanie, obchodné filtre, verdikt zľavy, triedenie a minimalistický vývoj ceny z overenej histórie.
-- **Môj zoznam:** položky z akcií aj ručne zadané položky, množstvo, odškrtávanie bez presúvania a rozdelenie podľa obchodov.
-- **Detail produktu:** podmienky akcie a porovnanie rovnakého `product_id` medzi obchodmi.
+- **Môj zoznam:** položky z akcií aj ručne zadané položky, množstvo, odškrtávanie bez presúvania a rozdelenie podľa obchodov. Ručnú položku sa dá aj **nadiktovať hlasom** (Web Speech API, `sk-SK`, s fallbackom na písanie).
+- **Legislatíva:** prehľad povinností a termínov pre maloobchod s potravinami a drogériou (eKasa, dane, hygiena, chémia, zálohy, ceny/spotrebiteľ) z `data/legislativa.json`, s odkazmi na oficiálne zdroje. Orientačné, nie právne poradenstvo.
+- **Detail produktu:** obrázok položky (`obrazok_url`, s kategóriovým emoji ako fallback), väčší graf vývoja ceny, podmienky akcie a porovnanie rovnakého `product_id` medzi obchodmi.
 - **PWA/offline:** stránku možno pridať na plochu mobilu; posledné načítané dáta a nákupný zoznam fungujú aj bez signálu.
 - **Súkromie:** žiadne účty, cookies ani analytika. Zoznam sa ukladá iba do `localStorage` daného prehliadača; medzi zariadeniami sa dá jednorazovo preniesť linkom.
 
@@ -24,6 +25,8 @@ sw.js                       # offline cache
 icons/app-icon.svg          # ikona aplikácie
 data/latest.json            # aktuálny týždeň
 data/schema-v2.json         # odporúčaná schéma pre routine
+data/legislativa.json       # obsah pohľadu Legislatíva (povinnosti + termíny)
+data/referencne-ceny.json   # voliteľná externá referenčná cena (dopĺňa routine)
 data/archive/index.json     # zoznam archívnych týždňov
 data/archive/2026-W29.json  # archívna kópia týždňa
 ```
@@ -66,7 +69,7 @@ Najdôležitejšie zmeny oproti pôvodnému návrhu:
 2. `product_id` zostáva rovnaké pre ten istý produkt naprieč obchodmi a týždňami; vďaka nemu funguje porovnanie cien.
 3. `top_ids` odkazuje na položky v `obchody[].polozky` a neduplikuje celé objekty.
 4. `zlava_letak_pct` a `zlava_realna_pct` sú oddelené. Marketingové percento z letáku sa nesmie zameniť za reálnu úsporu oproti historickej cene.
-5. `mnozstvo`, `jednotkova_cena` a `jednotka` sú voliteľné, ale výrazne zlepšia porovnávanie cien. Produktové obrázky UI zámerne nepoužíva.
+5. `mnozstvo`, `jednotkova_cena` a `jednotka` sú voliteľné, ale výrazne zlepšia porovnávanie cien. `obrazok_url` (voliteľné) UI zobrazí ako obrázok položky – prijíma absolútnu URL, relatívnu cestu v repozitári alebo `data:` obrázok; keď chýba alebo sa nenačíta, UI použije kategóriové emoji.
 6. Metro môže mať cenu bez DPH v `cena` a spotrebiteľskú cenu v `cena_s_dph`; UI uprednostní cenu s DPH.
 7. `obchody[].plati_od` a `obchody[].plati_do` určujú spoločnú platnosť letáka. Produkt ich zdedí; vlastné `polozky[].plati_od` alebo `plati_do` použije iba vtedy, keď má kratšiu či odlišnú platnosť.
 8. `historia_cien` obsahuje iba skutočne pozorované ceny rovnakého `product_id` v rovnakom obchode. UI vykreslí graf až od dvoch meraní; pôvodná prečiarknutá cena sa za historické meranie nepovažuje.

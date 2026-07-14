@@ -1,11 +1,13 @@
-const CACHE = "letaky-app-v5";
+const CACHE = "letaky-app-v7";
 const SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./icons/app-icon.svg",
   "./data/latest.json",
-  "./data/archive/index.json"
+  "./data/archive/index.json",
+  "./data/legislativa.json",
+  "./data/referencne-ceny.json"
 ];
 
 self.addEventListener("install", event => {

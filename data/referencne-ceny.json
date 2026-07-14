@@ -1,0 +1,22 @@
+{
+  "aktualizovane": "2026-07-14",
+  "zdroj_nazov": "Vlastná cenová história + voliteľná externá referencia",
+  "atribucia": "Ak sú hodnoty prevzaté zo Štatistického úradu SR, uveď: Zdroj údajov Štatistický úrad SR (DATAcube), licencia CC-BY 4.0.",
+  "poznamka": "Overlay s referenčnými (bežnými) cenami komodít pre kontrolu, či je zľava reálna. Appka ho číta a v detaile položky zobrazí referenčnú cenu; reálnu úsporu ale počíta primárne z poľa bezna_cena_60d (medián vlastnej neakciovej histórie za 60 dní). Tento súbor dopĺňa týždňová alebo mesačná routine podľa pokynov nižšie.",
+  "navod_pre_routine": [
+    "Pre bežné komodity naplň medián NEAKCIOVEJ ceny za 60 dní z vlastnej histórie (typ: 'vlastna').",
+    "Voliteľne dopln externú kotvu: ŠÚ SR DATAcube (data.statistics.sk, CC-BY) alebo verejne uvedené priemery z cenyslovensko.sk – vždy s poľom zdroj a typom ('maloobchod' alebo 'vyrobna'). Nemiešaj výrobné (farmárske) ceny s maloobchodnými – označ typ správne, appka ich zobrazí s korektným popisom a nepočíta z nich zľavu.",
+    "Každá položka: klice (zoznam slov na spárovanie s názvom/kategóriou), cena (číslo v EUR), jednotka, typ, zdroj_nazov, zdroj (URL), datum."
+  ],
+  "_priklad_polozky": {
+    "klice": ["maslo"],
+    "nazov": "Maslo",
+    "cena": 2.29,
+    "jednotka": "250 g",
+    "typ": "maloobchod",
+    "zdroj_nazov": "ŠÚ SR",
+    "zdroj": "https://data.statistics.sk/api/",
+    "datum": "2026-06-30"
+  },
+  "komodity": []
+}
