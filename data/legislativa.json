@@ -1,5 +1,5 @@
 {
-  "aktualizovane": "2026-07-14",
+  "aktualizovane": "2026-07-15",
   "popis": "Prehľad hlavných povinností a termínov pre maloobchod s potravinami a drogériou na Slovensku. Zostavené a overené oproti oficiálnym zdrojom (slov-lex.sk, financnasprava.sk, soi.sk, svps.sk, uvzsr.sk, slovenskozalohuje.sk) k júlu 2026. Slúži ako pripomienka, čo nezabudnúť.",
   "upozornenie": "Nie je to právne poradenstvo. Presné sumy pokút, čísla paragrafov a lehoty sa menia – pred konkrétnym rozhodnutím si ich potvrď v aktuálnom znení na slov-lex.sk alebo so svojím účtovníkom/právnikom. Položky označené „overiť“ sú obzvlášť citlivé na zmenu.",
   "terminy": [
@@ -441,6 +441,17 @@
       "ikona": "settings",
       "popis": "Povinnosti mimo cien a hygieny – zamestnanci, bezpečnosť, prevádzka.",
       "polozky": [
+        {
+          "nazov": "Limit platieb v hotovosti 5 000 € (od 1. 1. 2026)",
+          "detail": "Od 1. 1. 2026 sa limity platieb v hotovosti zjednotili na 5 000 € pre platby, kde je aspoň jednou stranou podnikateľ (dovtedy 5 000 € medzi podnikateľmi a 15 000 € s nepodnikateľmi). Platbu nad limit treba vykonať bezhotovostne. Pre maloobchod relevantné najmä pri veľkých B2B odberoch a platbách dodávateľom – nad 5 000 € neprijímaj ani neodovzdávaj hotovosť. Výnimky a presné znenie over v zákone č. 394/2012 Z. z.",
+          "kedy": "od 1. 1. 2026",
+          "koho": "všetci podnikatelia",
+          "zdroj": "https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2012/394/",
+          "zdroj_nazov": "Zákon 394/2012",
+          "confidence": "medium",
+          "zavaznost": 3,
+          "ucinne_od": "2026-01-01"
+        },
         {
           "nazov": "BOZP – bezpečnosť a ochrana zdravia pri práci",
           "detail": "Posúdenie rizík, prevádzkové predpisy, vstupné a periodické školenia zamestnancov, pracovná zdravotná služba. Zákon 124/2006 Z. z.",
