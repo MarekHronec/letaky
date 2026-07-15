@@ -113,7 +113,8 @@
    "text": "Súťaž „Vyhrajte Tesco poukážku 50 €“ – 100× poukážka; aktivuj súťažný kupón v aplikácii Clubcard a naskenuj pri nákupe (1× týždenne)",
    "plati_od": "2026-06-25",
    "plati_do": "2026-08-04",
-   "podmienka": "Clubcard aplikácia"
+   "podmienka": "Clubcard aplikácia",
+   "zdroj_url": "https://www.tesco.sk/zones/akciove-ponuky/akcie-a-sutaze/vyhrajte-tesco-poukazku"
   },
   {
    "id": "tesco-clubcard-kupony-w29",
@@ -121,7 +122,8 @@
    "text": "Digitálne kupóny v aplikácii Clubcard 15.–21. 7.: Rajo mlieko 3,5 % za 0,75 €, TTD cukor kryštálový za 0,72 €, Jar kapsuly 125 dávok za 20,99 €; šumivé vína až −38 % s Clubcard",
    "plati_od": "2026-07-15",
    "plati_do": "2026-07-21",
-   "podmienka": "Clubcard"
+   "podmienka": "Clubcard",
+   "zdroj_url": "https://www.tesco.sk/akciove-ponuky/"
   },
   {
    "id": "billa-tento-1plus1-w29",
@@ -129,7 +131,8 @@
    "text": "Tento toaletný papier 3-vrstvový 8 ks: 1 + 1 (2 bal. za 5,48 €, t. j. 2,74 €/bal.)",
    "plati_od": "2026-07-15",
    "plati_do": "2026-07-21",
-   "podmienka": "pri kúpe 2 bal."
+   "podmienka": "pri kúpe 2 bal.",
+   "zdroj_url": "https://www.billa.sk/letaky-a-akcie/aktualny-letak"
   },
   {
    "id": "billa-rajo-maslo-w29",
@@ -137,7 +140,8 @@
    "text": "Rajo Tradičné maslo 82 % 250 g za 1,55 € (−48 %)",
    "plati_od": "2026-07-15",
    "plati_do": "2026-07-21",
-   "podmienka": "do vypredania zásob"
+   "podmienka": "do vypredania zásob",
+   "zdroj_url": "https://www.billa.sk/letaky-a-akcie/aktualny-letak"
   },
   {
    "id": "coop-cerstve-vyhodne-sutaz-16-22-7",
@@ -145,7 +149,8 @@
    "text": "Súťaž „Čerstvé a výhodné“: za nákup aspoň za 25 € hráš o nákupné poukážky v celkovej hodnote až 66 000 €",
    "plati_od": "2026-07-16",
    "plati_do": "2026-07-22",
-   "podmienka": "nákup od 25 €"
+   "podmienka": "nákup od 25 €",
+   "zdroj_url": "https://www.coop.sk/letaky"
   }
  ],
  "obchody": [
