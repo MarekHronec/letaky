@@ -215,11 +215,11 @@ Denný update upravuje:
 2. `data/archive/<tyzden>.json` — kumulatívny týždenný snapshot; expirované pozorované ponuky sa z neho nemažú.
 3. `data/archive/index.json` — každý ISO týždeň najviac raz.
 4. `data/legislativa.json` — iba po skutočnej kontrole oficiálnych zdrojov.
-5. `data/routine-state.json` — trvalý source manifest, posledný úspešný beh, metriky a stav jednorazovej migrácie.
+5. `data/routine-state.json` — trvalý source manifest, posledný úspešný beh, metriky a audit dokončenej jednorazovej migrácie.
 
 Kanonický workflow je v `docs/routine/daily.md`, cloudové nastavenie v `docs/routine/cloud-setup.md` a projektoví subagenti v `.claude/agents/`. V Claude Cloud Routine sa repozitár pri každom behu klonuje nanovo, preto sú tieto súbory trackované. GitHub Contents API ani PAT nie sú súčasťou workflow.
 
-Pri zapnutom oprávnení na neobmedzený push vetiev môže finalizer po PASS pushnúť priamo `main`; GitHub Pages následne obsah nasadí. Bez tohto oprávnenia vytvorí `claude/routine-<run_id>` a outcome `NEEDS_MERGE`, aby sa zmena najprv zlúčila reviewom.
+Predvolený cloudový publish vytvorí `claude/routine-<run_id>` a outcome `NEEDS_MERGE`, aby zmena prešla reviewom. Priamy push do `main` je voliteľný explicitný režim až po PASS validačných, bezpečnostných a deploy bránach.
 
 Dáta sa čítajú za behu, takže čisto dátový update nevyžaduje bump service worker cache. Pri zmene HTML/CSS/JS alebo app shell súborov bump povinný zostáva.
 

@@ -76,7 +76,8 @@
         "product_id": {
           "type": "string",
           "minLength": 1,
-          "description": "Stabilné ID rovnakého produktu naprieč obchodmi a týždňami. Business validator blokuje prefix obchodu; dočasne ho tu nevynucujeme, kým sa nemigruje historický dataset."
+          "pattern": "^(?!(?:metro|kaufland|lidl|tesco|billa|coop|dm|teta)-).+",
+          "description": "Stabilné ID rovnakého produktu naprieč obchodmi a týždňami bez prefixu obchodu. ID konkrétnej ponuky ostáva obchodné a týždenné."
         },
         "nazov": { "type": "string", "minLength": 1 },
         "mnozstvo": { "type": ["string", "null"], "examples": ["250 g"] },
@@ -134,9 +135,10 @@
     },
     "openingHours": {
       "type": ["object", "null"],
-      "required": ["obdobie", "lokalita", "predajne"],
+      "required": ["obdobie", "checked_through", "lokalita", "predajne"],
       "properties": {
         "obdobie": { "type": "string" },
+        "checked_through": { "type": "string", "format": "date", "description": "Posledný deň, po ktorý boli overené sviatky a prevádzkové výnimky." },
         "lokalita": { "type": "string" },
         "poznamka_sviatky": { "type": ["string", "null"] },
         "zdroj_sviatky_url": { "type": ["string", "null"], "format": "uri" },

@@ -1,23 +1,25 @@
 #!/usr/bin/env python3
-"""Bezpečná prvá fáza migrácie product_id.
+"""Audit/recovery nástroj dokončenej migrácie product_id.
 
 Odstráni presne jeden známy prefix obchodu z product_id v latest a archívoch.
 ID konkrétnej ponuky, ceny, história, top_ids a ostatné polia nemení.
 
-Predvolene je dry-run:
+V bežnom stave po migrácii vráti predvolený dry-run ``no_change``:
     python scripts/routine/migrate_product_ids.py
 
-Zápis smie spustiť iba daily-finalizer:
+Zápis smie spustiť iba daily-finalizer v recovery režime, keď trvalý stav
+ešte nie je ``complete``:
     python scripts/routine/migrate_product_ids.py --write --report .routine-work/runs/<id>/product-id-migration.json
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 
@@ -36,8 +38,29 @@ def targets() -> list[Path]:
     return [path for path in paths if path.name != "index.json"]
 
 
-def migrate(path: Path) -> tuple[dict, list[dict], list[str]]:
-    data = json.loads(path.read_text(encoding="utf-8"))
+def preservation_digest(value: object) -> str:
+    """Hash every field except the product_id values allowed to migrate."""
+
+    def scrub(node: object) -> object:
+        if isinstance(node, dict):
+            return {
+                key: ("<MIGRATED_PRODUCT_ID>" if key == "product_id" else scrub(item))
+                for key, item in node.items()
+            }
+        if isinstance(node, list):
+            return [scrub(item) for item in node]
+        return node
+
+    payload = json.dumps(
+        scrub(value), ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def migrate(path: Path) -> tuple[dict, list[dict], list[str], dict]:
+    raw = path.read_text(encoding="utf-8")
+    original = json.loads(raw)
+    data = json.loads(raw)
     aliases: list[dict] = []
     collisions: list[str] = []
 
@@ -74,7 +97,47 @@ def migrate(path: Path) -> tuple[dict, list[dict], list[str]]:
                     + ",".join(sorted(source_ids))
                 )
 
-    return data, aliases, collisions
+    preservation_before = preservation_digest(original)
+    preservation_after = preservation_digest(data)
+    if preservation_before != preservation_after:
+        collisions.append(f"{path.as_posix()}:preservation-digest-mismatch")
+
+    file_report = {
+        "file": path.as_posix(),
+        "before_sha256": hashlib.sha256(raw.encode("utf-8")).hexdigest(),
+        "preservation_sha256_before": preservation_before,
+        "preservation_sha256_after": preservation_after,
+        "aliases_count": len(aliases),
+    }
+    return data, aliases, collisions, file_report
+
+
+def write_targeted(path: Path, aliases: list[dict]) -> str:
+    """Replace only JSON product_id values and preserve every other byte."""
+
+    raw = path.read_text(encoding="utf-8")
+    mappings: dict[str, str] = {}
+    expected: Counter[tuple[str, str]] = Counter()
+    for alias in aliases:
+        old = str(alias["old_product_id"])
+        new = str(alias["new_product_id"])
+        if old in mappings and mappings[old] != new:
+            raise RuntimeError(f"Nejednoznačné mapovanie {old}")
+        mappings[old] = new
+        expected[(old, new)] += 1
+
+    for (old, new), expected_count in expected.items():
+        old_json = json.dumps(old, ensure_ascii=False)
+        new_json = json.dumps(new, ensure_ascii=False)
+        pattern = re.compile(r'("product_id"\s*:\s*)' + re.escape(old_json))
+        raw, actual_count = pattern.subn(lambda match: match.group(1) + new_json, raw)
+        if actual_count != expected_count:
+            raise RuntimeError(
+                f"{path}: očakávaných {expected_count} výskytov {old}, nahradených {actual_count}"
+            )
+
+    path.write_text(raw, encoding="utf-8")
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
 def main() -> int:
@@ -86,15 +149,17 @@ def main() -> int:
     all_aliases: list[dict] = []
     all_collisions: list[str] = []
     changed_files: list[str] = []
-    migrated: list[tuple[Path, dict]] = []
+    migrated: list[tuple[Path, list[dict]]] = []
+    file_reports: list[dict] = []
 
     for path in targets():
-        data, aliases, collisions = migrate(path)
+        _data, aliases, collisions, file_report = migrate(path)
         all_aliases.extend(aliases)
         all_collisions.extend(collisions)
+        file_reports.append(file_report)
         if aliases:
             changed_files.append(path.as_posix())
-            migrated.append((path, data))
+            migrated.append((path, aliases))
 
     report = {
         "status": "blocked" if all_collisions else ("ready" if all_aliases else "no_change"),
@@ -103,6 +168,7 @@ def main() -> int:
         "aliases_count": len(all_aliases),
         "aliases": all_aliases,
         "collisions": all_collisions,
+        "files": file_reports,
         "preserved_fields": [
             "offer id",
             "prices",
@@ -126,9 +192,17 @@ def main() -> int:
         return 1
 
     if args.write:
-        for path, data in migrated:
-            path.write_text(
-                json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+        for path, aliases in migrated:
+            after_sha256 = write_targeted(path, aliases)
+            for file_report in file_reports:
+                if file_report["file"] == path.as_posix():
+                    file_report["after_sha256"] = after_sha256
+                    break
+        report["status"] = "complete" if all_aliases else "no_change"
+
+        if args.report:
+            report_path.write_text(
+                json.dumps(report, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
             )
 

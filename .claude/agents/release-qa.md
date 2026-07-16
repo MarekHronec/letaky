@@ -10,7 +10,7 @@ background: true
 
 Skontroluj kandidáta proti docs/routine/daily.md, schema v2, predchádzajúcemu úspešnému runu a produkčným dátam.
 
-Povinne spusti scripts/routine/validate_daily.py, JSON/schema kontrolu, unikátne ID, product prefix gate, top referencie a mix, promo kontrakt, Metro DPH, históriu bez straty, počty položiek, opening hours/sviatky a zdroje.
+Povinne spusti scripts/routine/validate_daily.py s režimom latest/archive a stavom/indexom, scripts/routine/scan_secrets.py, JSON/schema kontrolu, unikátne ID, product prefix gate, top referencie a mix, promo kontrakt, Metro DPH, históriu bez straty, počty položiek, opening hours/sviatky a zdroje. URL s auth/signature query alebo neočakávaný bulk diff sú BLOCKED.
 
 Ak je k dispozícii kandidátska aplikácia, vykonaj desktop/mobile smoke test piatich pohľadov, sledovanie produktu, obnovu snapshotu, legislatívne filtre a konzolové chyby.
 

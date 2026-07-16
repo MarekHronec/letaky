@@ -29,7 +29,8 @@ Odporúčaný hlavný model pre koordináciu je Sonnet. Premenná CLAUDE_CODE_SU
 ## Git
 
 - Cloud začína z čerstvého klonu default branchu; trvalý stav je `data/routine-state.json`, nie `.routine-work`.
-- Pri povolenom neobmedzenom pushi vetiev pushni po PASS `origin/main`. Bez tohto oprávnenia pushni `origin/claude/routine-{run_id}` a vráť NEEDS_MERGE.
+- Predvolený publish je `origin/claude/routine-{run_id}` s outcome NEEDS_MERGE. `origin/main` použi iba v explicitne povolenom direct-publish režime po všetkých PASS bránach.
 - Nepoužívaj GitHub Contents API ani PAT.
 - Subagenti necommitujú. Commit a deploy verification robí iba daily-finalizer.
 - .claude/CLAUDE.md a .claude/agents sú trackované, aby ich videli Claude Cloud Routines. Lokálne launch/settings súbory a .routine-work zostávajú gitignored.
+- Pred spustením Python skriptov nájdi dostupný `python3` alebo `python` a používaj tú istú cestu počas celého runu. Pred commitom blokuj citlivé URL parametre, secrets a neočakávaný bulk diff.

@@ -59,9 +59,9 @@ Uložený zoznam nie je dôkaz skutočne uskutočneného nákupu a aplikácia ne
 
 Váhy algoritmu sa v dennom dátovom behu automaticky nemenia. Raz týždenne môže analytics-auditor urobiť backtest verejnej cenovej časti a navrhnúť zmenu. Zmena kódu je samostatná úloha: musí mať baseline, testovacie scenáre, review Opusom, UI testy a bump cache v sw.js.
 
-## 2. Aktuálny dátový dlh — blokujúca migrácia
+## 2. Dokončená migrácia identít — trvalá regresná brána
 
-Stav pri audite 2026-07-16:
+V behu `2026-07-17T000816` bola vykonaná jednorazová riadená migrácia pôvodného stavu:
 
 - 1 119 z 1 119 zdrojových product_id má prefix obchodu,
 - po jednoduchom odstránení prefixu sú iba dve presné viacobchodové zhody,
@@ -69,7 +69,7 @@ Stav pri audite 2026-07-16:
 - 1 113 ponúk má verdikt neoverene,
 - referencne-ceny.json nemá použiteľné komodity.
 
-Pred prvým plnohodnotným denným publishom vykonaj riadenú migráciu:
+Migrácia použila tieto pravidlá, ktoré zostávajú dokumentované pre audit a obnovu:
 
 1. Bezpečne odstráň iba známy úvodný prefix metro-, kaufland-, lidl-, tesco-, billa-, coop-, dm- alebo teta- z product_id.
 2. id konkrétnej ponuky ponechaj v tvare obchod-product_id-týždeň.
@@ -78,11 +78,11 @@ Pred prvým plnohodnotným denným publishom vykonaj riadenú migráciu:
 5. Ulož mapovanie staré_id -> nové_id do súkromného run artefaktu, aby bolo auditovateľné.
 6. Tvrdá brána: žiadne nové product_id nesmie začínať prefixom obchodu.
 
-Prvý beh musí začať príkazom `python scripts/routine/migrate_product_ids.py` bez `--write`. Ak report nemá kolízie, až daily-finalizer smie spustiť rovnaký príkaz s `--write` a `--report .routine-work/runs/{run_id}/product-id-migration.json`. Táto deterministická fáza nemení `id` ponuky, ceny, `historia_cien`, `top_ids`, promo ani otváracie hodiny. Nevytvára chýbajúce historické ceny. Pri značke Metro Chef použije jednoznačné ID `brand-metro-chef-*`, aby názov značky nevyzeral ako obchodný prefix. Sémantické zjednocovanie rôzne pomenovaných produktov naprieč obchodmi je samostatná Sonnet/Opus kontrola a neisté zhody musia zostať zablokované.
+Produkčný zápis zmenil 1 119 `product_id` v `latest` a rovnakých 1 119 v archíve, bez kolízie. Preservation digest potvrdil, že sa pri mechanickej fáze nezmenili `id` ponuky, ceny, `historia_cien`, `top_ids`, promo ani otváracie hodiny. Značka Metro Chef používa jednoznačné ID `brand-metro-chef-*`.
 
-Po úspechu finalizer zapíše stav migrácie a súhrn mapovania do `data/routine-state.json`. Úplný detail ostane v Git diffe/commite a v dočasnom run reporte; cloudový scratch sa medzi behmi nepovažuje za trvalý stav.
+Bežný denný beh migráciu znovu nezapisuje. Ak `data/routine-state.json` uvádza `complete`, validator a schema iba blokujú návrat obchodného prefixu. Skript `migrate_product_ids.py` spusti bez `--write` len pri audite alebo obnove; `--write` je dovolený iba vtedy, keď stav nie je `complete`, dry-run nemá kolízie a preservation digest je zhodný.
 
-Bez tejto migrácie neoznačuj cross-store analytiku za spoľahlivú.
+Sémantické zjednocovanie rôzne pomenovaných produktov naprieč obchodmi naďalej nie je mechanická migrácia. Presné zhody môže pripraviť Sonnet; fuzzy zhody, privátne značky, multipacky a cenovo vzdialené položky musí schváliť Opus.
 
 ## 3. Run priečinok a výstupný kontrakt
 
@@ -160,10 +160,12 @@ Ak je v prostredí nastavené CLAUDE_CODE_SUBAGENT_MODEL, upozorni na to: má vy
 1. Over aktuálny dátum, časovú zónu a ISO týždeň.
 2. Prečítaj celé: túto routine, README, data/schema-v2.json, predchádzajúci latest, archive/index, príslušný archív, legislatívu a relevantné JS algoritmy.
 3. Over git branch, remote a pracovný strom. Pri nesúvisiacich lokálnych zmenách nič neprepisuj a skonči BLOCKED. V cloude očakávaj čerstvý klon; pri lokálnom behu môžeš použiť `git pull --ff-only`, iba ak je pracovný strom čistý.
-4. Načítaj `data/routine-state.json`. Ak `product_id_migration.status` nie je `complete`, vykonaj najprv dry-run riadenej migrácie z kroku 2 a odovzdaj report finalizeru.
+4. Načítaj `data/routine-state.json`. Pri `product_id_migration.status: complete` migráciu preskoč a spusti iba regresnú kontrolu prefixov. Iný stav je recovery režim: vykonaj najprv dry-run z kroku 2 a odovzdaj report finalizeru.
 5. Načítaj posledný `source_manifest` z `data/routine-state.json` a vypočítaj nový fingerprint.
 6. Denný beh nesmie pridávať nový historický bod len preto, že prešiel ďalší deň. Bod pridaj iba pri novej edícii letáku, novej ponuke alebo skutočnej zmene ceny/podmienky.
 7. Aj pri nezmenených letákoch dokonči dennú kontrolu hodín/sviatkov a ľahký legislatívny watch. Nový dátum skutočného overenia zobrazených hodín je legitímna verification-only zmena; commitni ho najviac raz denne. Ak sú už produkčné verifikačné dátumy dnešné a nič iné sa nezmenilo, vytvor outcome NO_CHANGE bez commitu a e-mailu.
+
+Source manifest smie obsahovať iba kanonickú verejnú URL, čas kontroly, status, ETag/Last-Modified a obsahový hash. Pred uložením odstráň fragment a všetky citlivé query parametre (`token`, `sig`, `signature`, `credential`, `X-Amz-*`, `X-Goog-*` a ekvivalenty). Neukladaj cookies, request hlavičky, response body, lokálne cesty ani prihlasovacie údaje. Pred finalizáciou spusti secret scan trackovaných zmien a skontroluj veľkosť diffu; neočakávaný bulk rewrite je BLOCKED.
 
 ## 6. KROK B — objavenie všetkých zdrojov
 
@@ -187,7 +189,7 @@ Oficiálny zdroj je primárny. Agregátor používaj iba ako index alebo na náj
 - Pri gastronómii a spotrebnom tovare stačí najprv klasifikácia strán; relevantné potraviny/drogériu extrahuj.
 - Každá položka musí mať cenu bez DPH aj s DPH, ak ich zdroj uvádza.
 - Množstevné podmienky a efektívnu cenu uveď explicitne.
-- Botom blokované stránky čítaj prehliadačom. Pri sťahovaní na Windows môže byť potrebné curl --ssl-no-revoke.
+- Botom blokované stránky čítaj prehliadačom. `curl --ssl-no-revoke` je iba posledný Windows fallback pre presnú verejnú first-party URL bez prihlasovania, tokenu či signed query; nikdy ho nepouži ako globálne nastavenie.
 
 ### Lidl
 
@@ -330,7 +332,7 @@ Pole plan už negeneruj. Legacy plan môže zostať len v starom archíve.
 
 ## 13. KROK I — validačné brány
 
-Spusti scripts/routine/validate_daily.py, JSON parse, schema validáciu a business kontroly.
+Spusti `scripts/routine/validate_daily.py`, `scripts/routine/scan_secrets.py`, JSON parse, Draft 2020-12 schema validáciu a business kontroly. Pre `latest` odovzdaj aj `--archive-index`, `--state` a pri dostupnom predchádzajúcom úspechu `--previous`; archívy validuj s `--mode archive`.
 
 BLOCKING:
 
@@ -347,6 +349,8 @@ BLOCKING:
 - sviatok bez presnej výnimky každej pobočky,
 - strata histórie alebo náhly nevysvetlený pokles počtu položiek,
 - nevyriešený konflikt zdroja,
+- viac alebo menej než jedna aktuálna promo priority 1,
+- URL s tokenom, podpisom, credential alebo iným citlivým query parametrom,
 - JS/JSON kontrola, smoke test alebo deploy check zlyhá.
 
 WARNING:
@@ -354,7 +358,6 @@ WARNING:
 - malý počet položiek vo veľkom letáku,
 - viac než 80 % neoverených verdiktov,
 - menej než 10 % produktov s aspoň dvoma nezávislými historickými bodmi,
-- viac než jedna promo priority 1,
 - chýbajúce obrázky,
 - referenčné ceny sú staré alebo prázdne.
 
@@ -387,7 +390,7 @@ Finalizer:
 2. schváli TOP/promo/verdikty a ID mapovanie,
 3. upraví iba potrebné produkčné súbory,
 4. znova spustí všetky kontroly,
-5. pri PASS aktualizuje `data/routine-state.json` (posledný úspech, source manifest, metriky a stav migrácie), vytvorí commit a podľa cloudových oprávnení pushne `origin/main` alebo `origin/claude/routine-{run_id}`,
+5. pri PASS aktualizuje `data/routine-state.json` (posledný úspech, sanitizovaný source manifest, metriky a stav migrácie), vytvorí commit a štandardne pushne `origin/claude/routine-{run_id}` na review; priamy `origin/main` je iba explicitne povolený režim po úspešných QA bránach,
 6. po nasadení overí live latest.json a základné UI,
 7. vytvorí outcome.json a report.md.
 
