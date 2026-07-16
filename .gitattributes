@@ -1,0 +1,2 @@
+# Zjednotené konce riadkov na LF – žiadny CRLF šum v diffe na Windowse.
+* text=auto eol=lf

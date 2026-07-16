@@ -1,41 +1,80 @@
 # Letákový prehľad
 
-Responzívna statická aplikácia na prehľad potravinových akcií, rozlíšenie reálnych a podozrivých zliav a praktický nákupný zoznam.
+Responzívna statická aplikácia na prehľad potravinových akcií, rozlíšenie reálnych a podozrivých zliav, nákupný zoznam a prehľad legislatívy pre rodinný obchod.
 
 **Live:** https://marekhronec.github.io/letaky/
 
 ## Čo aplikácia robí
 
 - **Prehľad:** najlepšie overené ponuky, špeciálne akcie, stav zdrojov a odporúčaný plán nákupu.
-- **Všetky akcie:** vyhľadávanie, obchodné filtre, verdikt zľavy, triedenie a minimalistický vývoj ceny z overenej histórie.
-- **Môj zoznam:** položky z akcií aj ručne zadané položky, množstvo, odškrtávanie bez presúvania a rozdelenie podľa obchodov. Ručnú položku sa dá aj **nadiktovať hlasom** (Web Speech API, `sk-SK`, s fallbackom na písanie).
-- **Legislatíva:** prehľad povinností a termínov pre maloobchod s potravinami a drogériou (eKasa, dane, hygiena, chémia, zálohy, ceny/spotrebiteľ) z `data/legislativa.json`, s odkazmi na oficiálne zdroje. Orientačné, nie právne poradenstvo.
-- **Detail produktu:** obrázok položky (`obrazok_url`, s kategóriovým emoji ako fallback), väčší graf vývoja ceny, podmienky akcie a porovnanie rovnakého `product_id` medzi obchodmi.
-- **PWA/offline:** stránku možno pridať na plochu mobilu; posledné načítané dáta a nákupný zoznam fungujú aj bez signálu.
-- **Súkromie:** žiadne účty, cookies ani analytika. Zoznam sa ukladá iba do `localStorage` daného prehliadača; medzi zariadeniami sa dá jednorazovo preniesť linkom.
+- **Všetky akcie:** vyhľadávanie, obchodné filtre, verdikt zľavy, triedenie a vývoj ceny z overenej histórie. Katalóg sa vykresľuje po stránkach (120 kariet + „Zobraziť ďalšie“).
+- **Môj zoznam:** položky z akcií aj ručne zadané položky, množstvo, odškrtávanie bez presúvania a rozdelenie podľa obchodov. Ručnú položku sa dá aj **nadiktovať hlasom** (Web Speech API, `sk-SK`, s fallbackom na písanie). Nákup sa dá uložiť do histórie a neskôr obnoviť.
+- **Legislatíva:** prehľad povinností a termínov pre maloobchod s potravinami a drogériou (eKasa, dane, hygiena, chémia, zálohy, ceny/spotrebiteľ) z `data/legislativa.json`, s odkazmi na oficiálne zdroje. Orientačné, nie právne poradenstvo. Položky s `confidence: "low"` sú v UI označené „orientačné – overiť“; ostatné hodnoty poľa `confidence` sa nezobrazujú.
+- **Detail produktu:** obrázok položky (`obrazok_url`, s kategóriovým emoji ako fallback), graf vývoja ceny, jednotková cena, podmienky akcie a porovnanie rovnakého `product_id` medzi obchodmi.
+- **PWA/offline:** stránku možno pridať na plochu mobilu; posledné načítané dáta a nákupný zoznam fungujú aj bez signálu. Pri novej verzii appky sa zobrazí banner „Obnoviť“.
+
+## Súkromie a účty
+
+- Appka funguje **bez účtu**: zoznam, nastavenia a stavy legislatívy sa ukladajú iba do `localStorage` tohto prehliadača a dajú sa jednorazovo preniesť linkom.
+- **Voliteľné prihlásenie (Supabase):** po prihlásení e-mailom a heslom sa nákupný zoznam, história nákupov, nastavenia a stavy legislatívy synchronizujú medzi zariadeniami. Účty vytvára správca; verejné registrácie sú vypnuté. Dáta každého používateľa chráni Row Level Security – presné pravidlá sú v [`supabase/schema.sql`](supabase/schema.sql).
+- Žiadna analytika ani cookies tretích strán.
 
 ## Architektúra
 
-Projekt nemá build step, framework ani npm závislosti. GitHub Pages servuje priamo tieto súbory:
+Projekt nemá build step ani npm závislosti – GitHub Pages servuje priamo tieto súbory. Jediná externá runtime závislosť je `@supabase/supabase-js`, importovaná za behu z esm.sh (presne pripnutá verzia v `js/config.js`); bez pripojenia appka beží ďalej, len bez prihlásenia a synchronizácie.
 
 ```text
-index.html                  # UI, štýly a aplikačná logika
+index.html                  # HTML shell (bez inline skriptov a štýlov) + CSP
+styles.css                  # všetky štýly (sekcie + presne 3 media bloky)
+sw.js                       # offline cache (network-first) + update flow
 manifest.webmanifest        # PWA manifest
-sw.js                       # offline cache
 icons/app-icon.svg          # ikona aplikácie
-data/latest.json            # aktuálny týždeň
-data/schema-v2.json         # odporúčaná schéma pre routine
-data/legislativa.json       # obsah pohľadu Legislatíva (povinnosti + termíny)
-data/referencne-ceny.json   # voliteľná externá referenčná cena (dopĺňa routine)
+
+js/app.js                   # vstupný bod: action registry, routing, render, SW registrácia
+js/config.js                # konštanty (obchody, kľúče úložiska, limity, Supabase)
+js/state.js                 # zdieľaný stav + nastavenia, stavy legislatívy, história nákupov
+js/data.js                  # fetch + normalizácia dát (JEDINÉ miesto, kde sa čítajú kľúče schémy)
+js/shopping.js              # nákupný zoznam + tombstone merge pre sync
+js/charts.js                # sparkline + veľký graf ceny (zdieľaná matematika)
+js/sync.js                  # Supabase login a synchronizácia (zvyšok appky o Supabase nevie)
+js/share.js                 # zdieľací link, JSON export/import, hlasové zadávanie
+js/detail.js                # detail produktu (dialóg s focus managementom)
+js/lib/util.js              # esc, safeUrl, formátovanie, localStorage helpery
+js/lib/icons.js             # SVG ikony
+js/lib/toast.js             # toast + aria-live oznámenia
+js/views/shared.js          # hlavička stránky, logá obchodov, platnosť, badge, tlačidlá
+js/views/overview.js        # Prehľad
+js/views/deals.js           # Všetky akcie
+js/views/list.js            # Môj zoznam
+js/views/legislativa.js     # Legislatíva
+js/views/profil.js          # Profil a nastavenia
+
+data/latest.json            # aktuálny týždeň (schema v2)
+data/schema-v2.json         # JSON Schema pre routine
+data/legislativa.json       # obsah pohľadu Legislatíva
+data/referencne-ceny.json   # voliteľná externá referenčná cena
 data/archive/index.json     # zoznam archívnych týždňov
-data/archive/2026-W29.json  # archívna kópia týždňa
+data/archive/<tyzden>.json  # archívne kópie týždňov
+
+supabase/schema.sql         # DDL + RLS policies pre tabuľku user_data
 ```
 
-GitHub Pages je nastavený na deploy z `main`, root `/`. Každý push do `main` spustí automatické prenasadenie.
+GitHub Pages je nastavený na deploy z `main`, root `/`. Každý push do `main` sa nasadí automaticky.
 
-## Nákupný zoznam
+**Dôležité pravidlo údržby:** pri pridaní, premenovaní alebo zmazaní súboru aplikácie treba upraviť zoznam `SHELL` v [`sw.js`](sw.js) a bumpnúť tam verziu `CACHE` (`letaky-app-vX`). Inak nainštalované PWA ostanú offline na starej verzii.
 
-Zoznam sa ukladá pod kľúčom `letaky.shoppingList.v2`. Pri pridaní akcie sa uloží snapshot produktu, nie iba referencia na aktuálny JSON. Položka preto zostane čitateľná aj po výmene týždenných dát.
+## Úložisko v prehliadači (localStorage)
+
+| Kľúč | Obsah |
+|------|-------|
+| `letaky.shoppingList.v2` | aktívne položky nákupného zoznamu |
+| `letaky.shoppingDeleted.v1` | tombstones zmazaných položiek (TTL 30 dní, kvôli syncu) |
+| `letaky.settings.v1` | nastavenia: `dph`, `hideCard`, `dphPeriod` |
+| `letaky.legStates.v2` | stavy legislatívy: `{ kluc: { st, updatedAt } }`; prázdne `st` je tombstone |
+| `letaky.savedLists.v1` | história uložených nákupov |
+| `letaky.savedListsDeleted.v1` | tombstones zmazaných nákupov (TTL 30 dní) |
+
+Položka zoznamu (úplný tvar, ktorý zapisuje `sanitizeListItem`):
 
 ```json
 {
@@ -47,32 +86,42 @@ Zoznam sa ukladá pod kľúčom `letaky.shoppingList.v2`. Pri pridaní akcie sa 
   "amount": "250 g",
   "store": "Lidl",
   "price": 1.59,
+  "priceVat": 1.59,
   "originalPrice": 2.39,
+  "originalPriceVat": 2.39,
+  "unitPrice": 6.36,
   "condition": "od 2 ks",
   "validFrom": "2026-07-27",
   "validTo": "2026-08-02",
   "quantity": 2,
   "checked": false,
-  "addedAt": "2026-07-13T18:20:00.000Z"
+  "addedAt": "2026-07-13T18:20:00.000Z",
+  "checkedAt": null,
+  "updatedAt": "2026-07-13T18:20:00.000Z",
+  "deletedAt": null
 }
 ```
 
-Ručné položky majú `source: "manual"` a môžu mať `store` aj `price` prázdne. Tlačidlo **Zdieľať link** vloží snapshot zoznamu do URL fragmentu `#share=…`; fragment sa neposiela GitHub Pages serveru. Po otvorení na inom zariadení aplikácia zoznam uloží do jeho `localStorage`. Kto má link, môže jeho obsah načítať, preto ho treba zdieľať ako nákupný zoznam, nie ako tajnú informáciu. Export/import JSON zostáva ako záloha a riešenie pre veľmi dlhé zoznamy.
+Ukladajú sa **obe cenové bázy** (`price` bez DPH, `priceVat` s DPH), takže prepnutie nastavenia „Platca DPH“ nemieša v súčtoch rôzne základy. `updatedAt`/`deletedAt` riadia merge pri synchronizácii – ručne vytvorené položky bez týchto polí sa pri merge považujú za najstaršie.
 
-## Odporúčaná dátová schéma v2
+Ručné položky majú `source: "manual"` a môžu mať `store` aj ceny prázdne. Tlačidlo **Zdieľať link** vloží snapshot zoznamu do URL fragmentu `#share=…`; fragment sa neposiela serveru. Kto má link, môže jeho obsah načítať – zdieľaj ho ako nákupný zoznam, nie ako tajnú informáciu. Export/import JSON zostáva ako záloha a riešenie pre veľmi dlhé zoznamy.
 
-Aplikácia zostáva spätne kompatibilná s pôvodným JSON-om v repozitári. Nové Claude routines by však mali generovať `schema_version: 2` podľa [`data/schema-v2.json`](data/schema-v2.json).
+## Dátová schéma v2
 
-Najdôležitejšie zmeny oproti pôvodnému návrhu:
+Aplikácia číta **iba** `schema_version: 2` podľa [`data/schema-v2.json`](data/schema-v2.json) – slovenské kľúče (`nazov`, `cena`, `plati_od`…). Spätná kompatibilita s pôvodným návrhom v1 bola odstránená; v repozitári žiadne v1 dáta nie sú.
 
-1. `id` jednoznačne identifikuje konkrétnu ponuku.
-2. `product_id` zostáva rovnaké pre ten istý produkt naprieč obchodmi a týždňami; vďaka nemu funguje porovnanie cien.
+Najdôležitejšie zásady:
+
+1. `id` jednoznačne identifikuje konkrétnu ponuku. Praktický formát je `<obchod>-<product_id>-<tyzden>`.
+2. `product_id` zostáva rovnaké pre ten istý produkt naprieč obchodmi a týždňami; vďaka nemu funguje porovnanie cien. **Nesmie obsahovať prefix obchodu** – `maslo-82-250g`, nie `lidl-maslo-82-250g`. (Appka známy prefix obchodu defenzívne odstráni, ale správne je negenerovať ho.) Variant s inou gramážou má iné `product_id`.
 3. `top_ids` odkazuje na položky v `obchody[].polozky` a neduplikuje celé objekty.
-4. `zlava_letak_pct` a `zlava_realna_pct` sú oddelené. Marketingové percento z letáku sa nesmie zameniť za reálnu úsporu oproti historickej cene.
-5. `mnozstvo`, `jednotkova_cena` a `jednotka` sú voliteľné, ale výrazne zlepšia porovnávanie cien. `obrazok_url` (voliteľné) UI zobrazí ako obrázok položky – prijíma absolútnu URL, relatívnu cestu v repozitári alebo `data:` obrázok; keď chýba alebo sa nenačíta, UI použije kategóriové emoji.
-6. Metro môže mať cenu bez DPH v `cena` a spotrebiteľskú cenu v `cena_s_dph`; UI uprednostní cenu s DPH.
-7. `obchody[].plati_od` a `obchody[].plati_do` určujú spoločnú platnosť letáka. Produkt ich zdedí; vlastné `polozky[].plati_od` alebo `plati_do` použije iba vtedy, keď má kratšiu či odlišnú platnosť.
-8. `historia_cien` obsahuje iba skutočne pozorované ceny rovnakého `product_id` v rovnakom obchode. UI vykreslí graf až od dvoch meraní; pôvodná prečiarknutá cena sa za historické meranie nepovažuje.
+4. `zlava_letak_pct` a `zlava_realna_pct` sú oddelené. Marketingové percento z letáku sa nesmie zameniť za reálnu úsporu oproti historickej cene. `zlava_realna_pct` môže byť aj záporná (tovar je drahší než jeho bežná cena) – UI vtedy odznak zľavy nezobrazí.
+5. `mnozstvo`, `jednotkova_cena` a `jednotka` sú voliteľné, ale zlepšia porovnávanie; jednotková cena sa zobrazuje v detaile. `kategoria` riadi emoji fallback obrázka a párovanie s referenčnými cenami – vypĺňaj ju. `obrazok_url` prijíma absolútnu URL, relatívnu cestu v repozitári alebo `data:` obrázok.
+6. Metro môže mať cenu bez DPH v `cena` a spotrebiteľskú cenu v `cena_s_dph`; UI uprednostní cenu podľa nastavenia Platca DPH. Graf histórie vždy používa cenu s DPH, aby sa nemiešali bázy.
+7. `obchody[].plati_od` a `obchody[].plati_do` určujú spoločnú platnosť letáka. Produkt ich zdedí; vlastné dátumy uvádzaj len pri odlišnej platnosti.
+8. `historia_cien` obsahuje iba skutočne pozorované ceny rovnakého `product_id` v rovnakom obchode. UI vykreslí graf až od dvoch meraní; prečiarknutá cena nie je historické meranie.
+9. `promo[]` podporuje `priorita` (1 = najdôležitejšie, default 3 – určuje poradie) a `zdroj_url` (odkaz „Detail akcie“).
+10. `plan` (odporúčaný plán nákupu) je voliteľný: `zastavky[]` s `poradie`, `nazov`, `den`, `poznamka`, `odhad_eur` a voliteľná `maps_url`. UI ho zobrazí na Prehľade.
 
 Minimálny odporúčaný príklad:
 
@@ -89,7 +138,9 @@ Minimálny odporúčaný príklad:
       "obchod": "Lidl",
       "text": "Kupón −5 € pri nákupe nad 40 €",
       "plati_do": "2026-08-02",
-      "podmienka": "Lidl Plus"
+      "podmienka": "Lidl Plus",
+      "priorita": 1,
+      "zdroj_url": "https://www.lidl.sk/c/letaky"
     }
   ],
   "obchody": [
@@ -105,6 +156,8 @@ Minimálny odporúčaný príklad:
           "product_id": "maslo-82-250g",
           "nazov": "Maslo 82 %",
           "mnozstvo": "250 g",
+          "kategoria": "mliečne výrobky",
+          "obrazok_url": null,
           "cena": 1.59,
           "cena_povodna": 2.39,
           "jednotkova_cena": 6.36,
@@ -131,13 +184,14 @@ Minimálny odporúčaný príklad:
 ### Pravidlá pre routine
 
 - `verdikt` je presne `realna`, `umela` alebo `neoverene`.
-- `id` musí byť unikátne v celom týždennom súbore. Praktický formát je `<obchod>-<product_id>-<tyzden>`.
-- `product_id` sa nemení iba preto, že sa zmenila cena, obchod alebo týždeň. Variant s inou gramážou má iné `product_id`.
+- `id` musí byť unikátne v celom týždennom súbore.
+- `product_id` sa nemení iba preto, že sa zmenila cena, obchod alebo týždeň – a **nikdy nezačína id obchodu** (`metro-`, `kaufland-`, `lidl-`, `tesco-`, `billa-`, `coop-`, `dm-`, `teta-`). Kontrola pred commitom: žiadne `product_id` nesmie začínať niektorým z týchto prefixov.
 - Peňažné hodnoty sú JSON čísla bez symbolu meny; mena je vždy EUR.
 - Dátumy používajú `YYYY-MM-DD`, `generovane` ISO 8601 s časovou zónou.
 - Pri každom obchode uveď spoločnú platnosť letáka cez `plati_od` a `plati_do`. Na produkte dátumy opakuj iba pri odlišnej platnosti.
 - Množstevné, kartové a aplikačné obmedzenia zapisuj doslovne do `podmienka`, napríklad `od 3 ks`, `len s Kaufland Card` alebo `cena za kus, od 1 balenia`.
-- Do `historia_cien` prenes najviac posledných 16 overených meraní toho istého produktu a obchodu. Deduplikuj ich podľa dátumu; pri Metro doplň aj `cena_s_dph`.
+- Vypĺňaj `kategoria` (a keď je k dispozícii, aj `obrazok_url`) – bez kategórie sa zhorší emoji fallback aj párovanie referenčných cien.
+- Do `historia_cien` prenes najviac posledných 16 overených meraní toho istého produktu a obchodu. Deduplikuj podľa dátumu; pri Metro doplň aj `cena_s_dph`.
 - Ak história nestačí na reálnu zľavu, použi `verdikt: "neoverene"` a `zlava_realna_pct: null`.
 - `top_ids` má obsahovať len existujúce `id` z `obchody[].polozky`.
 - Chýbajúce voliteľné hodnoty majú byť `null`, nie vymyslené.
@@ -163,7 +217,7 @@ PUT /repos/MarekHronec/letaky/contents/data/latest.json
 }
 ```
 
-Po commite nie je potrebný samostatný deploy príkaz. GitHub Pages nasadí nový obsah z `main` automaticky.
+Po commite netreba samostatný deploy – GitHub Pages nasadí nový obsah z `main` automaticky. Dáta sa čítajú za behu, takže update dát **nevyžaduje** zásah do kódu ani bump service worker cache.
 
 ## Token pre automatizáciu
 
@@ -174,9 +228,13 @@ Použi fine-grained GitHub token obmedzený iba na tento repozitár:
 - token patrí do secrets automatizácie, nikdy do repozitára
 - po expirácii ho treba v routine vymeniť
 
+## Referenčné ceny (voliteľné)
+
+`data/referencne-ceny.json` môže obsahovať externé referenčné ceny komodít (`komodity[]` s poľami `klice`, `nazov`, `cena`, `jednotka`, `typ`, `zdroj_nazov`, `zdroj`, `datum`). Detail produktu zobrazí typ ceny, zdroj a hodnotu; reálna úspora sa však vždy počíta primárne z `bezna_cena_60d`. Kým je `komodity` prázdne, sekcia sa v UI nezobrazuje.
+
 ## Lokálne spustenie
 
-Kvôli `fetch()` a service workeru neotváraj `index.html` priamo cez `file://`. Spusti v koreňovom priečinku jednoduchý HTTP server, napríklad:
+Kvôli ES modulom, `fetch()` a service workeru neotváraj `index.html` cez `file://`. Spusti v koreňovom priečinku jednoduchý HTTP server:
 
 ```powershell
 python -m http.server 8000

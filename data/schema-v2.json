@@ -49,7 +49,9 @@
         "text": { "type": "string" },
         "plati_od": { "type": ["string", "null"], "format": "date" },
         "plati_do": { "type": ["string", "null"], "format": "date" },
-        "podmienka": { "type": ["string", "null"] }
+        "podmienka": { "type": ["string", "null"] },
+        "priorita": { "type": ["integer", "null"], "minimum": 1, "description": "Poradie zobrazenia: 1 = najdôležitejšie. Bez hodnoty sa berie 3." },
+        "zdroj_url": { "type": ["string", "null"], "format": "uri", "description": "Odkaz na detail akcie (stránka obchodu alebo konkrétna strana letáku)." }
       },
       "additionalProperties": true
     },
@@ -78,6 +80,7 @@
         "plati_do": { "type": ["string", "null"], "format": "date" },
         "poznamka": { "type": ["string", "null"] },
         "zdroj_url": { "type": ["string", "null"], "format": "uri" },
+        "obrazok_url": { "type": ["string", "null"], "description": "Obrázok položky: absolútna URL, cesta relatívna k repozitáru alebo data:image URI. Keď chýba alebo sa nenačíta, UI použije kategóriové emoji." },
         "historia_cien": {
           "type": "array",
           "items": {
