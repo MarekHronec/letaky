@@ -12,7 +12,7 @@ Redizajn na seriózny osobný analytický a nákupný nástroj. Nie promo landin
 
 ## 2. Vizuálny smer
 
-- Zdržanlivá **neutrálna sivá plocha** + **jeden akcent** (indigová modrá) len pre interaktívne/primárne prvky.
+- Zdržanlivá **neutrálna sivá plocha** + **jeden akcent** (indigová modrá) pre interaktívne/primárne prvky. Tmavé aplikačné plochy používajú tlmenú navy, nie čiernu.
 - Farba inak nesie **iba význam**: zelená = reálna zľava, jantárová = podozrivá, červená = urgentné/chyba. Identita obchodu = malý 3 px indikátor, nie plocha.
 - **Ploché povrchy**, hairline separátory namiesto kariet všade. Tiene minimálne (len sheet a sticky lišty).
 - Silná **dátová tabuľka** pre katalóg akcií (desktop) → riadky (mobil).
@@ -29,6 +29,7 @@ Plocha    --bg #f4f5f6 · --surface #ffffff · --surface-2 #eef0f2 (inset)
 Text      --text #171a1f · --muted #59616b · --faint #79818b
 Linky/sep --line #e4e7eb (hairline) · --line-strong #cfd4da
 Akcent    --brand #2f56d0 · --brand-strong #21409e · --brand-soft #eef2fd
+Navigácia --nav #24345f · --nav-2 #2d4275 · --nav-text #dbe4f5
 Stav      --green #1c7a4d · --amber #8a6100 · --red #c23934 (+ *-soft)
 Obchody   desaturované indikátory (--metro, --kaufland, --lidl, …)
 ```
@@ -55,16 +56,16 @@ Sidebar `236px` (desktop), topbar `56px` (Primer-kompaktná). Obsah max šírka 
 
 | Komponent | Zmena |
 |---|---|
-| **Page header** | Nahradený: preč farebný eyebrow; čistý nadpis + meta riadok (obdobie/aktualizované) |
-| **App navigácia** | Reskin: kompaktný sidebar (desktop) / topbar + bottom-nav (mobil), nástrojový vzhľad |
-| **Filter obchodov** | Segmentovaná lišta s jemnými indikátormi obchodov (nie farebné taby) |
+| **Page header** | Na Prehľade bez duplicitného nadpisu obdobia; obdobie je súčasťou výberu týždňa v topbare |
+| **App navigácia** | Kompaktný tlmený navy sidebar (desktop) / topbar + bottom-nav (mobil), profil vždy na pravom okraji |
+| **Filter obchodov** | Segmentovaná lišta s indigovým aktívnym stavom a jemnými indikátormi obchodov, priamo pod KPI pásom |
 | **Katalóg akcií** | Nahradený: karta-grid → **hustá dátová tabuľka** (názov · obchod · cena · zľava · verdikt · platnosť · akcia); na mobile štruktúrované riadky |
 | **Top príležitosti** | Rebríček ako tabuľkový list s poradím, cenou, zľavou |
 | **Špeciálne akcie (promo)** | Kompaktný list, jemný ľavý indikátor obchodu, priorita → top 4 + rozbalenie |
 | **Panely/sekcie** | Ploché sekcie oddelené hairline namiesto tieňových kariet |
 | **Tlačidlá** | primary (akcent) · secondary (hairline) · ghost/text · okrúhle +/✓ |
 | **Odznaky** | verdikt (reálna/podozrivá/neoverená), zľava, status — jemné, nie balónové |
-| **KPI pásik** | Prehľadový status ako kompaktný riadok metrík |
+| **KPI pásik** | Prvý blok pod topbarom; kompaktný riadok metrík spojený s filtrom obchodov |
 | **Detail sheet** | Prepracovaný: sekcie definičných riadkov, graf, porovnanie obchodov |
 | **Formuláre** | GOV.UK vzor: jasné labely, chybové hlásenia, dostatočné ciele dotyku (login, vlastná položka, nastavenia) |
 | **Legislatíva** | Timeline termínov + list povinností so závažnosťou; filtre chips |

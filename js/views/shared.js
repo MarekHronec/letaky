@@ -41,14 +41,14 @@ export function storeLogo(name) {
   return `<span class="store-logo" style="${storeStyle(name)}"><i class="store-dot"></i>${esc(name || 'Ostatné')}</span>`;
 }
 
-export function renderStoreTabs() {
+export function renderStoreTabs(className = '') {
   const tabs = sortedStores()
     .map(s => {
       const active = state.store === s.id ? 'active' : '';
       return `<button class="store-tab ${active}" data-action="store" data-store="${esc(s.id)}" style="${storeStyle(s.id)}"><i class="store-dot"></i>${esc(s.name)}</button>`;
     })
     .join('');
-  return `<div class="store-tabs">
+  return `<div class="store-tabs${className ? ` ${esc(className)}` : ''}" role="group" aria-label="Filtrovať podľa obchodu">
     <button class="store-tab ${state.store === 'all' ? 'active' : ''}" data-action="store" data-store="all">Všetky obchody</button>
     ${tabs}
   </div>`;

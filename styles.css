@@ -1,7 +1,7 @@
 /* ==========================================================================
    Letákový prehľad — dizajnový systém (redesign)
    Referencie (štruktúra, nie vzhľad): IBM Carbon, GitHub Primer, GOV.UK.
-   Nová identita: neutrálna plocha + jeden indigo akcent, ploché povrchy,
+   Nová identita: neutrálna plocha + indigový akcent a tlmená navy navigácia,
    hairline separátory, husté tabuľky/listy. Viď DESIGN.md.
 
    1 Tokeny · 2 Základ/ikony · 3 Shell/navigácia · 4 Page header · 5 Tlačidlá
@@ -24,11 +24,11 @@
   --line: #dde1e7;
   --line-strong: #c6ccd4;
 
-  --ink: #14181f;
-  --ink-2: #1c222c;
-  --ink-line: rgba(255, 255, 255, 0.09);
-  --ink-text: #c3cbd6;
-  --ink-faint: #7d8794;
+  --nav: #24345f;
+  --nav-2: #2d4275;
+  --nav-line: rgba(255, 255, 255, 0.12);
+  --nav-text: #dbe4f5;
+  --nav-faint: #9ba9c4;
 
   --brand: #2f56d0;
   --brand-strong: #1f3fa0;
@@ -114,12 +114,12 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .sidebar {
   position: sticky; top: 0; align-self: start; height: 100vh;
   display: flex; flex-direction: column; gap: 4px; padding: 16px 12px;
-  background: var(--ink); border-right: 1px solid var(--ink); color: var(--ink-text);
+  background: var(--nav); border-right: 1px solid var(--nav); color: var(--nav-text);
 }
 .brand {
   display: flex; align-items: center; gap: 10px; padding: 6px 8px 16px; margin-bottom: 8px;
   text-decoration: none; color: #fff; font-weight: 700; font-size: 14px; line-height: 1.15; letter-spacing: -0.01em;
-  border-bottom: 1px solid var(--ink-line);
+  border-bottom: 1px solid var(--nav-line);
 }
 .brand-mark {
   display: grid; place-items: center; width: 30px; height: 30px; flex: none;
@@ -130,18 +130,18 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .side-nav { display: flex; flex-direction: column; gap: 2px; }
 .nav-btn {
   display: flex; align-items: center; gap: 10px; padding: 9px 11px; border: 0; border-radius: var(--radius-sm);
-  background: transparent; color: var(--ink-text); font-size: 13px; font-weight: 500; text-align: left;
+  background: transparent; color: var(--nav-text); font-size: 13px; font-weight: 500; text-align: left;
   box-shadow: inset 0 0 0 0 transparent; transition: background 0.12s, color 0.12s, box-shadow 0.12s;
 }
-.nav-btn:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
-.nav-btn.active { background: color-mix(in srgb, var(--brand) 24%, transparent); color: #fff; font-weight: 600; box-shadow: inset 3px 0 0 var(--brand); }
+.nav-btn:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+.nav-btn.active { background: var(--nav-2); color: #fff; font-weight: 600; box-shadow: inset 3px 0 0 #7f9cff; }
 .nav-badge {
   margin-left: auto; min-width: 18px; height: 18px; padding: 0 5px; display: inline-grid; place-items: center;
   background: var(--brand); color: var(--on-brand); border-radius: 9px; font-size: 11px; font-weight: 700;
 }
 
-.side-note { margin-top: auto; padding: 12px 10px 4px; color: var(--ink-faint); font-size: 11px; line-height: 1.5; border-top: 1px solid var(--ink-line); }
-.side-note strong { display: block; color: #aab3bf; font-size: 11.5px; margin-bottom: 3px; }
+.side-note { margin-top: auto; padding: 12px 10px 4px; color: var(--nav-faint); font-size: 11px; line-height: 1.5; border-top: 1px solid var(--nav-line); }
+.side-note strong { display: block; color: var(--nav-text); font-size: 11.5px; margin-bottom: 3px; }
 
 .workspace { min-width: 0; display: flex; flex-direction: column; }
 
@@ -162,7 +162,7 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .searchbox input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none; color: var(--text); font-size: 13px; }
 
 .week-select {
-  height: 36px; padding: 0 30px 0 12px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  width: clamp(220px, 24vw, 270px); height: 36px; padding: 0 30px 0 12px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
   background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2359616b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;
   color: var(--text); font-size: 12.5px; -webkit-appearance: none; appearance: none;
 }
@@ -180,7 +180,7 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .header-list .count:empty::before { content: "0"; }
 
 .topbar-profile {
-  display: grid; place-items: center; width: 36px; height: 36px; flex: none;
+  display: grid; place-items: center; width: 36px; height: 36px; flex: none; margin-left: auto;
   border: 1px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: var(--muted);
 }
 .topbar-profile:hover { border-color: var(--brand); color: var(--brand-strong); }
@@ -239,7 +239,7 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
   color: var(--muted); font-size: 12.5px; font-weight: 500; transition: border-color 0.12s, color 0.12s, background 0.12s;
 }
 .store-tab:hover { color: var(--text); }
-.store-tab.active { background: var(--text); border-color: var(--text); color: #fff; }
+.store-tab.active { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
 .store-tab.active .store-dot { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35); }
 .store-dot { width: 8px; height: 8px; flex: none; border-radius: 2px; background: var(--store-color, var(--brand)); }
 
@@ -275,8 +275,9 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .verdict-pill.umela { color: var(--amber); }
 .verdict-pill.neoverene { color: var(--faint); }
 
-/* KPI pásik (prehľadový status) */
-.status-strip { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; margin: 0 0 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; box-shadow: var(--shadow-sm); }
+/* KPI pásik + bezprostredne nadväzujúci filter obchodov */
+.overview-summary { margin-bottom: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; box-shadow: var(--shadow-sm); }
+.status-strip { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; margin: 0; background: var(--surface); }
 .status-strip > span { display: flex; flex-direction: column-reverse; gap: 3px; padding: 13px 16px; border-left: 1px solid var(--line); color: var(--muted); font-size: 11px; font-weight: 500; }
 .status-strip > span:first-child { border-left: 0; }
 .status-strip > span strong { color: var(--text); font-size: 23px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1; }
@@ -284,6 +285,9 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .status-strip > span:nth-child(4) strong { color: var(--red); }
 .status-strip > span:nth-child(5) strong { color: var(--amber); }
 .status-strip .status-label { justify-content: center; align-items: flex-start; color: #fff; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; background: var(--brand); }
+.store-filter-row { display: flex; align-items: flex-start; gap: 14px; padding: 10px 12px; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--brand-soft) 34%, var(--surface)); }
+.store-filter-label { padding: 7px 2px 0; color: var(--muted); font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+.overview-store-tabs { margin: 0; }
 
 /* == 8. Panely / sekcie =================================================== */
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; box-shadow: var(--shadow-sm); }
@@ -333,7 +337,7 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .deal-row:hover { background: color-mix(in srgb, var(--brand-soft) 45%, var(--surface)); }
 .deal-row.v-realna { box-shadow: inset 3px 0 0 var(--green); }
 .deal-row.v-umela { box-shadow: inset 3px 0 0 var(--amber); }
-.deal-row .rank { width: 22px; height: 22px; display: grid; place-items: center; background: var(--ink); color: #fff; border-radius: 5px; font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.deal-row .rank { width: 22px; height: 22px; display: grid; place-items: center; background: var(--nav); color: #fff; border-radius: 5px; font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .deal-row:first-of-type .rank, .deal-row:nth-of-type(2) .rank, .deal-row:nth-of-type(3) .rank { background: var(--brand); }
 .deal-info { min-width: 0; }
 .deal-name { display: block; padding: 0; border: 0; background: transparent; text-align: left; color: var(--text); font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
@@ -371,7 +375,7 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 
 .dtable { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; box-shadow: var(--shadow-sm); }
 .dtable-head, .drow { display: grid; grid-template-columns: minmax(0, 1fr) 112px 66px 132px 44px; align-items: center; gap: 12px; padding: 0 14px; }
-.dtable-head { height: 40px; background: var(--ink); border-bottom: 0; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-text); }
+.dtable-head { height: 40px; background: var(--nav); border-bottom: 0; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--nav-text); }
 .dth-r { text-align: right; }
 .drow { min-height: 56px; padding-top: 9px; padding-bottom: 9px; border-top: 1px solid var(--line); transition: background 0.1s; }
 .drow:first-of-type { border-top: 0; }
@@ -626,6 +630,10 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
   .list-side { position: static; }
 }
 
+@media (max-width: 1060px) and (min-width: 861px) {
+  .header-list { display: none; }
+}
+
 @media (max-width: 860px) {
   .shell { grid-template-columns: 1fr; }
   .sidebar { display: none; }
@@ -649,12 +657,16 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 }
 
 @media (max-width: 620px) {
+  .week-select { order: 2; width: 100%; flex: 1 0 100%; }
   .page-head { flex-direction: column; align-items: flex-start; gap: 8px; }
   .page-head.period-head h1 { font-size: 23px; }
   .status-strip { grid-auto-flow: row; grid-template-columns: 1fr 1fr; }
   .status-strip > span { border-left: 0; border-top: 1px solid var(--line); }
   .status-strip > span:nth-child(2n) { border-left: 1px solid var(--line); }
   .status-strip .status-label { grid-column: 1 / -1; }
+  .status-strip > span:last-child { grid-column: 1 / -1; border-left: 0; }
+  .store-filter-row { flex-direction: column; gap: 6px; }
+  .store-filter-label { padding-top: 0; }
 
   /* Dátová tabuľka → štruktúrované riadky */
   .dtable-head { display: none; }

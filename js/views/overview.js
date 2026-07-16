@@ -7,7 +7,7 @@ import { visibleItems, rankByDiscount, finalPrice, oldFinalPrice } from '../data
 import * as shopping from '../shopping.js';
 import { sparklineHtml } from '../charts.js';
 import {
-  pageHead,
+  archiveNote,
   renderStoreTabs,
   storeLogo,
   storeStyle,
@@ -176,9 +176,16 @@ export function renderOverview() {
       <span><strong>${shopping.items.reduce((sum, i) => sum + i.quantity, 0)}</strong> v zozname</span>
     </div>`;
 
-  return `${pageHead({ eyebrow: 'Prehľad zliav', title: state.data.period || 'Aktuálne obdobie', large: true, withArchiveNote: true })}
-    ${renderStoreTabs()}
+  const overviewSummary = `<section class="overview-summary" aria-label="Stav prehľadu a výber obchodov">
     ${kpiStrip}
+    <div class="store-filter-row">
+      <span class="store-filter-label">Obchody</span>
+      ${renderStoreTabs('overview-store-tabs')}
+    </div>
+  </section>`;
+
+  return `${overviewSummary}
+    ${archiveNote()}
     ${renderPromoSection()}
     <div class="overview-layout">
       <div class="column">

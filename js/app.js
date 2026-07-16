@@ -410,11 +410,21 @@ async function initWeekSelect() {
   });
 }
 
+function updateWeekSelectLabel() {
+  const select = $('#week');
+  const option = select?.selectedOptions?.[0];
+  if (!option || !state.data) return;
+  const context = state.week === 'latest' ? 'Tento týždeň' : 'Archív';
+  option.textContent = `(${context}) ${state.data.period || state.data.week || state.week}`;
+  select.title = option.textContent;
+}
+
 async function showWeek(week) {
   app.innerHTML = '<div class="empty-state">Načítavam aktuálne akcie…</div>';
   try {
     await loadWeek(week);
     state.dealsLimit = DEALS_PAGE_SIZE;
+    updateWeekSelectLabel();
     render();
   } catch (e) {
     app.innerHTML = `<div class="empty-state"><strong>Dáta sa nepodarilo načítať.</strong><br>${esc(e.message)}<br><button class="primary-btn" id="retry" style="margin-top:14px">Skúsiť znova</button></div>`;
