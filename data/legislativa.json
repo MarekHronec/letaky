@@ -1,5 +1,5 @@
 {
-  "aktualizovane": "2026-07-15",
+  "aktualizovane": "2026-07-16",
   "popis": "Prehľad hlavných povinností a termínov pre maloobchod s potravinami a drogériou na Slovensku. Zostavené a overené oproti oficiálnym zdrojom (slov-lex.sk, financnasprava.sk, soi.sk, svps.sk, uvzsr.sk, slovenskozalohuje.sk) k júlu 2026. Slúži ako pripomienka, čo nezabudnúť.",
   "upozornenie": "Nie je to právne poradenstvo. Presné sumy pokút, čísla paragrafov a lehoty sa menia – pred konkrétnym rozhodnutím si ich potvrď v aktuálnom znení na slov-lex.sk alebo so svojím účtovníkom/právnikom. Položky označené „overiť“ sú obzvlášť citlivé na zmenu.",
   "terminy": [
@@ -41,7 +41,7 @@
       "polozky": [
         {
           "nazov": "Zľava = uveď najnižšiu cenu za posledných 30 dní (§ 7)",
-          "detail": "Pri každom oznámení o znížení ceny (leták, cenovka, web, Black Friday) musíš uviesť „predchádzajúcu cenu“ = najnižšiu cenu, za ktorú si tovar predával počas 30 dní pred zľavou. Ak predávaš kratšie ako 30 dní, berie sa najnižšia cena od začiatku predaja. Reálnosť zľavy sa počíta voči tejto cene, nie voči bežnej/odporúčanej. Presne toto appka overuje (pole zlava_realna_pct). Výnimka: tovar rýchlo podliehajúci skaze (čerstvé potraviny).",
+          "detail": "Pri každom oznámení o znížení ceny (leták, cenovka, web, Black Friday) musíš uviesť „predchádzajúcu cenu“ = najnižšiu cenu, za ktorú si tovar predával počas 30 dní pred zľavou. Ak predávaš kratšie ako 30 dní, berie sa najnižšia cena od začiatku predaja. Reálnosť zľavy sa počíta voči tejto cene, nie voči bežnej/odporúčanej. Letákový prehľad túto zákonnú povinnosť neoveruje: nepozná vlastné predajné ceny používateľa; pole zlava_realna_pct je iba analytický benchmark cudzích letákov a cenovej histórie. Výnimka: tovar rýchlo podliehajúci skaze (čerstvé potraviny).",
           "kedy": "pri každej zľave",
           "koho": "všetci obchodníci",
           "zdroj": "https://www.economy.gov.sk/obchod/ochrana-spotrebitela/najcastejsie-otazky/najcastejsie-otazky-obchodnikov/oznamenie-o-znizeni-ceny-7-zakona-o-ochrane-spotrebitela",

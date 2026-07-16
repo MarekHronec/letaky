@@ -1,2 +1,9 @@
-.claude/
 _SUKROMNE_NEKOPIROVAT/
+.routine-work/
+
+# Claude Cloud Routines musia vidieť projektové inštrukcie a agentov.
+# Lokálne launch/settings súbory zostávajú ignorované.
+.claude/*
+!.claude/CLAUDE.md
+!.claude/agents/
+!.claude/agents/**

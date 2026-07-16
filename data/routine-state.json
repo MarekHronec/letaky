@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "initialized_at": "2026-07-16T23:30:00+02:00",
+  "last_success": null,
+  "source_manifest": {},
+  "product_id_migration": {
+    "status": "pending",
+    "raw_prefixed_ids": 1119,
+    "normalized_cross_store_exact_matches": 2,
+    "note": "Prvý cloudový beh odstráni iba bezpečný prefix deterministicky; nejednoznačné cross-store zjednotenie schvaľuje Opus."
+  },
+  "quality_baseline": {
+    "offers": 1119,
+    "history_two_or_more": 3,
+    "verdict_unverified": 1113,
+    "promo_priority_one": 4,
+    "missing_images": 571
+  }
+}

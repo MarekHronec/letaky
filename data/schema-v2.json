@@ -3,7 +3,17 @@
   "$id": "https://marekhronec.github.io/letaky/data/schema-v2.json",
   "title": "Letákový prehľad – týždenné dáta v2",
   "type": "object",
-  "required": ["schema_version", "tyzden", "obchody"],
+  "required": [
+    "schema_version",
+    "tyzden",
+    "obdobie",
+    "generovane",
+    "promo",
+    "top_ids",
+    "obchody",
+    "otvaracie_hodiny",
+    "zdroje_stav"
+  ],
   "properties": {
     "schema_version": { "const": 2 },
     "tyzden": { "type": "string", "pattern": "^[0-9]{4}-W[0-9]{2}$" },
@@ -16,7 +26,9 @@
     "top_ids": {
       "type": "array",
       "items": { "type": "string" },
-      "uniqueItems": true
+      "uniqueItems": true,
+      "minItems": 10,
+      "maxItems": 10
     },
     "obchody": {
       "type": "array",
@@ -43,7 +55,7 @@
   "$defs": {
     "promo": {
       "type": "object",
-      "required": ["id", "obchod", "text"],
+      "required": ["id", "obchod", "text", "plati_od", "plati_do", "priorita", "zdroj_url"],
       "properties": {
         "id": { "type": "string", "minLength": 1 },
         "obchod": { "type": "string" },
@@ -58,10 +70,14 @@
     },
     "offer": {
       "type": "object",
-      "required": ["id", "product_id", "nazov", "cena", "verdikt"],
+      "required": ["id", "product_id", "nazov", "kategoria", "cena", "verdikt", "dovod_verdiktu", "historia_cien"],
       "properties": {
         "id": { "type": "string", "minLength": 1, "description": "Unikátne ID konkrétnej ponuky." },
-        "product_id": { "type": "string", "minLength": 1, "description": "Stabilné ID rovnakého produktu naprieč obchodmi a týždňami." },
+        "product_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stabilné ID rovnakého produktu naprieč obchodmi a týždňami. Business validator blokuje prefix obchodu; dočasne ho tu nevynucujeme, kým sa nemigruje historický dataset."
+        },
         "nazov": { "type": "string", "minLength": 1 },
         "mnozstvo": { "type": ["string", "null"], "examples": ["250 g"] },
         "kategoria": { "type": ["string", "null"] },
@@ -126,6 +142,8 @@
         "zdroj_sviatky_url": { "type": ["string", "null"], "format": "uri" },
         "predajne": {
           "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
           "items": {
             "type": "object",
             "required": ["id", "nazov", "hodiny", "zdroj_url", "overene"],

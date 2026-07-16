@@ -201,37 +201,27 @@ Minimálny odporúčaný príklad:
 - `top_ids` má obsahovať len existujúce `id` z `obchody[].polozky`.
 - Chýbajúce voliteľné hodnoty majú byť `null`, nie vymyslené.
 
-## Ako routine aktualizuje dáta
+## Ako denná routine aktualizuje dáta
 
-Kompletný týždenný update vytvorí alebo upraví tri súbory cez GitHub Contents API:
+Claude Code routine beží denne s change detection; celé nezmenené letáky znovu nečíta. Globálne dáta a personalizovaná analytika majú oddelené vlastníctvo:
 
-1. `data/latest.json` — nový týždeň.
-2. `data/archive/<tyzden>.json` — identická archívna kópia.
-3. `data/archive/index.json` — pridanie nového týždňa do poľa.
+- routine zbiera a overuje ponuky, ceny, históriu, verdikty, TOP/promo, otváracie hodiny, sviatky a legislatívu,
+- prehliadač počíta používateľské Sledované produkty zo stabilného `product_id`, verejnej cenovej histórie a lokálnych uložených nákupov,
+- algoritmus Sledovaných produktov je pevná vysvetliteľná heuristika 55 % cena / 25 % nákupný rytmus / 20 % skladovateľnosť, nie trénované ML.
 
-Pri aktualizácii existujúceho súboru treba najprv načítať jeho aktuálne `sha` a poslať ho v `PUT` požiadavke:
+Denný update upravuje:
 
-```text
-GET /repos/MarekHronec/letaky/contents/data/latest.json
+1. `data/latest.json` — iba aktívne a jasne datované blízke ponuky.
+2. `data/archive/<tyzden>.json` — kumulatívny týždenný snapshot; expirované pozorované ponuky sa z neho nemažú.
+3. `data/archive/index.json` — každý ISO týždeň najviac raz.
+4. `data/legislativa.json` — iba po skutočnej kontrole oficiálnych zdrojov.
+5. `data/routine-state.json` — trvalý source manifest, posledný úspešný beh, metriky a stav jednorazovej migrácie.
 
-PUT /repos/MarekHronec/letaky/contents/data/latest.json
-{
-  "message": "data: týždeň 2026-W30",
-  "content": "<base64 JSON>",
-  "sha": "<sha z GET odpovede>"
-}
-```
+Kanonický workflow je v `docs/routine/daily.md`, cloudové nastavenie v `docs/routine/cloud-setup.md` a projektoví subagenti v `.claude/agents/`. V Claude Cloud Routine sa repozitár pri každom behu klonuje nanovo, preto sú tieto súbory trackované. GitHub Contents API ani PAT nie sú súčasťou workflow.
 
-Po commite netreba samostatný deploy – GitHub Pages nasadí nový obsah z `main` automaticky. Dáta sa čítajú za behu, takže update dát **nevyžaduje** zásah do kódu ani bump service worker cache.
+Pri zapnutom oprávnení na neobmedzený push vetiev môže finalizer po PASS pushnúť priamo `main`; GitHub Pages následne obsah nasadí. Bez tohto oprávnenia vytvorí `claude/routine-<run_id>` a outcome `NEEDS_MERGE`, aby sa zmena najprv zlúčila reviewom.
 
-## Token pre automatizáciu
-
-Použi fine-grained GitHub token obmedzený iba na tento repozitár:
-
-- **Repository access:** iba `letaky`
-- **Repository permissions:** Contents — Read and write
-- token patrí do secrets automatizácie, nikdy do repozitára
-- po expirácii ho treba v routine vymeniť
+Dáta sa čítajú za behu, takže čisto dátový update nevyžaduje bump service worker cache. Pri zmene HTML/CSS/JS alebo app shell súborov bump povinný zostáva.
 
 ## Referenčné ceny (voliteľné)
 
