@@ -167,9 +167,19 @@ export function renderOverview() {
       .join('')}</div>
   </section>`;
 
+  const kpiStrip = `<div class="status-strip">
+      <span class="status-label">Stav prehľadu</span>
+      <span><strong>${items.length}</strong> ponúk</span>
+      <span><strong>${real.length}</strong> reálne výhodných</span>
+      <span><strong>${ending.length}</strong> končia do ${ENDING_SOON_DAYS} dní</span>
+      <span><strong>${suspicious.length}</strong> podozrivých</span>
+      <span><strong>${shopping.items.reduce((sum, i) => sum + i.quantity, 0)}</strong> v zozname</span>
+    </div>`;
+
   return `${pageHead({ eyebrow: 'Prehľad zliav', title: state.data.period || 'Aktuálne obdobie', large: true, withArchiveNote: true })}
-    ${renderPromoSection()}
     ${renderStoreTabs()}
+    ${kpiStrip}
+    ${renderPromoSection()}
     <div class="overview-layout">
       <div class="column">
         <section class="panel">
@@ -185,13 +195,5 @@ export function renderOverview() {
         ${renderRoute()}
         ${sourcesCard}
       </div>
-    </div>
-    <div class="status-strip">
-      <span class="status-label">Stav prehľadu</span>
-      <span><strong>${items.length}</strong> ponúk</span>
-      <span><strong>${real.length}</strong> reálne výhodných</span>
-      <span><strong>${ending.length}</strong> končia do ${ENDING_SOON_DAYS} dní</span>
-      <span><strong>${suspicious.length}</strong> podozrivých</span>
-      <span><strong>${shopping.items.reduce((sum, i) => sum + i.quantity, 0)}</strong> v zozname</span>
     </div>`;
 }
