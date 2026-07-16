@@ -4,11 +4,16 @@
  "obdobie": "15. – 22. júl 2026",
  "generovane": "2026-07-15T21:10:00+02:00",
  "top_ids": [
-  "metro-domestos-tekuty-dezinfekcny-prostriedok-na-wc-750-ml-2026-w29",
   "kaufland-cerstve-zo-slovenska-paradajky-miniroma-sladke-500-g-balenie-2026-w29",
+  "kaufland-mlekarna-kunin-termix-tvarohovy-dezert-90-g-2026-w29",
   "kaufland-kralovska-oravska-slanina-pultovy-predaj-100-g-100-g-2026-w29",
-  "kaufland-bravcove-pliecko-bez-kosti-v-celku-1-kg-2026-w29",
-  "kaufland-vajcia-m-z-podstielkoveho-chovu-10-kusov-2026-w29"
+  "kaufland-pribinacek-smotanovy-krem-70-g-2026-w29",
+  "kaufland-paprika-biela-1-kg-2026-w29",
+  "kaufland-rajo-mnam-duo-smotanovy-jogurt-145-g-2026-w29",
+  "kaufland-marhule-1-kg-2026-w29",
+  "kaufland-kral-syru-hermelin-makky-zrejuci-syr-s-plesnou-120-g-2026-w29",
+  "kaufland-vajcia-m-z-podstielkoveho-chovu-10-kusov-2026-w29",
+  "metro-domestos-tekuty-dezinfekcny-prostriedok-na-wc-750-ml-2026-w29"
  ],
  "promo": [
   {
@@ -92,56 +97,28 @@
    "podmienka": null
   },
   {
-   "id": "kaufland-xtra-zlavy-16-22-7",
-   "obchod": "Kaufland",
-   "text": "Kaufland Card XTRA zľavy 16.–22. 7.: napr. Erce vaječné cestoviny −50 % (0,64 €), Harmony Seasons toaletný papier 24 ks za 4,99 € (−50 %), paradajky cherry strapcové 500 g za 1,39 €",
-   "plati_od": "2026-07-16",
-   "plati_do": "2026-07-22",
-   "podmienka": "len s Kaufland Card"
-  },
-  {
-   "id": "kaufland-nad-20-eur-pliecko",
-   "obchod": "Kaufland",
-   "text": "Nakúp nad 20 € a získaš bravčové pliecko bez kosti za 2,15 €/kg (s Kaufland Card, −52 %)",
-   "plati_od": "2026-07-16",
-   "plati_do": "2026-07-22",
-   "podmienka": "nákup nad 20 €, s Kaufland Card"
-  },
-  {
-   "id": "tesco-vyhrajte-poukazku-50-2026",
-   "obchod": "Tesco",
-   "text": "Súťaž „Vyhrajte Tesco poukážku 50 €“ – 100× poukážka; aktivuj súťažný kupón v aplikácii Clubcard a naskenuj pri nákupe (1× týždenne)",
-   "plati_od": "2026-06-25",
-   "plati_do": "2026-08-04",
-   "podmienka": "Clubcard aplikácia",
-   "zdroj_url": "https://www.tesco.sk/zones/akciove-ponuky/akcie-a-sutaze/vyhrajte-tesco-poukazku"
-  },
-  {
-   "id": "tesco-clubcard-kupony-w29",
-   "obchod": "Tesco",
-   "text": "Digitálne kupóny v aplikácii Clubcard 15.–21. 7.: Rajo mlieko 3,5 % za 0,75 €, TTD cukor kryštálový za 0,72 €, Jar kapsuly 125 dávok za 20,99 €; šumivé vína až −38 % s Clubcard",
+   "id": "metro-vezmite-2-zaplatte-1",
+   "obchod": "Metro",
+   "text": "Vezmite 2, zaplaťte 1: na vybrané produkty (samostatný leták) vezmi 2 predajné balenia a zaplať len 1 balenie",
    "plati_od": "2026-07-15",
-   "plati_do": "2026-07-21",
-   "podmienka": "Clubcard",
-   "zdroj_url": "https://www.tesco.sk/akciove-ponuky/"
+   "plati_do": "2026-07-28",
+   "podmienka": null
   },
   {
-   "id": "billa-tento-1plus1-w29",
-   "obchod": "Billa",
-   "text": "Tento toaletný papier 3-vrstvový 8 ks: 1 + 1 (2 bal. za 5,48 €, t. j. 2,74 €/bal.)",
+   "id": "metro-frizz-aperitivo",
+   "obchod": "Metro",
+   "text": "B&G – akcia s prípitkom: pri nákupe nad 299 € bez DPH získaš 6× I AM Frizz 750 ml za 3 € bez DPH; pri nákupe nad 499 € bez DPH aj 1× Madruzzo Aperitivo 11 % 1 l navyše",
    "plati_od": "2026-07-15",
-   "plati_do": "2026-07-21",
-   "podmienka": "pri kúpe 2 bal.",
-   "zdroj_url": "https://www.billa.sk/letaky-a-akcie/aktualny-letak"
+   "plati_do": "2026-07-19",
+   "podmienka": "odmena pri nákupe nad 299 € / 499 € bez DPH"
   },
   {
-   "id": "billa-rajo-maslo-w29",
-   "obchod": "Billa",
-   "text": "Rajo Tradičné maslo 82 % 250 g za 1,55 € (−48 %)",
-   "plati_od": "2026-07-15",
-   "plati_do": "2026-07-21",
-   "podmienka": "do vypredania zásob",
-   "zdroj_url": "https://www.billa.sk/letaky-a-akcie/aktualny-letak"
+   "id": "metro-monza-sutaz",
+   "obchod": "Metro",
+   "text": "Letná súťaž Monza: nakúp za 99 €, zaregistruj sa na metro.sk a hraj o 2× VIP zájazd na preteky do Monzy + ďalších 100 cien",
+   "plati_od": "2026-07-13",
+   "plati_do": "2026-08-09",
+   "podmienka": "nákup od 99 €, registrácia na metro.sk"
   },
   {
    "id": "coop-cerstve-vyhodne-sutaz-16-22-7",
