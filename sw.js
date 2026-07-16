@@ -8,7 +8,7 @@
 // Pri KAŽDEJ zmene súborov aplikácie (index.html, styles.css, js/**) bumpni
 // číslo verzie v CACHE – inak si nainštalované PWA nechajú starú verziu.
 
-const CACHE = "letaky-app-v12";
+const CACHE = "letaky-app-v14";
 
 const SHELL = [
   "./",
@@ -21,6 +21,7 @@ const SHELL = [
   "./js/state.js",
   "./js/data.js",
   "./js/shopping.js",
+  "./js/tracking.js",
   "./js/charts.js",
   "./js/sync.js",
   "./js/share.js",
@@ -31,6 +32,7 @@ const SHELL = [
   "./js/views/shared.js",
   "./js/views/overview.js",
   "./js/views/deals.js",
+  "./js/views/tracked.js",
   "./js/views/list.js",
   "./js/views/legislativa.js",
   "./js/views/profil.js",

@@ -6,8 +6,9 @@ Responzívna statická aplikácia na prehľad potravinových akcií, rozlíšeni
 
 ## Čo aplikácia robí
 
-- **Prehľad:** najlepšie overené ponuky, špeciálne akcie, stav zdrojov a odporúčaný plán nákupu.
-- **Všetky akcie:** vyhľadávanie, obchodné filtre, verdikt zľavy, triedenie a vývoj ceny z overenej histórie. Katalóg sa vykresľuje po stránkach (120 kariet + „Zobraziť ďalšie“).
+- **Prehľad:** najlepšie overené ponuky, špeciálne akcie, stav zdrojov a aktuálne otváracie hodiny pobočiek vrátane sviatočných výnimiek.
+- **Všetky akcie:** vyhľadávanie, obchodné filtre, verdikt zľavy, triedenie a vývoj ceny z overenej histórie. V aktuálnom týždni zobrazuje iba ešte platné ponuky; staršie ostávajú v archíve a cenovej histórii.
+- **Sledované produkty:** vlastný core sortiment s dashboardom/zoznamom, filtrami a vysvetliteľným nákupným skóre z ceny, rytmu uložených nákupov a skladovateľnosti.
 - **Môj zoznam:** položky z akcií aj ručne zadané položky, množstvo, odškrtávanie bez presúvania a rozdelenie podľa obchodov. Ručnú položku sa dá aj **nadiktovať hlasom** (Web Speech API, `sk-SK`, s fallbackom na písanie). Nákup sa dá uložiť do histórie a neskôr obnoviť.
 - **Legislatíva:** prehľad povinností a termínov pre maloobchod s potravinami a drogériou (eKasa, dane, hygiena, chémia, zálohy, ceny/spotrebiteľ) z `data/legislativa.json`, s odkazmi na oficiálne zdroje. Orientačné, nie právne poradenstvo. Položky s `confidence: "low"` sú v UI označené „orientačné – overiť“; ostatné hodnoty poľa `confidence` sa nezobrazujú.
 - **Detail produktu:** obrázok položky (`obrazok_url`, s kategóriovým emoji ako fallback), graf vývoja ceny, jednotková cena, podmienky akcie a porovnanie rovnakého `product_id` medzi obchodmi.
@@ -35,6 +36,7 @@ js/config.js                # konštanty (obchody, kľúče úložiska, limity, 
 js/state.js                 # zdieľaný stav + nastavenia, stavy legislatívy, história nákupov
 js/data.js                  # fetch + normalizácia dát (JEDINÉ miesto, kde sa čítajú kľúče schémy)
 js/shopping.js              # nákupný zoznam + tombstone merge pre sync
+js/tracking.js              # sledované produkty + lokálna/cloud perzistencia
 js/charts.js                # sparkline + veľký graf ceny (zdieľaná matematika)
 js/sync.js                  # Supabase login a synchronizácia (zvyšok appky o Supabase nevie)
 js/share.js                 # zdieľací link, JSON export/import, hlasové zadávanie
@@ -45,6 +47,7 @@ js/lib/toast.js             # toast + aria-live oznámenia
 js/views/shared.js          # hlavička stránky, logá obchodov, platnosť, badge, tlačidlá
 js/views/overview.js        # Prehľad
 js/views/deals.js           # Všetky akcie
+js/views/tracked.js         # Sledované produkty + analytický dashboard
 js/views/list.js            # Môj zoznam
 js/views/legislativa.js     # Legislatíva
 js/views/profil.js          # Profil a nastavenia
@@ -73,6 +76,7 @@ GitHub Pages je nastavený na deploy z `main`, root `/`. Každý push do `main` 
 | `letaky.legStates.v2` | stavy legislatívy: `{ kluc: { st, updatedAt } }`; prázdne `st` je tombstone |
 | `letaky.savedLists.v1` | história uložených nákupov |
 | `letaky.savedListsDeleted.v1` | tombstones zmazaných nákupov (TTL 30 dní) |
+| `letaky.trackedProducts.v1` | sledované produkty, posledný snapshot a tombstones pre sync |
 
 Položka zoznamu (úplný tvar, ktorý zapisuje `sanitizeListItem`):
 
@@ -121,7 +125,8 @@ Najdôležitejšie zásady:
 7. `obchody[].plati_od` a `obchody[].plati_do` určujú spoločnú platnosť letáka. Produkt ich zdedí; vlastné dátumy uvádzaj len pri odlišnej platnosti.
 8. `historia_cien` obsahuje iba skutočne pozorované ceny rovnakého `product_id` v rovnakom obchode. UI vykreslí graf až od dvoch meraní; prečiarknutá cena nie je historické meranie.
 9. `promo[]` podporuje `priorita` (1 = najdôležitejšie, default 3 – určuje poradie) a `zdroj_url` (odkaz „Detail akcie“).
-10. `plan` (odporúčaný plán nákupu) je voliteľný: `zastavky[]` s `poradie`, `nazov`, `den`, `poznamka`, `odhad_eur` a voliteľná `maps_url`. UI ho zobrazí na Prehľade.
+10. `otvaracie_hodiny` obsahuje konkrétne pobočky, bežné hodiny, dátum overenia, first-party zdroj a `vynimky[]`. Routine musí pri každom týždni skontrolovať sviatky/dni pracovného pokoja a každú výnimku uviesť explicitne; UI ich zvýrazní na Prehľade.
+11. Staré `plan` môže zostať v historických súboroch kvôli spätnej čitateľnosti schémy, nové behy ho už negenerujú.
 
 Minimálny odporúčaný príklad:
 

@@ -2,7 +2,7 @@
 // a histórie nákupov. Nákupný zoznam má vlastný modul (shopping.js).
 
 import { KEYS, VIEWS, DEALS_PAGE_SIZE, TOMBSTONE_TTL_MS } from './config.js';
-import { arr, num, isoValue, readJSON, writeJSON, removeStored } from './lib/util.js';
+import { arr, num, isoValue, norm, readJSON, writeJSON, removeStored } from './lib/util.js';
 
 export const LEG_STATE_VALUES = ['done', 'irrelevant', 'ignored'];
 
@@ -26,11 +26,14 @@ export const state = {
   query: '',
   dealsLimit: DEALS_PAGE_SIZE,
   promoOpen: false,
+  trackedMode: 'dashboard',
+  trackedFilter: 'all',
+  trackedSort: 'priority',
 
   // legislatíva a referenčné ceny
   legData: null, // null = načítava sa, false = zlyhalo
   legCat: 'all',
-  legHide: false,
+  legVisibility: 'all',
   refData: null,
 
   // účet a synchronizácia
@@ -148,8 +151,21 @@ export function sanitizeSavedList(x) {
     total: num(x.total) ?? 0,
     savings: num(x.savings) ?? 0,
     count: num(x.count) ?? x.items.length,
-    items: x.items,
+    items: x.items.filter(item => item && typeof item === 'object').map(item => ({ ...item })),
   };
+}
+
+function dedupeSavedListsByName(lists) {
+  const names = new Set();
+  return lists
+    .slice()
+    .sort((a, b) => String(b.savedAt).localeCompare(String(a.savedAt)))
+    .filter(list => {
+      const key = norm(list.name).trim();
+      if (names.has(key)) return false;
+      names.add(key);
+      return true;
+    });
 }
 
 function sanitizeSavedTombstone(x) {
@@ -159,7 +175,7 @@ function sanitizeSavedTombstone(x) {
 }
 
 function loadSavedLists() {
-  return arr(readJSON(KEYS.savedLists)).map(sanitizeSavedList).filter(Boolean);
+  return dedupeSavedListsByName(arr(readJSON(KEYS.savedLists)).map(sanitizeSavedList).filter(Boolean));
 }
 
 function loadSavedListsDeleted() {
@@ -178,9 +194,13 @@ export function saveSavedLists() {
 }
 
 export function addSavedList(entry) {
-  state.savedLists.unshift(entry);
-  state.savedListsDeleted = state.savedListsDeleted.filter(t => t.id !== entry.id);
+  const duplicate = state.savedLists.find(list => norm(list.name).trim() === norm(entry.name).trim());
+  const next = duplicate ? { ...entry, id: duplicate.id } : entry;
+  state.savedLists = [next, ...state.savedLists.filter(list => list.id !== duplicate?.id)];
+  state.savedLists = dedupeSavedListsByName(state.savedLists);
+  state.savedListsDeleted = state.savedListsDeleted.filter(t => t.id !== next.id);
   saveSavedLists();
+  return duplicate ? 'updated' : 'added';
 }
 
 export function deleteSavedList(id) {
@@ -209,8 +229,8 @@ export function mergeSavedLists(remoteLists, remoteDeleted) {
 
   state.savedListsDeleted = [...tombs.values()];
   const deletedIds = new Set(state.savedListsDeleted.map(t => t.id));
-  state.savedLists = [...byId.values()]
+  state.savedLists = dedupeSavedListsByName([...byId.values()]
     .filter(l => !deletedIds.has(l.id))
-    .sort((a, b) => String(b.savedAt).localeCompare(String(a.savedAt)));
+    .sort((a, b) => String(b.savedAt).localeCompare(String(a.savedAt))));
   saveSavedLists();
 }

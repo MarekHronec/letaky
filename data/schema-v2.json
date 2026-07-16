@@ -22,6 +22,7 @@
       "type": "array",
       "items": { "$ref": "#/$defs/store" }
     },
+    "otvaracie_hodiny": { "$ref": "#/$defs/openingHours" },
     "plan": { "$ref": "#/$defs/plan" },
     "zdroje_stav": {
       "type": "array",
@@ -111,6 +112,55 @@
         "polozky": {
           "type": "array",
           "items": { "$ref": "#/$defs/offer" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "openingHours": {
+      "type": ["object", "null"],
+      "required": ["obdobie", "lokalita", "predajne"],
+      "properties": {
+        "obdobie": { "type": "string" },
+        "lokalita": { "type": "string" },
+        "poznamka_sviatky": { "type": ["string", "null"] },
+        "zdroj_sviatky_url": { "type": ["string", "null"], "format": "uri" },
+        "predajne": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "nazov", "hodiny", "zdroj_url", "overene"],
+            "properties": {
+              "id": { "type": "string" },
+              "nazov": { "type": "string" },
+              "adresa": { "type": ["string", "null"] },
+              "hodiny": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["dni", "cas"],
+                  "properties": {
+                    "dni": { "type": "string" },
+                    "cas": { "type": "string" }
+                  }
+                }
+              },
+              "vynimky": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["datum", "nazov", "cas"],
+                  "properties": {
+                    "datum": { "type": "string", "format": "date" },
+                    "nazov": { "type": "string" },
+                    "cas": { "type": "string", "description": "Napr. Zatvorené alebo 08:00 – 18:00." }
+                  }
+                }
+              },
+              "zdroj_url": { "type": "string", "format": "uri" },
+              "overene": { "type": "string", "format": "date" }
+            },
+            "additionalProperties": true
+          }
         }
       },
       "additionalProperties": true

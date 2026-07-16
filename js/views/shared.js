@@ -5,6 +5,7 @@ import { STORE_COLORS } from '../config.js';
 import { state } from '../state.js';
 import { storeId, sortedStores, discountOf } from '../data.js';
 import { inShopping } from '../shopping.js';
+import { isTracked } from '../tracking.js';
 import { svg } from '../lib/icons.js';
 import { esc, daysTo, fmtDate, safeImg, norm } from '../lib/util.js';
 
@@ -140,6 +141,16 @@ export function cardBadges(i) {
 export function circleAddButton(i) {
   const active = inShopping(i.key);
   return `<button class="circle-add ${active ? 'in' : ''}" data-action="toggle-deal" data-key="${esc(i.key)}" aria-label="${active ? 'Odobrať' : 'Pridať'} ${esc(i.name)}">${svg(active ? 'check' : 'plus')}</button>`;
+}
+
+// Sekundárna produktová akcia. V kompaktných riadkoch je ikonová, v detaile
+// a analytike môže mať textový label.
+export function watchButton(i, wide = false) {
+  const active = isTracked(i);
+  const label = active ? 'Prestať sledovať' : 'Sledovať produkt';
+  return `<button class="watch-btn ${wide ? 'wide' : ''} ${active ? 'tracked' : ''}" data-action="toggle-track" data-key="${esc(i.key)}" aria-label="${label} ${esc(i.name)}" title="${label}">
+    ${svg('bookmark')}${wide ? `<span>${active ? 'Sledované' : 'Sledovať'}</span>` : ''}
+  </button>`;
 }
 
 // Široké tlačidlo na karte produktu.

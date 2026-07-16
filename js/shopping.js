@@ -370,22 +370,18 @@ export function snapshotForHistory(name, totals = listTotals()) {
   };
 }
 
-// Vráti počet položiek pridaných späť do zoznamu.
+// Obnoví presný snapshot: množstvá aj položky nahradia aktuálny zoznam.
+// Pôvodná aditívna obnova preskakovala rovnaké ID, takže staré snapshoty
+// nedokázali vrátiť pôvodné množstvo.
 export function restoreSavedItems(saved) {
-  const have = new Set(items.map(x => x.id));
-  const at = nextUpdatedAt();
-  let added = 0;
-  arr(saved.items)
+  const clean = arr(saved.items)
     .map(sanitizeListItem)
     .filter(Boolean)
-    .forEach(x => {
-      if (have.has(x.id)) return;
+    .map(x => {
       x.checked = false;
       x.checkedAt = null;
-      touchItem(x, at);
-      items.push(x);
-      added++;
+      return x;
     });
-  if (added) persist();
-  return added;
+  replaceAll(clean);
+  return clean.length;
 }

@@ -5,7 +5,7 @@ import { state } from './state.js';
 import { finalPrice, oldFinalPrice, discountOf } from './data.js';
 import { inShopping } from './shopping.js';
 import { priceChartHtml } from './charts.js';
-import { mediaHtml, storeLogo, validityMeta, validityHtml } from './views/shared.js';
+import { mediaHtml, storeLogo, validityMeta, validityHtml, watchButton } from './views/shared.js';
 import { svg } from './lib/icons.js';
 import { $, esc, arr, norm, fmtPrice } from './lib/util.js';
 
@@ -122,9 +122,12 @@ function detailHtml(item) {
       ${old != null ? `<div class="price-old">Bežne ${fmtPrice(old)}</div>` : ''}
       <div style="margin-top:9px">${validityHtml(item)}</div>
     </div>
-    <button class="primary-btn full" data-action="toggle-deal" data-key="${esc(item.key)}">
-      ${active ? svg('check') + ' V zozname' : svg('plus') + ' Pridať do zoznamu'}
-    </button>
+    <div class="detail-product-actions">
+      <button class="primary-btn full" data-action="toggle-deal" data-key="${esc(item.key)}">
+        ${active ? svg('check') + ' V zozname' : svg('plus') + ' Pridať do zoznamu'}
+      </button>
+      ${watchButton(item, true)}
+    </div>
     ${priceChartHtml(item)}
     ${referenceBlock(item)}
     <div class="detail-section"><h3>Informácie o akcii</h3>

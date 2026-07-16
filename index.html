@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#345344">
+  <meta name="theme-color" content="#2f56d0">
   <meta name="description" content="Akcie z letákov bez marketingovej hmly, s nákupným zoznamom do mobilu.">
   <meta name="color-scheme" content="light">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://esm.sh; connect-src 'self' https://*.supabase.co; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'; form-action 'self'">
@@ -24,6 +24,7 @@
     <nav class="side-nav" aria-label="Hlavná navigácia">
       <button class="nav-btn" data-view="overview"><span data-icon="home"></span>Prehľad</button>
       <button class="nav-btn" data-view="deals"><span data-icon="tag"></span>Všetky akcie</button>
+      <button class="nav-btn" data-view="tracked"><span data-icon="bookmark"></span>Sledované produkty <span class="nav-badge tracked-count" hidden>0</span></button>
       <button class="nav-btn" data-view="list"><span data-icon="list"></span>Môj zoznam <span class="nav-badge list-count" hidden>0</span></button>
       <button class="nav-btn" data-view="legislativa"><span data-icon="doc"></span>Legislatíva</button>
     </nav>
@@ -44,9 +45,6 @@
       <select class="week-select" id="week" aria-label="Výber týždňa">
         <option value="latest">(Tento týždeň) Aktuálne obdobie</option>
       </select>
-      <button class="header-list" type="button" data-view="list">
-        <span data-icon="list"></span>Môj zoznam <span class="count list-count">0</span>
-      </button>
       <button class="topbar-profile" type="button" data-view="profil" aria-label="Profil a nastavenia" title="Profil a nastavenia">
         <span data-icon="user"></span>
       </button>
@@ -60,6 +58,7 @@
 <nav class="bottom-nav" aria-label="Mobilná navigácia">
   <button class="nav-btn" data-view="overview"><span data-icon="home"></span>Prehľad</button>
   <button class="nav-btn" data-view="deals"><span data-icon="tag"></span>Akcie</button>
+  <button class="nav-btn" data-view="tracked"><span data-icon="bookmark"></span>Sledované <span class="nav-badge tracked-count" hidden>0</span></button>
   <button class="nav-btn" data-view="list"><span data-icon="list"></span>Zoznam <span class="nav-badge list-count" hidden>0</span></button>
   <button class="nav-btn" data-view="legislativa"><span data-icon="doc"></span>Zákony</button>
 </nav>

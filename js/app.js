@@ -6,12 +6,14 @@ import { VIEWS, DEALS_PAGE_SIZE, SEARCH_DEBOUNCE_MS } from './config.js';
 import { state, setLegState, saveSettings, addSavedList, deleteSavedList } from './state.js';
 import { loadWeek, loadArchiveWeeks, loadLegislativa, loadReference, offerByKey } from './data.js';
 import * as shopping from './shopping.js';
+import * as tracking from './tracking.js';
 import { initSync, schedulePush, login, logout } from './sync.js';
 import { shareList, consumeSharedLink, exportList, importList, startVoice } from './share.js';
 import { openDetail, closeDetail, isDetailOpen, trapFocus } from './detail.js';
 import { renderOverview } from './views/overview.js';
 import { renderDeals, filterItems } from './views/deals.js';
 import { renderList } from './views/list.js';
+import { renderTracked } from './views/tracked.js';
 import { renderLegislativa } from './views/legislativa.js';
 import { renderProfil } from './views/profil.js';
 import { initIcons, svg } from './lib/icons.js';
@@ -51,6 +53,9 @@ export function render() {
     app.innerHTML = renderLegislativa();
   } else if (state.view === 'profil') {
     app.innerHTML = renderProfil();
+  } else if (state.view === 'tracked') {
+    if (!state.data) return;
+    app.innerHTML = renderTracked();
   } else {
     if (!state.data) return; // dáta sa ešte len načítavajú
     app.innerHTML = state.view === 'overview' ? renderOverview() : state.view === 'deals' ? renderDeals() : renderList();
@@ -64,6 +69,11 @@ function updateNav() {
   document.querySelectorAll('.list-count').forEach(el => {
     el.textContent = unchecked;
     el.hidden = shopping.items.length === 0;
+  });
+  const trackedCount = tracking.activeRecords().length;
+  document.querySelectorAll('.tracked-count').forEach(el => {
+    el.textContent = trackedCount;
+    el.hidden = trackedCount === 0;
   });
   document.querySelectorAll('[data-view]').forEach(el => el.classList.toggle('active', el.dataset.view === state.view));
   $('.topbar-profile')?.classList.toggle('logged', Boolean(state.user));
@@ -127,6 +137,27 @@ function refreshDealButtons(item) {
   });
 }
 
+function refreshTrackButtons(item) {
+  const active = tracking.isTracked(item);
+  document.querySelectorAll(`[data-action="toggle-track"][data-key="${CSS.escape(item.key)}"]`).forEach(btn => {
+    btn.classList.toggle('tracked', active);
+    btn.setAttribute('aria-label', `${active ? 'Prestať sledovať' : 'Sledovať produkt'} ${item.name}`);
+    btn.title = active ? 'Prestať sledovať' : 'Sledovať produkt';
+    btn.innerHTML = svg('bookmark') + (btn.classList.contains('wide') ? `<span>${active ? 'Sledované' : 'Sledovať'}</span>` : '');
+  });
+}
+
+function toggleTrackedProduct(key) {
+  const item = offerByKey(key);
+  if (!item) return;
+  const active = tracking.toggle(item);
+  if (state.view === 'tracked') render();
+  else refreshTrackButtons(item);
+  updateNav();
+  schedulePush();
+  showToast(active ? 'Produkt pridaný medzi sledované' : 'Produkt už nesleduješ');
+}
+
 function saveCurrentList() {
   if (!shopping.items.length) {
     showToast('Zoznam je prázdny');
@@ -142,18 +173,18 @@ function saveCurrentList() {
   } catch {
     // prompt nemusí byť dostupný (napr. v PWA na niektorých systémoch)
   }
-  addSavedList(shopping.snapshotForHistory(name));
+  const status = addSavedList(shopping.snapshotForHistory(name));
   schedulePush();
   render();
-  showToast('Nákup uložený do histórie');
+  showToast(status === 'updated' ? 'Nákup s týmto názvom bol aktualizovaný' : 'Nákup uložený do histórie');
 }
 
 function restoreList(id) {
   const saved = state.savedLists.find(x => x.id === id);
   if (!saved) return;
-  const added = shopping.restoreSavedItems(saved);
+  const restored = shopping.restoreSavedItems(saved);
   afterListChange();
-  showToast(added ? `Obnovených ${added} položiek` : 'Položky sú už v zozname');
+  showToast(`Obnovený uložený zoznam · ${restored} položiek`);
 }
 
 function setSetting(key, value) {
@@ -171,7 +202,7 @@ const ACTIONS = {
   store: b => {
     state.store = b.dataset.store;
     state.dealsLimit = DEALS_PAGE_SIZE;
-    switchView(state.view === 'overview' ? 'overview' : 'deals', false);
+    switchView(['overview', 'tracked'].includes(state.view) ? state.view : 'deals', false);
   },
   'toggle-promo': () => {
     state.promoOpen = !state.promoOpen;
@@ -183,16 +214,23 @@ const ACTIONS = {
     render();
     announce(`${filterItems().length} položiek`);
   },
+  'tracked-filter': b => {
+    state.trackedFilter = b.dataset.filter;
+    render();
+  },
+  'tracked-mode': b => {
+    state.trackedMode = b.dataset.mode === 'list' ? 'list' : 'dashboard';
+    render();
+  },
+  'untrack-record': b => {
+    if (!tracking.untrack(b.dataset.productId)) return;
+    render();
+    updateNav();
+    schedulePush();
+    showToast('Produkt už nesleduješ');
+  },
   'more-deals': () => {
     state.dealsLimit += DEALS_PAGE_SIZE;
-    render();
-  },
-  'leg-cat': b => {
-    state.legCat = b.dataset.cat;
-    render();
-  },
-  'leg-hide': () => {
-    state.legHide = !state.legHide;
     render();
   },
   'leg-state': b => {
@@ -212,6 +250,7 @@ const ACTIONS = {
   },
   detail: b => openDetail(offerByKey(b.dataset.key)),
   'toggle-deal': b => toggleDeal(b.dataset.key),
+  'toggle-track': b => toggleTrackedProduct(b.dataset.key),
   'toggle-check': b => {
     shopping.toggleChecked(b.dataset.id);
     afterListChange();
@@ -270,6 +309,15 @@ app.addEventListener('change', e => {
   if (e.target.id === 'sort') {
     state.sort = e.target.value;
     render();
+  } else if (e.target.id === 'tracked-sort') {
+    state.trackedSort = e.target.value;
+    render();
+  } else if (e.target.id === 'leg-category') {
+    state.legCat = e.target.value;
+    render();
+  } else if (e.target.id === 'leg-visibility') {
+    state.legVisibility = e.target.value;
+    render();
   } else if (e.target.dataset?.action === 'toggle-setting') {
     setSetting(e.target.dataset.key, e.target.checked);
   }
@@ -313,7 +361,7 @@ $('#search').addEventListener('input', e => {
   searchTimer = setTimeout(() => {
     state.query = e.target.value.trim();
     state.dealsLimit = DEALS_PAGE_SIZE;
-    if (state.query && state.view !== 'deals') switchView('deals');
+    if (state.query && !['deals', 'tracked'].includes(state.view)) switchView('deals');
     else render();
     if (state.view === 'deals') announce(`${filterItems().length} položiek`);
   }, SEARCH_DEBOUNCE_MS);
@@ -423,6 +471,7 @@ async function showWeek(week) {
   app.innerHTML = '<div class="empty-state">Načítavam aktuálne akcie…</div>';
   try {
     await loadWeek(week);
+    tracking.refreshFromOffers(state.items, state.data.generated);
     state.dealsLimit = DEALS_PAGE_SIZE;
     updateWeekSelectLabel();
     render();

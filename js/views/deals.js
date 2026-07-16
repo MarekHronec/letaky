@@ -5,7 +5,7 @@
 import { DEALS_PAGE_SIZE, ENDING_SOON_DAYS } from '../config.js';
 import { state } from '../state.js';
 import { visibleItems, finalPrice, oldFinalPrice, discountOf } from '../data.js';
-import { pageHead, renderStoreTabs, validityMeta, validityHtml, storeLogo, discountBadge, circleAddButton } from './shared.js';
+import { pageHead, renderStoreTabs, validityMeta, validityHtml, storeLogo, discountBadge, circleAddButton, watchButton } from './shared.js';
 import { esc, norm, daysTo, fmtPrice } from '../lib/util.js';
 
 const VERDICT_LABEL = { realna: 'Reálna', umela: 'Podozrivá', neoverene: 'Neoverená' };
@@ -64,7 +64,7 @@ function dealRow(i) {
     </div>
     <div class="dc-disc">${discountBadge(i)}</div>
     <div class="dc-valid">${validityHtml(i, meta)}</div>
-    <div class="dc-act">${circleAddButton(i)}</div>
+    <div class="dc-act">${watchButton(i)}${circleAddButton(i)}</div>
   </div>`;
 }
 
@@ -111,13 +111,13 @@ export function renderDeals() {
           <span class="dth-r" role="columnheader">Cena</span>
           <span class="dth-r" role="columnheader">Zľava</span>
           <span role="columnheader">Platnosť</span>
-          <span role="columnheader"><span class="sr-only">Do zoznamu</span></span>
+          <span role="columnheader"><span class="sr-only">Produktové akcie</span></span>
         </div>
         ${shown.map(dealRow).join('')}
       </div>${moreButton}`
     : '<div class="empty-state"><strong>Nič sme nenašli.</strong><br>Skús iný obchod, filter alebo výraz vo vyhľadávaní.</div>';
 
-  return `${pageHead({ eyebrow: state.data.period || 'Aktuálny týždeň', title: 'Všetky akcie', desc: 'Cena, platnosť a podmienky každej ponuky na jednom mieste.', withArchiveNote: true })}
+  return `${pageHead({ eyebrow: state.data.period || 'Aktuálny týždeň', title: 'Všetky akcie', desc: state.week === 'latest' ? 'Len aktuálne platné ponuky. Staršie ceny zostávajú v archíve a analytike.' : 'Archív cien a ponúk z vybraného týždňa.', withArchiveNote: true })}
     ${renderStoreTabs()}
     <div class="catalog-toolbar">
       <div class="filter-row">${filterChips}</div>

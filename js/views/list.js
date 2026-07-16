@@ -47,7 +47,7 @@ function historySection() {
           <div class="hist-meta">${esc(fmtDate(l.savedAt, true))} · ${l.count || arr(l.items).length} ks · ${fmtPrice(l.total || 0)}${l.savings > 0 ? ` · ušetrené ${fmtPrice(l.savings)}` : ''}</div>
         </div>
         <div class="hist-actions">
-          <button class="secondary-btn" data-action="restore-list" data-id="${esc(l.id)}">Obnoviť</button>
+          <button class="secondary-btn" data-action="restore-list" data-id="${esc(l.id)}" title="Nahradí aktuálny zoznam týmto uloženým snapshotom">Obnoviť</button>
           <button class="remove-btn" data-action="delete-list" data-id="${esc(l.id)}" aria-label="Zmazať uložený nákup">${svg('close')}</button>
         </div>
       </div>`,
@@ -55,7 +55,7 @@ function historySection() {
     .join('');
   return `<section class="panel hist-panel">
     <div class="panel-head">
-      <div><h2>História nákupov</h2><p>Uložené nákupy${state.user ? ' · synchronizované' : ' · v tomto zariadení'}</p></div>
+      <div><h2>História nákupov</h2><p>Presné snapshoty množstiev · názov nákupu je jedinečný${state.user ? ' · synchronizované' : ' · v tomto zariadení'}</p></div>
       ${svg('cart')}
     </div>
     <div class="hist-list">${rows}</div>

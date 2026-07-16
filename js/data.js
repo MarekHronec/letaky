@@ -4,7 +4,7 @@
 
 import { STORE_ORDER, TOP_COUNT, HISTORY_MAX_POINTS } from './config.js';
 import { state } from './state.js';
-import { arr, num, norm, slug, safeUrl } from './lib/util.js';
+import { arr, num, norm, slug, safeUrl, daysTo } from './lib/util.js';
 
 // Akcie viazané na vernostnú kartu (nastavenie „Skryť kartové akcie").
 export const CARD_CONDITION_RE = /karta|card|xtra|lidl ?plus/i;
@@ -106,6 +106,29 @@ function normalizePlan(raw) {
   };
 }
 
+function normalizeOpeningHours(raw) {
+  if (!raw || !arr(raw.predajne).length) return null;
+  return {
+    period: raw.obdobie || '',
+    location: raw.lokalita || '',
+    holidayNote: raw.poznamka_sviatky || '',
+    holidaySourceUrl: safeUrl(raw.zdroj_sviatky_url),
+    stores: arr(raw.predajne).map(store => ({
+      id: store.id || storeId(store.nazov || ''),
+      name: store.nazov || 'Predajňa',
+      address: store.adresa || '',
+      verified: store.overene || '',
+      sourceUrl: safeUrl(store.zdroj_url),
+      hours: arr(store.hodiny).map(row => ({ days: row.dni || '', time: row.cas || '' })),
+      exceptions: arr(store.vynimky).map(row => ({
+        date: row.datum || '',
+        name: row.nazov || '',
+        time: row.cas || '',
+      })),
+    })),
+  };
+}
+
 // Dve rovnako pomenované ponuky bez vlastného id by dostali rovnaký kľúč –
 // doplníme poradové číslo, aby sa tlačidlá a detail nepreplietli.
 function dedupeKeys(items) {
@@ -139,6 +162,7 @@ export function normalizeData(raw) {
     items,
     promos: arr(raw.promo).map(normalizePromo),
     plan: normalizePlan(raw.plan),
+    openingHours: normalizeOpeningHours(raw.otvaracie_hodiny),
     sources: arr(raw.zdroje_stav).map(s => ({ name: s.zdroj || '', ok: s.ok !== false })),
     top: top.length ? top : rankByDiscount(items.filter(i => i.verdict === 'realna')),
   };
@@ -181,7 +205,14 @@ export function offerByKey(key) {
 // Položky po aplikovaní nastavenia „Skryť kartové akcie" – používa sa všade,
 // kde sa zobrazujú ponuky (prehľad aj katalóg), aby nastavenie platilo jednotne.
 export function visibleItems(items = state.items) {
-  return state.settings.hideCard ? items.filter(i => !CARD_CONDITION_RE.test(i.condition || '')) : items;
+  let out = state.week === 'latest'
+    ? items.filter(i => {
+        const remaining = daysTo(i.validTo);
+        return remaining == null || remaining >= 0;
+      })
+    : items;
+  if (state.settings.hideCard) out = out.filter(i => !CARD_CONDITION_RE.test(i.condition || ''));
+  return out;
 }
 
 export function sortedStores() {

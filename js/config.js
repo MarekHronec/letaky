@@ -16,7 +16,7 @@ export const STORE_COLORS = {
   other: 'var(--brand)',
 };
 
-export const VIEWS = ['overview', 'deals', 'list', 'legislativa', 'profil'];
+export const VIEWS = ['overview', 'deals', 'tracked', 'list', 'legislativa', 'profil'];
 
 // Kľúče v localStorage. Všetky dáta appky žijú pod prefixom "letaky.".
 export const KEYS = {
@@ -27,6 +27,7 @@ export const KEYS = {
   legStatesV1: 'letaky.legStates.v1', // stará podoba, číta sa už len pri migrácii
   savedLists: 'letaky.savedLists.v1',
   savedListsDeleted: 'letaky.savedListsDeleted.v1',
+  trackedProducts: 'letaky.trackedProducts.v1',
 };
 
 // Časy a limity (predtým magické čísla roztrúsené po kóde).

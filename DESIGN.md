@@ -59,16 +59,19 @@ Sidebar `236px` (desktop), topbar `56px` (Primer-kompaktná). Obsah max šírka 
 | **Page header** | Na Prehľade bez duplicitného nadpisu obdobia; obdobie je súčasťou výberu týždňa v topbare |
 | **App navigácia** | Kompaktný tlmený navy sidebar (desktop) / topbar + bottom-nav (mobil), profil vždy na pravom okraji |
 | **Filter obchodov** | Segmentovaná lišta s indigovým aktívnym stavom a jemnými indikátormi obchodov, priamo pod KPI pásom |
+| **Sledované produkty** | Samostatný core-sortiment: produktová záložka v každom riadku, dashboard/list prepínač, filtre, nákupné skóre a viditeľná miera istoty |
 | **Katalóg akcií** | Nahradený: karta-grid → **hustá dátová tabuľka** (názov · obchod · cena · zľava · verdikt · platnosť · akcia); na mobile štruktúrované riadky |
 | **Top príležitosti** | Rebríček ako tabuľkový list s poradím, cenou, zľavou |
-| **Špeciálne akcie (promo)** | Kompaktný list, jemný ľavý indikátor obchodu, priorita → top 4 + rozbalenie |
+| **Špeciálne akcie (promo)** | Kompaktný list bez dekoratívneho ľavého akcentu; prvá akcia má dátový TOP badge, priorita → top 4 + rozbalenie |
+| **Otváracie hodiny** | Týždenný panel konkrétnych pobočiek s first-party zdrojom, dátumom overenia a výraznou sviatočnou výnimkou |
 | **Panely/sekcie** | Ploché sekcie oddelené hairline namiesto tieňových kariet |
 | **Tlačidlá** | primary (akcent) · secondary (hairline) · ghost/text · okrúhle +/✓ |
 | **Odznaky** | verdikt (reálna/podozrivá/neoverená), zľava, status — jemné, nie balónové |
 | **KPI pásik** | Prvý blok pod topbarom; kompaktný riadok metrík spojený s filtrom obchodov |
 | **Detail sheet** | Prepracovaný: sekcie definičných riadkov, graf, porovnanie obchodov |
 | **Formuláre** | GOV.UK vzor: jasné labely, chybové hlásenia, dostatočné ciele dotyku (login, vlastná položka, nastavenia) |
-| **Legislatíva** | Timeline termínov + list povinností so závažnosťou; filtre chips |
+| **Legislatíva** | Timeline termínov + list povinností so závažnosťou |
+| **Legislatívne filtre** | Oblasť a stav sú kompaktné selecty; stav podporuje nevyriešené, hotové aj skrytie ignorovaných/nerelevantných |
 | **Stavy** | Prázdny / načítava / chyba (inline retry) / úspech (toast) — jednotné |
 
 ## 5. Prístupnosť

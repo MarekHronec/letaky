@@ -167,18 +167,6 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
   color: var(--text); font-size: 12.5px; -webkit-appearance: none; appearance: none;
 }
 
-.header-list {
-  display: flex; align-items: center; gap: 7px; height: 36px; padding: 0 12px;
-  border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface);
-  color: var(--text); font-size: 12.5px; font-weight: 500;
-}
-.header-list:hover { border-color: var(--brand); color: var(--brand-strong); }
-.header-list .count {
-  min-width: 18px; height: 18px; padding: 0 5px; display: inline-grid; place-items: center;
-  background: var(--brand); color: var(--on-brand); border-radius: 9px; font-size: 11px; font-weight: 700;
-}
-.header-list .count:empty::before { content: "0"; }
-
 .topbar-profile {
   display: grid; place-items: center; width: 36px; height: 36px; flex: none; margin-left: auto;
   border: 1px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: var(--muted);
@@ -230,6 +218,17 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .circle-add:hover { border-color: var(--brand); background: var(--brand-soft); }
 .circle-add.in { background: var(--green); border-color: var(--green); color: #fff; }
 .circle-add .icon { width: 16px; height: 16px; }
+.watch-btn {
+  display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; flex: none;
+  padding: 0; border: 1px solid var(--line-strong); border-radius: 50%; background: var(--surface);
+  color: var(--muted); transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.watch-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+.watch-btn.tracked { border-color: color-mix(in srgb, var(--brand) 45%, var(--line)); background: var(--brand-soft); color: var(--brand-strong); }
+.watch-btn.tracked .icon { fill: color-mix(in srgb, var(--brand) 18%, transparent); }
+.watch-btn.wide { width: auto; height: 36px; padding: 0 13px; gap: 7px; border-radius: var(--radius-sm); font-size: 12.5px; font-weight: 600; }
+.watch-btn .icon { width: 16px; height: 16px; }
+.product-actions { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
 
 /* == 6. Chips / segmenty / filtre ========================================= */
 .store-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
@@ -317,10 +316,13 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 /* Špeciálne akcie (promo) — kompaktný list */
 .promo-section { margin-bottom: 20px; }
 .promo-grid { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
-.promo-card { display: flex; align-items: center; gap: 12px; padding: 11px 14px; background: var(--surface); border-left: 4px solid var(--store-color, var(--brand)); border-top: 1px solid var(--line); }
+.promo-card { display: flex; align-items: center; gap: 12px; padding: 11px 14px; background: var(--surface); border-top: 1px solid var(--line); }
 .promo-grid .promo-card:first-child { border-top: 0; }
 .promo-card:hover { background: color-mix(in srgb, var(--store-color, var(--brand)) 4%, var(--surface)); }
+.promo-card.featured { background: color-mix(in srgb, var(--brand-soft) 58%, var(--surface)); }
 .promo-card.ended { opacity: 0.55; }
+.promo-rank { display: inline-flex; align-items: center; gap: 5px; flex: none; color: var(--brand-strong); font-size: 10px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+.promo-rank .icon { width: 13px; height: 13px; fill: color-mix(in srgb, var(--brand) 18%, transparent); }
 .promo-store { flex: none; min-width: 74px; padding: 4px 8px; border-radius: 5px; background: color-mix(in srgb, var(--store-color, var(--brand)) 13%, var(--surface)); color: var(--store-color, var(--muted)); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.02em; text-align: center; }
 .promo-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .promo-card strong { display: block; font-size: 12.5px; font-weight: 600; line-height: 1.35; }
@@ -332,7 +334,7 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .promo-more:hover { background: var(--brand-soft); border-color: color-mix(in srgb, var(--brand) 35%, var(--line)); }
 
 /* Top príležitosti — rebríčkový list */
-.deal-row { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto auto 32px; align-items: center; gap: 12px; padding: 11px 16px; border-top: 1px solid var(--line); transition: background 0.1s; }
+.deal-row { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto auto 70px; align-items: center; gap: 12px; padding: 11px 16px; border-top: 1px solid var(--line); transition: background 0.1s; }
 .panel .deal-row:first-of-type { border-top: 0; }
 .deal-row:hover { background: color-mix(in srgb, var(--brand-soft) 45%, var(--surface)); }
 .deal-row.v-realna { box-shadow: inset 3px 0 0 var(--green); }
@@ -348,14 +350,31 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .deal-price .price-old { font-size: 11px; color: var(--faint); text-decoration: line-through; font-variant-numeric: tabular-nums; }
 .price-now { color: var(--text); }
 
-/* Plán nákupu */
-.route-list { margin-top: 12px; display: flex; flex-direction: column; }
-.route-stop { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 11px; padding: 10px 0; border-top: 1px solid var(--line); }
-.route-stop:first-child { border-top: 0; }
-.route-no { width: 24px; height: 24px; display: grid; place-items: center; font-style: normal; background: var(--brand-soft); color: var(--brand-strong); border-radius: 6px; font-size: 12px; font-weight: 700; }
-.route-stop strong { display: block; font-size: 13px; }
-.route-stop span { color: var(--muted); font-size: 11.5px; }
-.route-price { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+/* Otváracie hodiny */
+.opening-card .panel-head > .icon { color: var(--brand); width: 20px; height: 20px; }
+.holiday-status { display: flex; align-items: center; gap: 7px; padding: 9px 14px; border-bottom: 1px solid var(--line); background: var(--green-soft); color: var(--green); font-size: 11.5px; }
+.holiday-status.has-exception { background: var(--amber-soft); color: var(--amber); }
+.holiday-status > .icon { width: 14px; height: 14px; }
+.holiday-status a { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; color: inherit; font-weight: 600; text-decoration: none; }
+.holiday-status a:hover { text-decoration: underline; }
+.holiday-status a .icon { width: 12px; height: 12px; }
+.hours-list { display: flex; flex-direction: column; }
+.hours-store { padding: 12px 14px; border-top: 1px solid var(--line); }
+.hours-store:first-child { border-top: 0; }
+.hours-store-head { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+.hours-store-head .store-dot { margin-top: 5px; }
+.hours-store-head h3 { font-size: 12.5px; }
+.hours-store-head h3 a { display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
+.hours-store-head h3 a:hover { color: var(--brand); }
+.hours-store-head h3 .icon { width: 12px; height: 12px; }
+.hours-store-head p { color: var(--muted); font-size: 10.5px; }
+.hours-table { display: flex; flex-direction: column; gap: 4px; }
+.hours-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 11.5px; }
+.hours-row strong { color: var(--text); font-variant-numeric: tabular-nums; }
+.hours-exception { display: flex; align-items: center; gap: 6px; margin-top: 8px; padding: 7px 8px; border-radius: var(--radius-sm); background: var(--amber-soft); color: var(--amber); font-size: 11px; }
+.hours-exception .icon { width: 13px; height: 13px; }
+.hours-verified { margin-top: 7px; color: var(--faint); font-size: 10px; }
+.insight-card > .watch-btn.wide { width: 100%; margin-top: 8px; }
 
 /* Zdroje dát */
 .source-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
@@ -374,7 +393,7 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 }
 
 .dtable { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; box-shadow: var(--shadow-sm); }
-.dtable-head, .drow { display: grid; grid-template-columns: minmax(0, 1fr) 112px 66px 132px 44px; align-items: center; gap: 12px; padding: 0 14px; }
+.dtable-head, .drow { display: grid; grid-template-columns: minmax(0, 1fr) 112px 66px 132px 76px; align-items: center; gap: 12px; padding: 0 14px; }
 .dtable-head { height: 40px; background: var(--nav); border-bottom: 0; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--nav-text); }
 .dth-r { text-align: right; }
 .drow { min-height: 56px; padding-top: 9px; padding-bottom: 9px; border-top: 1px solid var(--line); transition: background 0.1s; }
@@ -392,7 +411,7 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .dc-price .price-old { font-size: 11px; color: var(--faint); text-decoration: line-through; font-variant-numeric: tabular-nums; }
 .dc-disc { text-align: right; }
 .dc-valid { font-size: 11.5px; }
-.dc-act { display: flex; justify-content: flex-end; }
+.dc-act { display: flex; justify-content: flex-end; gap: 6px; }
 
 /* karta produktu (fallback) */
 .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
@@ -419,6 +438,60 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .price-sparkline svg { width: 60px; height: 20px; }
 .price-sparkline polyline { fill: none; stroke: var(--muted); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
 .price-sparkline circle { fill: var(--brand); }
+
+/* == 11. Sledované produkty ============================================== */
+.tracked-summary { display: grid; grid-template-columns: repeat(4, 1fr); margin-bottom: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+.tracked-summary span { display: flex; flex-direction: column-reverse; gap: 2px; padding: 12px 14px; border-left: 1px solid var(--line); color: var(--muted); font-size: 10.5px; }
+.tracked-summary span:first-child { border-left: 0; }
+.tracked-summary strong { color: var(--text); font-size: 20px; font-variant-numeric: tabular-nums; }
+.tracked-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; margin-bottom: 10px; padding: 10px 0; border-block: 1px solid var(--line); }
+.tracked-toolbar .sort-select { margin-left: auto; }
+.view-switch { display: inline-flex; padding: 3px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface-2); }
+.view-switch button { padding: 5px 10px; border: 0; border-radius: 4px; background: transparent; color: var(--muted); font-size: 11.5px; font-weight: 600; }
+.view-switch button.active { background: var(--surface); color: var(--brand-strong); box-shadow: var(--shadow-sm); }
+.tracking-method { margin-bottom: 14px; color: var(--muted); font-size: 11.5px; }
+.tracking-method summary { display: inline-flex; align-items: center; color: var(--brand); font-weight: 600; cursor: pointer; }
+.tracking-method p { max-width: 78ch; margin-top: 7px; padding: 9px 11px; border-left: 3px solid var(--brand); background: var(--brand-soft); }
+.tracked-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.tracked-card { padding: 14px; border: 1px solid var(--line); border-top: 3px solid var(--brand); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); }
+.tracked-card.signal-stock { border-top-color: var(--green); }
+.tracked-card.signal-wait { border-top-color: var(--amber); }
+.tracked-card.signal-nooffer { border-top-color: var(--line-strong); }
+.tracked-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.tracked-card-head h2 { font-size: 14px; line-height: 1.3; }
+.tracked-card-head p { margin-top: 2px; color: var(--muted); font-size: 11px; }
+.tracked-kicker { margin-bottom: 3px; color: var(--faint); font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+.tracked-price-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-top: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.tracked-price-row > strong { font-size: 22px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.tracked-price-row > div { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 5px 8px; font-size: 10.5px; }
+.muted-line { color: var(--muted); }
+.track-score-row { display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: center; gap: 12px; margin-top: 12px; }
+.track-score { --score: 0; width: 62px; height: 62px; display: grid; place-content: center; position: relative; border-radius: 50%; background: conic-gradient(var(--brand) calc(var(--score) * 1%), var(--surface-2) 0); text-align: center; }
+.track-score::after { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: var(--surface); }
+.track-score strong, .track-score span { position: relative; z-index: 1; line-height: 1; }
+.track-score strong { font-size: 18px; }
+.track-score span { margin-top: 2px; color: var(--faint); font-size: 9px; }
+.track-recommendation { margin-bottom: 4px; }
+.track-score-row p { color: var(--muted); font-size: 11.5px; line-height: 1.45; }
+.track-signal { display: inline-flex; align-items: center; padding: 3px 7px; border-radius: 4px; background: var(--brand-soft); color: var(--brand-strong); font-size: 10.5px; font-weight: 700; }
+.track-signal.stock { background: var(--green-soft); color: var(--green); }
+.track-signal.wait { background: var(--amber-soft); color: var(--amber); }
+.track-signal.nooffer { background: var(--surface-2); color: var(--muted); }
+.track-meter { height: 4px; margin-top: 12px; border-radius: 2px; background: var(--surface-2); overflow: hidden; }
+.track-meter i { display: block; height: 100%; background: var(--brand); }
+.track-facts { display: flex; flex-wrap: wrap; gap: 5px 10px; margin-top: 7px; color: var(--faint); font-size: 10px; }
+.track-facts span + span::before { content: "·"; margin-right: 10px; }
+.tracked-card-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+.tracked-card-actions .secondary-btn { padding: 6px 10px; font-size: 11.5px; }
+.tracked-list { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+.tracked-list-head, .tracked-list-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(180px, 1fr) 130px 76px; align-items: center; gap: 12px; padding: 10px 14px; }
+.tracked-list-head { background: var(--nav); color: var(--nav-text); font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.tracked-list-row { border-top: 1px solid var(--line); }
+.tracked-list-row:first-of-type { border-top: 0; }
+.tracked-list-row > div:first-child strong { display: block; font-size: 12.5px; }
+.tracked-list-row > div:first-child span, .track-row-note, .tracked-list-price span { display: block; margin-top: 3px; color: var(--muted); font-size: 10.5px; }
+.tracked-list-price { text-align: right; }
+.tracked-list-price > strong { font-size: 14px; font-variant-numeric: tabular-nums; }
 
 /* == 11. Nákupný zoznam =================================================== */
 .list-summary { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
@@ -499,7 +572,10 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .leg-deadline .d-title { font-size: 12.5px; font-weight: 600; }
 .leg-deadline .d-sub { color: var(--muted); font-size: 11px; margin-top: 2px; }
 
-.leg-cats { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.leg-filter-bar { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.leg-filter-bar label { display: flex; flex-direction: column; gap: 4px; min-width: min(280px, 100%); }
+.leg-filter-bar label > span { color: var(--muted); font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.leg-filter-bar select { height: 36px; padding: 0 32px 0 10px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font-size: 12px; }
 
 .leg-groups { display: flex; flex-direction: column; gap: 14px; }
 .leg-group { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
@@ -578,6 +654,7 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .sheet-close { margin-left: auto; width: 34px; height: 34px; display: grid; place-items: center; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--muted); }
 .sheet-close:hover { background: var(--surface-2); color: var(--text); }
 .sheet-body { flex: 1; overflow: auto; padding: 18px; }
+.detail-product-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
 
 .detail-hero { margin: 14px 0 16px; }
 .detail-hero h2 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; margin: 8px 0 6px; }
@@ -626,12 +703,9 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 /* == 17. Responzívne ====================================================== */
 @media (max-width: 1120px) {
   .overview-layout, .profile-grid { grid-template-columns: 1fr; }
+  .tracked-grid { grid-template-columns: 1fr; }
   .shopping-layout { grid-template-columns: 1fr; }
   .list-side { position: static; }
-}
-
-@media (max-width: 1060px) and (min-width: 861px) {
-  .header-list { display: none; }
 }
 
 @media (max-width: 860px) {
@@ -640,9 +714,8 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
   .mobile-brand { display: flex; }
   .topbar { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 10px; }
   .searchbox { order: 3; flex-basis: 100%; max-width: none; }
-  .header-list { display: none; }
   .main { padding: 18px 16px 84px; }
-  .bottom-nav { display: grid; grid-template-columns: repeat(4, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: var(--surface); border-top: 1px solid var(--line); padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); }
+  .bottom-nav { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: var(--surface); border-top: 1px solid var(--line); padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); }
   .bottom-nav .nav-btn { position: relative; flex-direction: column; align-items: center; gap: 3px; padding: 7px 4px; font-size: 10.5px; border-radius: var(--radius-sm); }
   .bottom-nav .nav-btn .icon { width: 20px; height: 20px; }
   .bottom-nav .nav-badge { position: absolute; top: 2px; left: calc(50% + 6px); background: var(--red); }
@@ -667,6 +740,26 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
   .status-strip > span:last-child { grid-column: 1 / -1; border-left: 0; }
   .store-filter-row { flex-direction: column; gap: 6px; }
   .store-filter-label { padding-top: 0; }
+  .promo-card { display: grid; grid-template-columns: 74px minmax(0, 1fr); align-items: start; }
+  .promo-card.featured .promo-rank { grid-column: 1 / -1; width: 100%; }
+  .promo-store { grid-column: 1; }
+  .promo-body { grid-column: 2; }
+  .promo-flyer-link { grid-column: 2; margin-left: 0; justify-self: start; }
+  .holiday-status { align-items: flex-start; flex-wrap: wrap; }
+  .holiday-status a { width: 100%; margin-left: 21px; }
+  .tracked-summary { grid-template-columns: 1fr 1fr; }
+  .tracked-summary span:nth-child(odd) { border-left: 0; }
+  .tracked-summary span:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .tracked-toolbar { align-items: stretch; }
+  .tracked-toolbar .filter-row { order: 3; }
+  .tracked-toolbar .sort-select { width: 100%; margin-left: 0; }
+  .tracked-list-head { display: none; }
+  .tracked-list-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: 8px; }
+  .tracked-list-row > div:nth-child(2), .tracked-list-price { grid-column: 1; text-align: left; }
+  .tracked-list-row > .product-actions { grid-area: 1 / 2 / span 3; align-self: center; }
+  .detail-product-actions { grid-template-columns: 1fr; }
+  .detail-product-actions .watch-btn.wide { width: 100%; }
+  .leg-filter-bar label { width: 100%; min-width: 0; }
 
   /* Dátová tabuľka → štruktúrované riadky */
   .dtable-head { display: none; }

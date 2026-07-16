@@ -73,7 +73,6 @@ function renderTimeline(L) {
 function renderLegItem(category, p) {
   const stateKey = category.id + ':' + slug(p.nazov);
   const st = legStateOf(stateKey);
-  if (state.legHide && st) return '';
 
   const sourceLink = safeUrl(p.zdroj)
     ? `<a class="leg-src" href="${esc(safeUrl(p.zdroj))}" target="_blank" rel="noopener noreferrer">${esc(p.zdroj_nazov || 'Zdroj')} ${svg('external')}</a>`
@@ -110,15 +109,23 @@ function renderLegItem(category, p) {
 
 function renderGroups(categories) {
   return `<div class="leg-groups">${categories
-    .map(
-      c => `<section class="leg-group">
+    .map(c => {
+      const items = arr(c.polozky).filter(dphOk).filter(p => {
+        const st = legStateOf(c.id + ':' + slug(p.nazov));
+        if (state.legVisibility === 'open') return !st;
+        if (state.legVisibility === 'active') return !['ignored', 'irrelevant'].includes(st);
+        if (state.legVisibility === 'done') return st === 'done';
+        return true;
+      });
+      if (!items.length) return '';
+      return `<section class="leg-group">
         <div class="leg-group-head">
           <div class="leg-ic">${svg(c.ikona || 'doc')}</div>
           <div><h2>${esc(c.nazov)}</h2>${c.popis ? `<p>${esc(c.popis)}</p>` : ''}</div>
         </div>
-        <div class="leg-items">${arr(c.polozky).filter(dphOk).map(p => renderLegItem(c, p)).join('')}</div>
-      </section>`,
-    )
+        <div class="leg-items">${items.map(p => renderLegItem(c, p)).join('')}</div>
+      </section>`;
+    })
     .join('')}</div>`;
 }
 
@@ -155,10 +162,17 @@ export function renderLegislativa() {
   const categories = arr(L.kategorie);
   const shown = state.legCat === 'all' ? categories : categories.filter(c => c.id === state.legCat);
 
-  const chips = `<div class="leg-cats">
-    <button class="chip ${state.legCat === 'all' ? 'active' : ''}" data-action="leg-cat" data-cat="all">Všetko</button>
-    ${categories.map(c => `<button class="chip ${state.legCat === c.id ? 'active' : ''}" data-action="leg-cat" data-cat="${esc(c.id)}">${esc(c.nazov)}</button>`).join('')}
-    <button class="chip ${state.legHide ? 'active' : ''}" data-action="leg-hide">${state.legHide ? 'Zobraziť vybavené' : 'Skryť vybavené'}</button>
+  const filters = `<div class="leg-filter-bar">
+    <label><span>Oblasť</span><select id="leg-category">
+      <option value="all">Všetky oblasti</option>
+      ${categories.map(c => `<option value="${esc(c.id)}" ${state.legCat === c.id ? 'selected' : ''}>${esc(c.nazov)}</option>`).join('')}
+    </select></label>
+    <label><span>Zobraziť</span><select id="leg-visibility">
+      <option value="all" ${state.legVisibility === 'all' ? 'selected' : ''}>Všetky povinnosti</option>
+      <option value="open" ${state.legVisibility === 'open' ? 'selected' : ''}>Len nevyriešené</option>
+      <option value="active" ${state.legVisibility === 'active' ? 'selected' : ''}>Skryť ignorované a nerelevantné</option>
+      <option value="done" ${state.legVisibility === 'done' ? 'selected' : ''}>Len hotové</option>
+    </select></label>
   </div>`;
 
   const intro = `<div class="leg-intro">
@@ -171,5 +185,9 @@ export function renderLegislativa() {
     ? `<div class="updated" style="margin:-8px 0 14px"><i class="dot"></i>Aktualizované ${esc(fmtDate(L.aktualizovane, true))}</div>`
     : '';
 
-  return `${header()}${updated}${intro}${renderTimeline(L)}${chips}${renderGroups(shown)}${state.legCat === 'all' ? renderPortals(L) : ''}`;
+  const groups = renderGroups(shown);
+  const noResults = groups === '<div class="leg-groups"></div>'
+    ? '<div class="empty-state"><strong>Tomuto filtru nič nezodpovedá.</strong><br>Skús inú oblasť alebo stav povinnosti.</div>'
+    : groups;
+  return `${header()}${updated}${intro}${renderTimeline(L)}${filters}${noResults}${state.legCat === 'all' && state.legVisibility === 'all' ? renderPortals(L) : ''}`;
 }

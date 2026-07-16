@@ -33997,33 +33997,50 @@
    ]
   }
  ],
- "plan": {
-  "zastavky": [
+ "otvaracie_hodiny": {
+  "obdobie": "15. – 22. júl 2026",
+  "lokalita": "Bratislava – Devínska Nová Ves",
+  "poznamka_sviatky": "V tomto období nie je štátny sviatok ani deň pracovného pokoja.",
+  "zdroj_sviatky_url": "https://www.vlada.gov.sk/slovensko/statne-sviatky/",
+  "predajne": [
    {
-    "poradie": 1,
-    "nazov": "Metro (veľkoobchod)",
-    "den": "ST–ŠT",
-    "poznamka": "Nový leták 15.–28. 7.; víkendová ponuka kuracie rezne 16.–19. 7. (5,39 €/kg bez DPH). Veľké balenia – najprv veľkoobchod.",
-    "odhad_eur": 70
+    "id": "metro",
+    "nazov": "Metro Devínska Nová Ves",
+    "adresa": "Devínska Nová Ves 7081, Bratislava",
+    "hodiny": [
+     { "dni": "Po – Pi", "cas": "05:00 – 20:00" },
+     { "dni": "So", "cas": "06:00 – 20:00" },
+     { "dni": "Ne", "cas": "08:00 – 20:00" }
+    ],
+    "vynimky": [],
+    "zdroj_url": "https://www.metro.sk/predajne/devinska-nova-ves",
+    "overene": "2026-07-16"
    },
    {
-    "poradie": 2,
-    "nazov": "Kaufland",
-    "den": "ŠT–PI",
-    "poznamka": "Nový leták platí od štvrtka 16. 7.; XTRA zľavy a „nad 20 €“ bravčové pliecko 2,15 €/kg.",
-    "odhad_eur": 45
+    "id": "kaufland",
+    "nazov": "Kaufland Devínska Nová Ves",
+    "adresa": "T. P. Kolakoviča 1A, Bratislava",
+    "hodiny": [
+     { "dni": "Po – So", "cas": "07:00 – 21:00" },
+     { "dni": "Ne", "cas": "08:00 – 20:00" }
+    ],
+    "vynimky": [],
+    "zdroj_url": "https://predajne.kaufland.sk/servis/predajne/bratislava-devinska-nova-ves-1830.html",
+    "overene": "2026-07-16"
    },
    {
-    "poradie": 3,
-    "nazov": "Lidl",
-    "den": "do NE 19. 7.",
-    "poznamka": "Leták 13.–19. 7. končí v nedeľu; pagáče 4+2 zdarma.",
-    "odhad_eur": 25
+    "id": "lidl",
+    "nazov": "Lidl Eisnerova",
+    "adresa": "Eisnerova 6964/60, Bratislava",
+    "hodiny": [
+     { "dni": "Po – So", "cas": "07:00 – 21:00" },
+     { "dni": "Ne", "cas": "08:00 – 20:00" }
+    ],
+    "vynimky": [],
+    "zdroj_url": "https://www.lidl.sk/s/sk-SK/vyhladavac-predajni/bratislava/eisnerova-6964-60/",
+    "overene": "2026-07-16"
    }
-  ],
-  "maps_url": "https://www.google.com/maps/dir/?api=1&origin=Bratislava&waypoints=METRO%20Dev%C3%ADnska%20Nov%C3%A1%20Ves%7CKaufland%20Bratislava%20Dev%C3%ADnska%20Nov%C3%A1%20Ves&destination=Lidl%20Bratislava%20Dev%C3%ADnska%20Nov%C3%A1%20Ves&travelmode=driving",
-  "spolu_eur": 140,
-  "uspora_eur": null
+  ]
  },
  "zdroje_stav": [
   {

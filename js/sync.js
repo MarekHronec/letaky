@@ -8,6 +8,7 @@
 import { SUPABASE, PUSH_DEBOUNCE_MS } from './config.js';
 import { state, sanitizeSettings, saveSettings, mergeLegStates, mergeSavedLists } from './state.js';
 import * as shopping from './shopping.js';
+import * as tracking from './tracking.js';
 
 let client = null;
 let pushTimer = null;
@@ -75,6 +76,7 @@ function mergeCloudData(remote, { includeSettings }) {
   shopping.mergeRemote(remote.shopping, remote.shoppingDeleted);
   mergeLegStates(remote.legStates);
   mergeSavedLists(remote.savedLists, remote.savedListsDeleted);
+  tracking.mergeRemote(remote.trackedProducts);
   if (includeSettings && remote.settings && typeof remote.settings === 'object') {
     state.settings = sanitizeSettings(remote.settings);
     saveSettings();
@@ -131,6 +133,7 @@ export async function cloudPush() {
       legStates: state.legStates,
       savedLists: state.savedLists,
       savedListsDeleted: state.savedListsDeleted,
+      trackedProducts: tracking.records,
     };
     const { error } = await c
       .from('user_data')

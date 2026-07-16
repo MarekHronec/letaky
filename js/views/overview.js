@@ -1,5 +1,5 @@
 // Pohľad Prehľad: špeciálne akcie, top príležitosti, praktický tip,
-// odporúčaný plán nákupu, stav zdrojov a súhrnný pásik.
+// otváracie hodiny predajní, stav zdrojov a súhrnný pásik.
 
 import { PROMO_PREVIEW_COUNT, STORE_ORDER, TOP_COUNT, ENDING_SOON_DAYS } from '../config.js';
 import { state } from '../state.js';
@@ -16,20 +16,22 @@ import {
   discountBadge,
   circleAddButton,
   primaryToggleButton,
+  watchButton,
 } from './shared.js';
 import { svg } from '../lib/icons.js';
-import { esc, daysTo, fmtPrice, safeUrl } from '../lib/util.js';
+import { esc, daysTo, fmtDate, fmtPrice } from '../lib/util.js';
 
 // ---------------------------------------------------------------------------
 // Špeciálne akcie (kupóny, mechaniky, súťaže)
 // ---------------------------------------------------------------------------
 
-function promoCard(promo) {
+function promoCard(promo, index) {
   const meta = validityMeta(promo);
   const store = state.data.stores.find(s => s.id === promo.storeId);
   const linkUrl = promo.sourceUrl || store?.flyerUrl || '';
   const linkLabel = promo.sourceUrl ? 'Detail akcie' : 'Aktuálny leták';
-  return `<article class="promo-card ${meta.cls === 'expired' ? 'ended' : ''}" style="${storeStyle(promo.store)}">
+  return `<article class="promo-card ${index === 0 ? 'featured' : ''} ${meta.cls === 'expired' ? 'ended' : ''}" style="${storeStyle(promo.store)}">
+    ${index === 0 ? `<span class="promo-rank">${svg('bookmark')} Top akcia</span>` : ''}
     <span class="promo-store">${esc(promo.store)}</span>
     <div class="promo-body">
       <strong>${esc(promo.text)}</strong>
@@ -41,6 +43,7 @@ function promoCard(promo) {
 
 function renderPromoSection() {
   let promos = state.data.promos;
+  if (state.week === 'latest') promos = promos.filter(promo => validityMeta(promo).cls !== 'expired');
   if (state.store !== 'all') promos = promos.filter(p => p.storeId === state.store);
   if (!promos.length) return '';
 
@@ -64,36 +67,45 @@ function renderPromoSection() {
         <p>Mechaniky, súťaže a kupóny, ktoré menia výslednú cenu.</p>
       </div>
     </div>
-    <div class="promo-grid">${shown.map(promoCard).join('')}</div>
+    <div class="promo-grid">${shown.map((promo, index) => promoCard(promo, index)).join('')}</div>
     ${moreButton}
   </section>`;
 }
 
 // ---------------------------------------------------------------------------
-// Odporúčaný plán nákupu (ak ho routine dodala)
+// Aktuálne otváracie hodiny konkrétnych pobočiek
 // ---------------------------------------------------------------------------
 
-function renderRoute() {
-  const plan = state.data.plan;
-  if (!plan) return '';
-  const stops = plan.stops
-    .map(
-      stop => `<div class="route-stop">
-        <i class="route-no">${esc(stop.order)}</i>
-        <div><strong>${esc(stop.name)}</strong><span>${esc([stop.day, stop.note].filter(Boolean).join(' · '))}</span></div>
-        <b class="route-price">${stop.estimate != null ? '~' + fmtPrice(stop.estimate) : ''}</b>
-      </div>`,
-    )
+function renderOpeningHours() {
+  const opening = state.data.openingHours;
+  if (!opening) return '';
+  const hasExceptions = opening.stores.some(store => store.exceptions.length);
+  const stores = opening.stores
+    .map(store => {
+      const hours = store.hours
+        .map(row => `<div class="hours-row"><span>${esc(row.days)}</span><strong>${esc(row.time)}</strong></div>`)
+        .join('');
+      const exceptions = store.exceptions
+        .map(row => `<div class="hours-exception">${svg('alert')}<span><strong>${esc([fmtDate(row.date, true), row.name].filter(Boolean).join(' · '))}</strong>${row.time ? ` · ${esc(row.time)}` : ''}</span></div>`)
+        .join('');
+      const title = store.sourceUrl
+        ? `<a href="${esc(store.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(store.name)} ${svg('external')}</a>`
+        : esc(store.name);
+      return `<article class="hours-store" style="${storeStyle(store.id)}">
+        <div class="hours-store-head"><i class="store-dot"></i><div><h3>${title}</h3><p>${esc(store.address)}</p></div></div>
+        <div class="hours-table">${hours}</div>
+        ${exceptions}
+        ${store.verified ? `<div class="hours-verified">Overené ${esc(fmtDate(store.verified, true))}</div>` : ''}
+      </article>`;
+    })
     .join('');
-  const mapsLink = plan.mapsUrl
-    ? `<a class="primary-btn full" href="${esc(plan.mapsUrl)}" target="_blank" rel="noopener" style="margin-top:12px">Otvoriť trasu</a>`
+  const holidayLink = opening.holidaySourceUrl
+    ? `<a href="${esc(opening.holidaySourceUrl)}" target="_blank" rel="noopener noreferrer">Kalendár sviatkov ${svg('external')}</a>`
     : '';
-  return `<section class="panel insight-card">
-    <div class="icon-wrap">${svg('cart')}</div>
-    <h2>Odporúčaný plán nákupu</h2>
-    <p>Routine navrhla poradie podľa platnosti akcií a odhadovanej úspory.</p>
-    <div class="route-list">${stops}</div>
-    ${mapsLink}
+  return `<section class="panel opening-card">
+    <div class="panel-head"><div><h2>Otváracie hodiny tento týždeň</h2><p>${esc([opening.location, opening.period].filter(Boolean).join(' · '))}</p></div>${svg('calendar')}</div>
+    <div class="holiday-status ${hasExceptions ? 'has-exception' : ''}">${svg(hasExceptions ? 'alert' : 'check')}<span>${esc(opening.holidayNote || (hasExceptions ? 'Počas sviatkov platia výnimky nižšie.' : 'Bez sviatočných výnimiek.'))}</span>${holidayLink}</div>
+    <div class="hours-list">${stores}</div>
   </section>`;
 }
 
@@ -120,7 +132,7 @@ function dealRow(i, index) {
       ${oldFinalPrice(i) != null ? `<div class="price-old">${fmtPrice(oldFinalPrice(i))}</div>` : ''}
     </div>
     ${discountBadge(i) || '<span></span>'}
-    ${circleAddButton(i)}
+    <div class="product-actions">${watchButton(i)}${circleAddButton(i)}</div>
   </div>`;
 }
 
@@ -154,6 +166,7 @@ export function renderOverview() {
         <h2>Praktický tip</h2>
         <p><strong>${esc(best.name)}</strong> v ${esc(best.store)} za ${fmtPrice(finalPrice(best))}. ${esc(best.note || validityMeta(best).text + '.')}</p>
         ${primaryToggleButton(best, 'margin-top:13px')}
+        ${watchButton(best, true)}
       </section>`
     : '';
 
@@ -199,7 +212,7 @@ export function renderOverview() {
       </div>
       <div class="column">
         ${tipCard}
-        ${renderRoute()}
+        ${renderOpeningHours()}
         ${sourcesCard}
       </div>
     </div>`;
