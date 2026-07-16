@@ -48,7 +48,7 @@ function dealRow(i) {
   const old = oldFinalPrice(i);
   const meta = validityMeta(i);
   const verdictPill = `<span class="verdict-pill ${i.verdict}">${VERDICT_LABEL[i.verdict] || 'Neoverená'}</span>`;
-  return `<div class="drow ${i.verdict === 'umela' ? 'suspicious' : ''} ${meta.cls === 'expired' ? 'expired' : ''}">
+  return `<div class="drow v-${i.verdict} ${meta.cls === 'expired' ? 'expired' : ''}">
     <div class="dc-name">
       <button class="dname" data-action="detail" data-key="${esc(i.key)}">${esc(i.name)}</button>
       <div class="dmeta">

@@ -102,7 +102,7 @@ function renderRoute() {
 // ---------------------------------------------------------------------------
 
 function dealRow(i, index) {
-  return `<div class="deal-row">
+  return `<div class="deal-row v-${i.verdict}">
     <div class="rank">${index + 1}</div>
     <div class="deal-info">
       <button class="deal-name" data-action="detail" data-key="${esc(i.key)}">${esc(i.name)}</button>
