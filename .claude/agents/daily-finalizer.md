@@ -16,11 +16,11 @@ Ak chýba povinný artefakt, zdroj, dôkaz alebo QA nie je PASS, nič nepublikuj
 Pri PASS:
 
 1. vyrieš iba explicitné konflikty a needs_opus položky,
-2. ak je migrácia v `data/routine-state.json` pending, skontroluj dry-run bez kolízií a zhodný preservation digest a až potom spusti `python scripts/routine/migrate_product_ids.py --write --report .routine-work/runs/<run_id>/product-id-migration.json`; pri stave complete ju vždy preskoč,
+2. ak je migrácia v `data/routine-state.json` pending, skontroluj dry-run bez kolízií a zhodný preservation digest a až potom spusti `scripts/routine/migrate_product_ids.py --write --report .routine-work/runs/<run_id>/product-id-migration.json` cez interpreter (`python3` alebo `python`) zistený v preflighte podľa `.claude/CLAUDE.md`; pri stave complete ju vždy preskoč,
 3. schváľ product_id mapu, históriu, benchmarky, verdikty, TOP a promo,
 4. uprav latest, kumulatívny týždenný archív, index a overené legislatívne dáta,
 5. aktualizuj `data/routine-state.json` o source manifest, metriky, posledný úspech a dokončenú migráciu,
-6. spusti všetky deterministické kontroly, JS/JSON checks a smoke test,
+6. spusti všetky deterministické kontroly, JS/JSON checks a smoke test; `--allow-missing-active OFFER_ID` použi iba pre presne identifikovanú aktívnu ponuku, ktorej stiahnutie dokladá first-party artefakt a ktorú archív ďalej zachováva,
 7. skontroluj diff a zachovaj nesúvisiace zmeny,
 8. pred commitom spusti secret scan URL/zmien a diff-size/preservation gate; commitni iba pri materiálnej alebo povolenej verification-only zmene,
 9. štandardne pushni `origin/claude/routine-<run_id>` a vráť NEEDS_MERGE; `origin/main` použi iba v explicitne povolenom direct-publish režime,

@@ -2,51 +2,56 @@
   "schema_version": 1,
   "initialized_at": "2026-07-16T23:30:00+02:00",
   "last_success": {
-    "run_id": "2026-07-17T000816",
-    "completed_at": "2026-07-17T00:43:05+02:00",
+    "run_id": "2026-07-17T174946",
+    "completed_at": "2026-07-17T19:08:00+02:00",
     "timezone": "Europe/Bratislava",
     "status": "PASS",
-    "execution": "codex_local_first_run",
-    "base_commit": "077c3ec5c3fdf8b13fe293cf4df27dcf52159419",
-    "sources_checked": 18,
+    "execution": "codex_multi_agent_daily_run",
+    "base_commit": "e6bf18fd35a7f3252e98f24f38d9aa65e2167946",
+    "sources_checked": 23,
     "source_baseline_established": true,
-    "offers_added": 0,
-    "offers_updated": 1,
+    "offers_added": 348,
+    "offers_updated": 9,
+    "offers_withdrawn": 1,
     "offers_expired": 0,
-    "history_points_added": 0,
-    "product_ids_migrated": 1119,
+    "history_points_added": 357,
+    "product_ids_migrated": 0,
     "hours_verified": true,
     "holiday_window_extended": true,
-    "legislation_content_changed": false
+    "legislation_content_changed": false,
+    "routine_portability_fixed": true
   },
   "source_manifest": {
-    "checked_at": "2026-07-17T00:33:00+02:00",
+    "checked_at": "2026-07-17T19:08:00+02:00",
     "url_policy": "public canonical URLs only; sensitive auth/signature query parameters forbidden",
     "retail": {
       "kaufland": {
         "url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
-        "method": "direct_http_sha256",
-        "sha256": "719ab9856ea82033e78422d814e25bb0155c240f2ff4ef23989c3e81c2907ce6",
+        "method": "raw_and_offer_template_semantic_sha256",
+        "sha256": "3629653c5c46004350785263d4b4cf86550e0f8ab8447d219abed5495461a110",
+        "offer_data_semantic_sha256": "304a7bb8e1dcf86766c8823ec9a1c00844d11b621b0deff73a2c6da07c5b1806",
         "valid_from": "2026-07-16",
         "valid_to": "2026-07-22"
       },
       "metro": {
         "url": "https://www.metro.sk/aktualna-ponuka",
-        "method": "first_party_browser_dom_normalized",
-        "direct_http_status": 403,
+        "method": "first_party_publication_inventory",
         "catalog_count": 15,
-        "normalized_dom_sha256": "0b67032d8c555c77f5c223c268b6ef8f37f7d41e525ebca65330a71a7c5f27ef",
+        "inventory_semantic_sha256": "2e8450fc6492f908ce3648feaf1de4b9e483f063d3ed999a332f2c8d6672e1d3",
         "main_valid_from": "2026-07-15",
         "main_valid_to": "2026-07-28"
       },
       "lidl": {
         "url": "https://www.lidl.sk/c/letaky",
-        "viewer_url": "https://www.lidl.sk/l/sk/letak/online-letak-platny-od-13-07-2026/view/flyer/page/1",
-        "method": "direct_http_sha256",
-        "sha256": "9f1f8ac2fbddaa95223c96593cf9e925c3ef58be72d538b1a85ec136d9521e29",
-        "viewer_sha256": "3b27f5f2c7b5877f5982b10d59037ff847c89d701696132a0bc213f1d826b567",
-        "valid_from": "2026-07-13",
-        "valid_to": "2026-07-19"
+        "viewer_url": "https://www.lidl.sk/l/sk/letak/online-letak-platny-od-20-07-2026/view/flyer/page/1",
+        "api_url": "https://endpoints.leaflets.schwarz/v4/flyer?flyer_identifier=online-letak-platny-od-20-07-2026",
+        "method": "canonical_api_metadata_plus_pdf_sha256",
+        "api_semantic_sha256": "81ac7e845be6f2a4173e6777275d38242113a90cc9b52283ab420984b88dcc3f",
+        "pdf_sha256": "276c194b5c1585fd3d83f1a3c986b86f72f18a7388bef7d0017197de12e473e0",
+        "api_pages": 109,
+        "pdf_pages": 108,
+        "valid_from": "2026-07-20",
+        "valid_to": "2026-07-26"
       }
     },
     "operations": {
@@ -60,61 +65,71 @@
         "direct_http_status": 403
       },
       "lidl_hours": {
-        "url": "https://www.lidl.sk/s/sk-SK/vyhladavac-predajni/bratislava/eisnerova-6964-60/_payload.json?bid_26_13_3",
-        "sha256": "ce2f98373956df0eefd8f185683ad36ecbdaeddfafbb59122363cfcfe250b21d",
-        "etag": "e45c57a3002e55d1320ae18a3d0c17ea"
+        "url": "https://www.lidl.sk/s/sk-SK/vyhladavac-predajni/bratislava/eisnerova-6964-60/",
+        "sha256": "dac2c7654308464117fa4fbbc86c8b9e59e91906dc8733163ac0f9e63e585af2",
+        "etag": "1a4080593c15c311d82418d31785b39e"
       },
       "holidays": {
         "url": "https://www.vlada.gov.sk/slovensko/statne-sviatky/",
         "sha256": "003c2f981742fa4ec4d204889452b7f83bc2aa0ff1f9fb79137867069509c5c5",
-        "checked_through": "2026-08-05"
+        "checked_through": "2026-08-09"
       }
     },
     "legislation": {
-      "method": "direct_http_raw_bytes_sha256",
       "slovlex_108": {
         "url": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2024/108/20240701",
-        "sha256": "044b4468f73a88c73cc96131efb4bd05ba3be39b6d5717cf53bad6562e3748da"
+        "sha256": "044b4468f73a88c73cc96131efb4bd05ba3be39b6d5717cf53bad6562e3748da",
+        "status": 200
       },
       "financnasprava_ekasa": {
         "url": "https://www.financnasprava.sk/sk/podnikatelia/dane/ekasa/erp",
-        "sha256": "25a71b0a579ea2da037924117b57203dc43bfbc23492055f3108b80e22fc2062"
+        "sha256": "63131f1169a30f75f6b21ef35b065d3281486bf1670e0615215d175154fdcb8b",
+        "status": 200
       },
       "soi_kontrola": {
         "url": "https://www.soi.sk/kontrolna-cinnost",
-        "sha256": "4379a36c4f6a0877a8962ecf3b07bfab5575470c40e589fe5abe276a2d6d5b4e"
+        "sha256": "204b2a5f71591400715d283d10220dd560ec56bd9bfe7da5b2085c2cc3ebc6e4",
+        "status": 200
       },
       "svps_registracia": {
         "url": "https://svps.sk/potraviny/registracia-a-schvalovanie-potravinarskych-prevadzkarni/",
-        "sha256": "7be378ab288b77792db67f9ef0b0bd2763d97662a060f32e0660ce2331ad279a"
+        "sha256": "8704a37c5690664e8f69156b28ef39231707dd91c4489d4b7aff84cf3077b4d2",
+        "status": 200
       },
       "uvz_sposobilost": {
         "url": "https://www.uvzsr.sk/web/uvz/odborna-sposobilost-na-epidemiologicky-zavazne-cinnosti-pri-vyrobe-manipulacii-a-uvadzani-do-obehu-potravin-a-pokrmov-vynimky",
-        "sha256": "14a12faf226237bd6f38029c47a3715d2f491cac398e7d3b4bc3fd65c85a55cb"
+        "sha256": "60af1a10c66c0a0f881b61045209cf12bb9ce236646921b7314f7915a4625b93",
+        "status": 200
       },
       "mh_kbu": {
         "url": "https://www.economy.gov.sk/obchod/centrum-pre-chemicke-latky-a-pripravky/chemikalie-1/reach/zdroje-informacii/karta-bezpecnostnych-udajov",
-        "sha256": "a82dfe98fad2b0908e1f6d93ae64536e359e4c6ccdbf953915a739fde48cedb4"
+        "sha256": "cad6e89880769fc8425ff4c613333b7b6afb15fe36c5b12ebbcde0a9d224cdb9",
+        "status": 200
       },
       "zaloha_obchodnik": {
         "url": "https://slovenskozalohuje.sk/obchodnik/",
-        "sha256": "1be8c260b60794cf1aafab1a9157dc110155164f788b480436a7cab24302eb56"
+        "sha256": "1be8c260b60794cf1aafab1a9157dc110155164f788b480436a7cab24302eb56",
+        "status": 200
       },
       "minzp_zalohovanie": {
         "url": "https://www.minzp.sk/zalohovanie/najcastejsie-otazky.html",
-        "sha256": "70ca956f47410c1743625db94e7e3c011d738f714827c678db6926829e9c61d1"
+        "sha256": "70ca956f47410c1743625db94e7e3c011d738f714827c678db6926829e9c61d1",
+        "status": "web_render_ok_direct_http_reset"
       },
       "socpoist": {
         "url": "https://www.socpoist.sk",
-        "sha256": "171d0624fa6d27a88c2cecfa44cf8b30ba4f69e0eb57bc644829665062709bb9"
+        "sha256": "9dc8dad49cb7e89c39412db24fc2b0d601baae5647ef8cd4508c6dd77fbfecd8",
+        "status": 200
       },
       "slovensko": {
         "url": "https://www.slovensko.sk",
-        "sha256": "904cba3dae09ea76543da9e8620f00386e16ab335923430544c5488eac9b8e12"
+        "sha256": "7135d0978a17e49841b0ac0381812e0e074d9e6b74934a2e7f44acd9b3e018e8",
+        "status": 200
       },
       "mh_paragraf_7": {
         "url": "https://www.economy.gov.sk/obchod/ochrana-spotrebitela/najcastejsie-otazky/najcastejsie-otazky-obchodnikov/oznamenie-o-znizeni-ceny-7-zakona-o-ochrane-spotrebitela",
-        "sha256": "c0a2480bfc17b761685e3c8f8efe13699b09ede0bb4364236aea375c23e5a4df"
+        "sha256": "7bb7e5f4301b08767540b1c9cb7ee9f7608b408152ea0bb1347aafcfb249cbb7",
+        "status": 200
       }
     }
   },
@@ -126,22 +141,25 @@
     "raw_prefixed_ids_after": 0,
     "unique_offers_migrated": 1119,
     "file_aliases_written": 2238,
-    "files": ["data/latest.json", "data/archive/2026-W29.json"],
+    "files": [
+      "data/latest.json",
+      "data/archive/2026-W29.json"
+    ],
     "collisions": 0,
     "normalized_cross_store_exact_matches": 2,
     "preservation_sha256": "74cc0051979002b0cd13d4ab935f4cfcb71ede7801d8b8dc6dbaa8721d27d479",
     "note": "Jednorazová migrácia odstránila iba známy obchodný prefix. Bežné denné behy ju znovu nezapisujú; schema a validator ostávajú regresnou bránou."
   },
   "quality_baseline": {
-    "offers": 1119,
-    "active": 1066,
-    "upcoming": 53,
+    "offers": 1466,
+    "active": 1073,
+    "upcoming": 393,
     "expired": 0,
-    "history_two_or_more": 3,
-    "verdict_unverified": 1114,
+    "history_two_or_more": 21,
+    "verdict_unverified": 1461,
     "verdict_real": 2,
     "verdict_artificial": 3,
     "promo_priority_one": 1,
-    "missing_images": 571
+    "missing_images": 919
   }
 }

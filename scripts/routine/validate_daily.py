@@ -170,6 +170,16 @@ def main() -> int:
     parser.add_argument("--mode", choices=("latest", "archive"))
     parser.add_argument("--today", help="Reprodukovateľný dátum YYYY-MM-DD; default Europe/Bratislava.")
     parser.add_argument("--previous", help="Predchádzajúci dataset na kontrolu histórie a poklesu.")
+    parser.add_argument(
+        "--allow-missing-active",
+        action="append",
+        default=[],
+        metavar="OFFER_ID",
+        help=(
+            "Opakovateľná výnimka pre aktívnu ponuku preukázateľne stiahnutú "
+            "z first-party zdroja; vyžaduje --previous a presnú zhodu ID."
+        ),
+    )
     parser.add_argument("--archive-index", help="Index archívu, napr. data/archive/index.json.")
     parser.add_argument("--state", help="Trvalý data/routine-state.json po finalizácii.")
     parser.add_argument("--strict", action="store_true", help="Povýši obsahové warningy na chyby.")
@@ -386,16 +396,35 @@ def main() -> int:
             if lost_points:
                 errors.append(f"Stratené historické body pri existujúcich product_id: {lost_points}")
             current_ids = set(ids)
-            missing_active = 0
+            missing_active: list[str] = []
             for old in old_offers:
                 old_id = str(old.get("id", ""))
                 old_end = old_windows.get(old_id, (None, None))[1]
                 if old_id not in current_ids and (not old_end or old_end >= today):
-                    missing_active += 1
-            if missing_active:
-                errors.append(f"Zmiznuté ešte aktívne ponuky oproti previous: {missing_active}")
+                    missing_active.append(old_id)
+            allowed_missing = set(args.allow_missing_active)
+            unexpected_missing = sorted(set(missing_active) - allowed_missing)
+            unused_allowances = sorted(allowed_missing - set(missing_active))
+            if unexpected_missing:
+                errors.append(
+                    "Zmiznuté ešte aktívne ponuky oproti previous: "
+                    f"{len(unexpected_missing)} ({', '.join(unexpected_missing[:5])})"
+                )
+            approved_missing = sorted(set(missing_active) & allowed_missing)
+            if approved_missing:
+                warnings.append(
+                    "Schválené stiahnutie aktívnej ponuky z first-party zdroja: "
+                    + ", ".join(approved_missing)
+                )
+            if unused_allowances:
+                errors.append(
+                    "Nepoužité alebo chybné --allow-missing-active ID: "
+                    + ", ".join(unused_allowances)
+                )
         except Exception as exc:
             errors.append(f"Previous dataset sa nedá overiť: {exc}")
+    elif args.allow_missing_active:
+        errors.append("--allow-missing-active vyžaduje --previous")
 
     if args.archive_index:
         try:

@@ -332,7 +332,7 @@ Pole plan už negeneruj. Legacy plan môže zostať len v starom archíve.
 
 ## 13. KROK I — validačné brány
 
-Spusti `scripts/routine/validate_daily.py`, `scripts/routine/scan_secrets.py`, JSON parse, Draft 2020-12 schema validáciu a business kontroly. Pre `latest` odovzdaj aj `--archive-index`, `--state` a pri dostupnom predchádzajúcom úspechu `--previous`; archívy validuj s `--mode archive`.
+Spusti `scripts/routine/validate_daily.py`, `scripts/routine/scan_secrets.py`, JSON parse, Draft 2020-12 schema validáciu a business kontroly. Pre `latest` odovzdaj aj `--archive-index`, `--state` a pri dostupnom predchádzajúcom úspechu `--previous`; archívy validuj s `--mode archive`. Ak first-party zdroj preukázateľne stiahol ešte aktívnu ponuku, finalizer ju smie odstrániť z `latest` a zachovať v archíve iba s konkrétnym zberovým dôkazom a presným opakovateľným argumentom `--allow-missing-active OFFER_ID`; neznáme ani nepoužité výnimky validator nepovolí.
 
 BLOCKING:
 
