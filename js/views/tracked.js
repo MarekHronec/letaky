@@ -1,157 +1,66 @@
-// Sledované produkty: analytický dashboard a kompaktný zoznam. Odporúčanie
-// je vysvetliteľný heuristický model, ktorý kombinuje cenovú históriu,
-// nákupný rytmus z uložených nákupov a skladovateľnosť produktu.
+// Sledované produkty: rozhodovací dashboard nad porovnateľnou cenovou
+// históriou, potvrdenými nákupmi a používateľom zadanou zásobou.
 
 import { state } from '../state.js';
 import { activeRecords } from '../tracking.js';
-import { visibleItems, finalPrice, discountOf } from '../data.js';
+import { records as purchaseRecords } from '../purchases.js';
+import { visibleItems, finalPrice } from '../data.js';
+import { analyseTrackedProduct, compareTrackedAnalyses } from '../tracked-analytics.js';
 import { pageHead, renderStoreTabs, storeLogo, validityHtml, circleAddButton, watchButton } from './shared.js';
 import { svg } from '../lib/icons.js';
-import { arr, esc, fmtDate, fmtPrice, norm } from '../lib/util.js';
+import { esc, fmtDate, fmtPrice, norm } from '../lib/util.js';
 
-const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
-
-function median(values) {
-  const sorted = values.filter(Number.isFinite).slice().sort((a, b) => a - b);
-  if (!sorted.length) return null;
-  const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
-}
-
-function historyFor(record, offers) {
-  const points = new Map();
-  const add = (date, price) => {
-    const day = String(date || '').slice(0, 10);
-    const value = Number(price);
-    if (/^\d{4}-\d{2}-\d{2}$/.test(day) && Number.isFinite(value)) points.set(day, value);
-  };
-  arr(record.history).forEach(point => add(point.datum, point.cena));
-  offers.forEach(offer => {
-    arr(offer.history).forEach(point => add(point.datum, point.cena_s_dph ?? point.cena));
-    add(state.data?.generated, offer.priceVat ?? offer.price);
-  });
-  if (!offers.length) add(record.lastSeen, record.lastPriceVat ?? record.lastPrice);
-  return [...points.entries()]
-    .map(([date, price]) => ({ date, price }))
-    .sort((a, b) => a.date.localeCompare(b.date))
-    .slice(-16);
-}
-
-function purchaseStats(record) {
-  const purchases = state.savedLists
-    .map(list => {
-      const items = arr(list.items).filter(item =>
-        item.productId ? item.productId === record.productId : norm(item.name) === norm(record.name),
-      );
-      if (!items.length) return null;
-      return {
-        date: String(list.savedAt).slice(0, 10),
-        quantity: items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0),
-      };
-    })
-    .filter(Boolean)
-    .sort((a, b) => a.date.localeCompare(b.date));
-
-  const uniqueDates = [...new Set(purchases.map(purchase => purchase.date))];
-  const intervals = uniqueDates
-    .slice(1)
-    .map((date, index) => Math.round((Date.parse(date) - Date.parse(uniqueDates[index])) / 86400000))
-    .filter(days => days > 0);
-  const cadence = median(intervals);
-  const lastDate = uniqueDates.at(-1) || '';
-  const daysSince = lastDate ? Math.max(0, Math.round((Date.now() - Date.parse(lastDate)) / 86400000)) : null;
-  return {
-    count: purchases.length,
-    cadence,
-    lastDate,
-    daysSince,
-    dueIn: cadence != null && daysSince != null ? Math.round(cadence - daysSince) : null,
-    typicalQuantity: Math.max(1, Math.round(median(purchases.map(purchase => purchase.quantity)) || 1)),
-  };
-}
-
-function shelfProfile(record) {
-  const text = norm(`${record.category} ${record.name}`);
-  const durable = /droger|cisti|praci|papier|konzerv|ryz|cestovin|muk|cukor|sol|olej|kav|caj|napoj|voda|pivo|vino|trvanliv|mrazen|plien|mydl|sampon|zubn/;
-  const perishable = /cerstv|ovoc|zelen|maso|ryb|peciv|jogurt|mliec|smotan|lahodk|salat/;
-  if (durable.test(text)) return { factor: 1, label: 'vhodné do zásoby' };
-  if (perishable.test(text)) return { factor: 0.2, label: 'krátka trvanlivosť' };
-  return { factor: 0.58, label: 'stredná skladovateľnosť' };
-}
+const SIGNAL_LABELS = {
+  buy: 'Kúpiť',
+  stock: 'Do zásoby',
+  wait: 'Počkať',
+  upcoming: 'Budúca ponuka',
+  observe: 'Sledovať cenu',
+  nooffer: 'Bez ponuky',
+  needsdata: 'Doplniť dáta',
+};
 
 function analyse(record) {
-  const allOffers = visibleItems().filter(offer => offer.productId === record.productId);
-  const scopedOffers = state.store === 'all' ? allOffers : allOffers.filter(offer => offer.storeId === state.store);
-  const best = scopedOffers
-    .slice()
-    .sort((a, b) => (finalPrice(a) ?? Infinity) - (finalPrice(b) ?? Infinity))[0] || null;
-  const history = historyFor(record, allOffers);
-  const prices = history.map(point => point.price);
-  const current = best ? finalPrice(best) : (state.settings.dph === 'platca' ? record.lastPrice : record.lastPriceVat ?? record.lastPrice);
-  const low = prices.length ? Math.min(...prices) : null;
-  const high = prices.length ? Math.max(...prices) : null;
-  const usual = median(prices);
-  const discount = best ? Math.max(0, discountOf(best) || 0) : 0;
-  const purchases = purchaseStats(record);
-  const shelf = shelfProfile(record);
+  return analyseTrackedProduct(record, {
+    offers: visibleItems(),
+    purchases: purchaseRecords,
+    selectedStore: state.store,
+    generatedDate: state.data?.generated,
+  });
+}
 
-  const valueScore = current == null
-    ? 0
-    : prices.length >= 2 && high > low
-      ? clamp(((high - current) / (high - low)) * 100, 0, 100)
-      : clamp(45 + discount * 1.6, 25, 100);
-  const needScore = purchases.dueIn == null ? 45 : clamp(75 - purchases.dueIn * 4, 10, 100);
-  const score = best ? Math.round(valueScore * 0.55 + needScore * 0.25 + shelf.factor * 100 * 0.2) : 12;
-  const confidence = clamp(10 + history.length * 14 + purchases.count * 16, 10, 96);
-
-  let signal = 'observe';
-  let title = 'Sledovať cenu';
-  let detail = history.length < 2 ? 'Zatiaľ chýba dlhšia cenová história.' : 'Cena je blízko bežnej úrovne.';
-  let quantity = 1;
-  if (!best) {
-    signal = 'nooffer';
-    title = 'Bez aktuálnej akcie';
-    detail = 'Produkt zostáva sledovaný; čakáme na ďalšie meranie.';
-  } else if (shelf.factor >= 0.8 && ((low != null && current <= low * 1.01 && history.length >= 2) || discount >= 25)) {
-    signal = 'stock';
-    title = 'Nakúpiť do zásoby';
-    quantity = clamp(purchases.typicalQuantity + 1 + Math.round(discount / 12), 2, 8);
-    detail = `Silná cena a ${shelf.label}; odporúčaný rozsah približne ${quantity} ks.`;
-  } else if (discount >= 18 || (usual != null && current <= usual * 0.9) || (purchases.dueIn != null && purchases.dueIn <= 7 && current <= (usual ?? current) * 1.03)) {
-    signal = 'buy';
-    title = 'Kúpiť tento týždeň';
-    quantity = clamp(purchases.typicalQuantity, 1, 4);
-    detail = purchases.dueIn != null && purchases.dueIn <= 7
-      ? `Blíži sa obvyklý termín doplnenia; odporúčanie ${quantity} ks.`
-      : 'Cena je priaznivá voči dostupným meraniam.';
-  } else if (usual != null && current > usual * 1.08) {
-    signal = 'wait';
-    title = 'Počkať na lepšiu cenu';
-    detail = `Aktuálna cena je nad mediánom ${fmtPrice(usual)}.`;
-  }
-
-  return {
-    record,
-    allOffers,
-    best,
-    history,
-    purchases,
-    shelf,
-    current,
-    low,
-    usual,
-    discount,
-    score,
-    confidence,
-    signal,
-    title,
-    detail,
-    quantity,
-  };
+function needsBetterData(analysis) {
+  return analysis.quality.key === 'low';
 }
 
 function signalBadge(analysis) {
-  return `<span class="track-signal ${analysis.signal}">${esc(analysis.title)}</span>`;
+  return `<span class="track-signal ${esc(analysis.signal)}">${esc(SIGNAL_LABELS[analysis.signal] || analysis.title)}</span>`;
+}
+
+function qualityBadge(analysis) {
+  return `<span class="track-quality quality-${esc(analysis.quality.key)}">${esc(analysis.quality.label)}</span>`;
+}
+
+function confirmedPurchasesLabel(count) {
+  if (count === 1) return '1 potvrdený nákup';
+  if (count >= 2 && count <= 4) return `${count} potvrdené nákupy`;
+  return `${count} potvrdených nákupov`;
+}
+
+function presentedPrice(analysis) {
+  if (analysis.best) return finalPrice(analysis.best);
+  return state.settings.dph === 'platca'
+    ? (analysis.record.lastPrice ?? analysis.record.lastPriceVat)
+    : (analysis.record.lastPriceVat ?? analysis.record.lastPrice);
+}
+
+function presentedBasisLabel(analysis) {
+  const hasExplicitPair = analysis.best
+    ? analysis.best.priceVat != null && analysis.best.price != null
+    : analysis.record.lastPriceVat != null && analysis.record.lastPrice != null;
+  return state.settings.dph === 'platca' && hasExplicitPair
+    ? 'zobrazená cena bez DPH · analytika porovnáva s DPH'
+    : 'cena s DPH';
 }
 
 function recordAction(analysis, wide = false) {
@@ -159,99 +68,180 @@ function recordAction(analysis, wide = false) {
   return `<button class="watch-btn ${wide ? 'wide' : ''} tracked" data-action="untrack-record" data-product-id="${esc(analysis.record.productId)}" aria-label="Prestať sledovať ${esc(analysis.record.name)}" title="Prestať sledovať">${svg('bookmark')}${wide ? '<span>Sledované</span>' : ''}</button>`;
 }
 
+function pricePosition(analysis) {
+  const { price, metric } = analysis;
+  if (!price.count || price.percentile == null) return '<strong>Bez histórie</strong><span>Na porovnanie treba ďalšie merania</span>';
+  const compared = metric.key === 'unit' && price.comparisonPrice != null
+    ? `${fmtPrice(price.comparisonPrice)} / ${esc(metric.unit)}`
+    : `${price.count} cenových bodov`;
+  return `<strong>${esc(price.positionLabel)}</strong><span>${Math.round(price.percentile)}. cenový percentil · ${compared}</span>`;
+}
+
+function purchaseFact(analysis) {
+  const purchases = analysis.purchases;
+  if (!purchases.count && purchases.cadenceSource !== 'manual') {
+    return '<strong>Bez potvrdených nákupov</strong><span>Rytmus sa zatiaľ nepočíta</span>';
+  }
+  const last = purchases.lastDate ? `Naposledy ${fmtDate(purchases.lastDate, true)}` : 'Ručne nastavený rytmus';
+  const cadence = purchases.cadence ? ` · približne každých ${Math.round(purchases.cadence)} dní` : '';
+  return `<strong>${confirmedPurchasesLabel(purchases.count)}</strong><span>${esc(last + cadence)}</span>`;
+}
+
+function inventoryControl(analysis) {
+  const id = esc(analysis.record.productId);
+  return `<div class="track-inventory" aria-label="Domáca zásoba">
+    <span>Máme doma</span>
+    <div class="track-stock-stepper">
+      <button type="button" data-action="tracked-stock-down" data-product-id="${id}" aria-label="Znížiť zásobu ${esc(analysis.record.name)}">−</button>
+      <strong>${analysis.stock.onHand} ks</strong>
+      <button type="button" data-action="tracked-stock-up" data-product-id="${id}" aria-label="Zvýšiť zásobu ${esc(analysis.record.name)}">+</button>
+    </div>
+    ${analysis.stock.minStock ? `<small>minimum ${analysis.stock.minStock} ks</small>` : '<small>minimum nie je nastavené</small>'}
+  </div>`;
+}
+
+function settingsForm(analysis) {
+  const record = analysis.record;
+  const id = esc(record.productId);
+  return `<details class="tracked-settings-panel">
+    <summary>${svg('settings')} Nastaviť zásobu a pravidlá</summary>
+    <form id="tracked-settings-${id}" class="tracked-settings-form" data-form="tracked-settings" data-product-id="${id}">
+      <input type="hidden" name="productId" value="${id}">
+      <label><span>Máme doma</span><input type="number" name="onHand" min="0" max="999" step="1" value="${record.onHand ?? 0}"><small>ks</small></label>
+      <label><span>Minimálna zásoba</span><input type="number" name="minStock" min="0" max="999" step="1" value="${record.minStock ?? 0}"><small>ks</small></label>
+      <label><span>Cieľová cena</span><input type="number" name="targetPrice" min="0" step="0.01" inputmode="decimal" value="${record.targetPrice ?? ''}" placeholder="napr. 2,49"><small>€</small></label>
+      <label><span>Báza cieľovej ceny</span><select name="targetBasis"><option value="vat" ${record.targetBasis !== 'net' ? 'selected' : ''}>s DPH</option><option value="net" ${record.targetBasis === 'net' ? 'selected' : ''}>bez DPH</option></select></label>
+      <label><span>Skladovateľnosť</span><select name="stockProfile">
+        <option value="auto" ${record.stockProfile === 'auto' ? 'selected' : ''}>Automatický odhad</option>
+        <option value="durable" ${record.stockProfile === 'durable' ? 'selected' : ''}>Dlhá trvanlivosť</option>
+        <option value="medium" ${record.stockProfile === 'medium' ? 'selected' : ''}>Stredná trvanlivosť</option>
+        <option value="perishable" ${record.stockProfile === 'perishable' ? 'selected' : ''}>Krátka trvanlivosť</option>
+      </select></label>
+      <label><span>Trvanlivosť</span><input type="number" name="shelfLifeDays" min="0" max="3650" step="1" value="${record.shelfLifeDays ?? 0}"><small>dní</small></label>
+      <label><span>Vlastný rytmus</span><input type="number" name="manualCadenceDays" min="0" max="3650" step="1" value="${record.manualCadenceDays ?? 0}"><small>dní</small></label>
+      <button class="primary-btn" type="submit">Uložiť nastavenia</button>
+    </form>
+  </details>`;
+}
+
+function offerMeta(analysis) {
+  const offer = analysis.best;
+  if (!offer) {
+    const record = analysis.record;
+    return `<span class="muted-line">Naposledy ${record.lastStore ? esc(record.lastStore) : 'bez obchodu'}${record.lastSeen ? ` · ${esc(fmtDate(record.lastSeen, true))}` : ''}</span>`;
+  }
+  return `${storeLogo(offer.store)}${validityHtml(offer)}`;
+}
+
 function dashboardCard(analysis) {
-  const { record, best, purchases } = analysis;
-  const priceMeta = best
-    ? `${storeLogo(best.store)}${validityHtml(best)}`
-    : `<span class="muted-line">Naposledy ${record.lastStore ? esc(record.lastStore) : 'bez obchodu'}${record.lastSeen ? ` · ${esc(fmtDate(record.lastSeen, true))}` : ''}</span>`;
-  return `<article class="tracked-card signal-${analysis.signal}">
+  const { record, best, price, purchases } = analysis;
+  const shownPrice = presentedPrice(analysis);
+  const savings = price.median != null && price.displayPrice != null
+    ? analysis.expectedSavings > 0
+      ? `Odhad úspory ${fmtPrice(analysis.expectedSavings)}${analysis.quantity > 1 ? ` pri ${analysis.quantity} ks` : ''}`
+      : 'Bez preukázanej úspory oproti mediánu'
+    : 'Úsporu zatiaľ nemožno spočítať';
+  const timingClass = analysis.offerState === 'upcoming' ? ' upcoming' : '';
+  return `<article class="tracked-card signal-${esc(analysis.signal)}">
     <div class="tracked-card-head">
       <div><div class="tracked-kicker">${esc(record.category || 'Sledovaný produkt')}</div><h2>${esc(record.name)}</h2>${record.amount ? `<p>${esc(record.amount)}</p>` : ''}</div>
       ${recordAction(analysis)}
     </div>
-    <div class="tracked-price-row"><strong>${analysis.current != null ? fmtPrice(analysis.current) : '—'}</strong><div>${priceMeta}</div></div>
-    <div class="track-score-row">
-      <div class="track-score" style="--score:${analysis.score}"><strong>${analysis.score}</strong><span>/100</span></div>
-      <div><div class="track-recommendation">${signalBadge(analysis)}</div><p>${esc(analysis.detail)}</p></div>
+    <div class="tracked-price-row${timingClass}"><div><span>${esc(analysis.offerState === 'upcoming' ? 'Budúca cena' : analysis.offerState === 'active' ? 'Aktuálna cena' : 'Posledná známa cena')}</span><strong>${shownPrice != null ? fmtPrice(shownPrice) : '—'}</strong><small>${esc(presentedBasisLabel(analysis))}</small></div><div>${offerMeta(analysis)}</div></div>
+    <div class="track-decision">
+      <div class="track-decision-head">${signalBadge(analysis)}<span class="track-timing">${esc(analysis.timing)}</span></div>
+      <h3>${esc(analysis.title)}</h3><p>${esc(analysis.detail)}</p>
+      ${analysis.quantity ? `<div class="track-quantity"><strong>${analysis.quantity} ks</strong><span>odporúčané množstvo po odpočítaní zásoby</span></div>` : ''}
     </div>
-    <div class="track-meter"><i style="width:${analysis.confidence}%"></i></div>
-    <div class="track-facts">
-      <span>${analysis.history.length} cenových meraní</span>
-      <span>${purchases.count ? `${purchases.count} nákupov v histórii` : 'bez nákupnej histórie'}</span>
-      <span>${esc(analysis.shelf.label)}</span>
+    <div class="track-evidence-grid">
+      <div>${pricePosition(analysis)}</div>
+      <div><strong>${esc(savings)}</strong><span>${price.median != null ? `Robustný medián ${fmtPrice(price.median)}` : 'Chýba cenová kotva'}</span></div>
+      <div>${purchaseFact(analysis)}</div>
+      <div>${inventoryControl(analysis)}</div>
     </div>
+    <div class="track-quality-row">${qualityBadge(analysis)}<span>${esc(analysis.reasons.slice(0, 3).join(' · '))}</span></div>
+    ${analysis.quality.issues.length ? `<details class="track-data-issues"><summary>Čo znižuje kvalitu dát</summary><ul>${analysis.quality.issues.map(issue => `<li>${esc(issue)}</li>`).join('')}</ul></details>` : ''}
+    ${settingsForm(analysis)}
     ${best ? `<div class="tracked-card-actions"><button class="secondary-btn" data-action="detail" data-key="${esc(best.key)}">Detail a história</button><div class="product-actions">${circleAddButton(best)}</div></div>` : ''}
   </article>`;
 }
 
 function listRow(analysis) {
   const best = analysis.best;
-  return `<div class="tracked-list-row">
+  const shownPrice = presentedPrice(analysis);
+  const priceNote = analysis.price.count
+    ? `${analysis.price.positionLabel} · ${analysis.quality.label}`
+    : analysis.quality.label;
+  return `<div class="tracked-list-row signal-${esc(analysis.signal)}">
     <div><strong>${esc(analysis.record.name)}</strong><span>${esc(analysis.record.amount || analysis.record.category || '')}</span></div>
-    <div>${signalBadge(analysis)}<span class="track-row-note">${analysis.history.length} meraní · istota ${analysis.confidence} %</span></div>
-    <div class="tracked-list-price"><strong>${analysis.current != null ? fmtPrice(analysis.current) : '—'}</strong>${best ? storeLogo(best.store) : '<span>bez ponuky</span>'}</div>
+    <div>${signalBadge(analysis)}<span class="track-row-note">${esc(analysis.title)} · ${esc(analysis.timing)}</span></div>
+    <div><strong>${analysis.stock.onHand} ks doma</strong><span>${confirmedPurchasesLabel(analysis.purchases.count)}</span></div>
+    <div class="tracked-list-price"><strong>${shownPrice != null ? fmtPrice(shownPrice) : '—'}</strong><span>${esc(priceNote)}</span>${best ? storeLogo(best.store) : ''}</div>
     <div class="product-actions">${recordAction(analysis)}${best ? circleAddButton(best) : ''}</div>
   </div>`;
 }
 
+function normalizedSort() {
+  if (state.trackedSort === 'priority' || state.trackedSort === 'confidence') return 'urgency';
+  if (state.trackedSort === 'price') return 'price-position';
+  return ['urgency', 'savings', 'price-position', 'name'].includes(state.trackedSort) ? state.trackedSort : 'urgency';
+}
+
 export function renderTracked() {
   const records = activeRecords();
-  let analyses = records.map(analyse);
-  analyses = analyses.filter(analysis => {
+  const allAnalyses = records.map(analyse);
+  let analyses = allAnalyses.filter(analysis => {
     const queryOk = !state.query || norm(`${analysis.record.name} ${analysis.record.category}`).includes(norm(state.query));
     const storeOk = state.store === 'all' || analysis.allOffers.some(offer => offer.storeId === state.store);
-    const filterOk = state.trackedFilter === 'all' || analysis.signal === state.trackedFilter;
+    const filterOk = state.trackedFilter === 'all'
+      || (state.trackedFilter === 'needsdata'
+        ? needsBetterData(analysis)
+        : analysis.signal === state.trackedFilter);
     return queryOk && storeOk && filterOk;
   });
-  analyses.sort((a, b) => {
-    if (state.trackedSort === 'price') return (a.current ?? Infinity) - (b.current ?? Infinity);
-    if (state.trackedSort === 'name') return a.record.name.localeCompare(b.record.name, 'sk');
-    if (state.trackedSort === 'confidence') return b.confidence - a.confidence;
-    return b.score - a.score;
-  });
+  const sort = normalizedSort();
+  analyses.sort((a, b) => compareTrackedAnalyses(a, b, sort));
 
-  const allAnalyses = records.map(analyse);
-  const withOffer = allAnalyses.filter(analysis => analysis.best).length;
-  const stock = allAnalyses.filter(analysis => analysis.signal === 'stock').length;
-  const avgConfidence = allAnalyses.length
-    ? Math.round(allAnalyses.reduce((sum, analysis) => sum + analysis.confidence, 0) / allAnalyses.length)
-    : 0;
+  const activeOffers = allAnalyses.filter(analysis => analysis.bestActive).length;
+  const actionable = allAnalyses.filter(analysis => ['buy', 'stock'].includes(analysis.signal)).length;
+  const needsData = allAnalyses.filter(needsBetterData).length;
   const summary = `<div class="tracked-summary">
     <span><strong>${records.length}</strong> sledovaných</span>
-    <span><strong>${withOffer}</strong> v aktuálnej akcii</span>
-    <span><strong>${stock}</strong> vhodných do zásoby</span>
-    <span><strong>${avgConfidence} %</strong> priemerná istota</span>
+    <span><strong>${activeOffers}</strong> s aktuálnou ponukou</span>
+    <span><strong>${actionable}</strong> odporúčaných nákupov</span>
+    <span><strong>${needsData}</strong> so slabými dátami</span>
   </div>`;
 
   const filters = [
-    ['all', 'Všetky'], ['buy', 'Kúpiť'], ['stock', 'Do zásoby'], ['wait', 'Počkať'], ['nooffer', 'Bez akcie'],
-  ].map(([key, label]) => `<button class="chip ${state.trackedFilter === key ? 'active' : ''}" data-action="tracked-filter" data-filter="${key}">${label}</button>`).join('');
+    ['all', 'Všetky'], ['buy', 'Kúpiť'], ['stock', 'Do zásoby'], ['wait', 'Počkať'],
+    ['upcoming', 'Budúce'], ['observe', 'Sledovať cenu'], ['needsdata', 'Doplniť dáta'], ['nooffer', 'Bez ponuky'],
+  ].map(([key, label]) => `<button class="chip ${state.trackedFilter === key ? 'active' : ''}" data-action="tracked-filter" data-filter="${key}" aria-pressed="${state.trackedFilter === key}">${label}</button>`).join('');
 
   const toolbar = `<div class="tracked-toolbar">
     <div class="view-switch" role="group" aria-label="Spôsob zobrazenia">
-      <button class="${state.trackedMode === 'dashboard' ? 'active' : ''}" data-action="tracked-mode" data-mode="dashboard">Dashboard</button>
-      <button class="${state.trackedMode === 'list' ? 'active' : ''}" data-action="tracked-mode" data-mode="list">Zoznam</button>
+      <button class="${state.trackedMode === 'dashboard' ? 'active' : ''}" data-action="tracked-mode" data-mode="dashboard" aria-pressed="${state.trackedMode === 'dashboard'}">Dashboard</button>
+      <button class="${state.trackedMode === 'list' ? 'active' : ''}" data-action="tracked-mode" data-mode="list" aria-pressed="${state.trackedMode === 'list'}">Zoznam</button>
     </div>
     <div class="filter-row">${filters}</div>
     <select class="sort-select" id="tracked-sort" aria-label="Triedenie sledovaných produktov">
-      <option value="priority" ${state.trackedSort === 'priority' ? 'selected' : ''}>Najlepší nákupný signál</option>
-      <option value="confidence" ${state.trackedSort === 'confidence' ? 'selected' : ''}>Najvyššia istota</option>
-      <option value="price" ${state.trackedSort === 'price' ? 'selected' : ''}>Najnižšia cena</option>
-      <option value="name" ${state.trackedSort === 'name' ? 'selected' : ''}>Podľa názvu</option>
+      <option value="urgency" ${sort === 'urgency' ? 'selected' : ''}>Najnaliehavejšie</option>
+      <option value="savings" ${sort === 'savings' ? 'selected' : ''}>Najvyššia očakávaná úspora</option>
+      <option value="price-position" ${sort === 'price-position' ? 'selected' : ''}>Najlepšia cenová pozícia</option>
+      <option value="name" ${sort === 'name' ? 'selected' : ''}>Podľa názvu</option>
     </select>
   </div>`;
 
-  const method = `<details class="tracking-method"><summary>Ako vzniká odporúčanie</summary><p>Transparentný model kombinuje cenovú pozíciu (55 %), rytmus uložených nákupov (25 %) a skladovateľnosť (20 %). Pri malej histórii zámerne znižuje istotu; nejde o neoveriteľnú ML predpoveď.</p></details>`;
+  const method = `<details class="tracking-method"><summary>Ako vzniká odporúčanie</summary><p>Model porovnáva ceny vždy na rovnakej báze, oddeľuje aktuálne a budúce ponuky a používa iba potvrdené nákupy. Silné odporúčanie Kúpiť alebo Do zásoby vznikne až pri overenej ponuke, presnom balení a aspoň troch cenových bodoch z dvoch dátumov. Kvalita dát je označená slovne, nejde o predstieranú pravdepodobnosť.</p></details>`;
 
   const content = !records.length
-    ? `<div class="empty-state"><strong>Zatiaľ nič nesleduješ.</strong><br>Pri produktoch použi ikonu záložky a postupne sa tu začne skladať cenová aj nákupná analytika.<br><button class="primary-btn" data-view="deals" style="margin-top:14px">Vybrať produkty</button></div>`
+    ? `<div class="empty-state"><strong>Zatiaľ nič nesleduješ.</strong><br>Pri produktoch použi ikonu záložky. Odporúčania sa zlepšujú potvrdenými nákupmi, cenovými meraniami a nastavením domácej zásoby.<br><button class="primary-btn" data-view="deals" style="margin-top:14px">Vybrať produkty</button></div>`
     : !analyses.length
       ? '<div class="empty-state"><strong>Filtru nič nezodpovedá.</strong><br>Skús iný obchod, stav alebo vyhľadávanie.</div>'
       : state.trackedMode === 'dashboard'
         ? `<div class="tracked-grid">${analyses.map(dashboardCard).join('')}</div>`
-        : `<div class="tracked-list"><div class="tracked-list-head"><span>Produkt</span><span>Odporúčanie</span><span>Cena</span><span>Akcie</span></div>${analyses.map(listRow).join('')}</div>`;
+        : `<div class="tracked-list"><div class="tracked-list-head"><span>Produkt</span><span>Odporúčanie</span><span>Zásoba</span><span>Cena</span><span>Akcie</span></div>${analyses.map(listRow).join('')}</div>`;
 
-  return `${pageHead({ eyebrow: 'Core sortiment', title: 'Sledované produkty', desc: 'Tovar, ktorý chceš mať pod kontrolou: aktuálna cena, história, nákupný rytmus a odporúčanie k zásobe.' })}
+  return `${pageHead({ eyebrow: 'Core sortiment', title: 'Sledované produkty', desc: 'Pravdivá cenová pozícia, potvrdený nákupný rytmus a odporúčanie podľa tvojej zásoby.' })}
     ${summary}
     ${renderStoreTabs()}
     ${toolbar}

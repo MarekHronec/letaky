@@ -8,16 +8,16 @@ Responzívna statická aplikácia na prehľad potravinových akcií, rozlíšeni
 
 - **Prehľad:** najlepšie overené ponuky, špeciálne akcie, stav zdrojov a aktuálne otváracie hodiny pobočiek vrátane sviatočných výnimiek.
 - **Všetky akcie:** vyhľadávanie, obchodné filtre, verdikt zľavy, triedenie a vývoj ceny z overenej histórie. V aktuálnom týždni zobrazuje iba ešte platné ponuky; staršie ostávajú v archíve a cenovej histórii.
-- **Sledované produkty:** vlastný core sortiment s dashboardom/zoznamom, filtrami a vysvetliteľným nákupným skóre z ceny, rytmu uložených nákupov a skladovateľnosti.
-- **Môj zoznam:** položky z akcií aj ručne zadané položky, množstvo, odškrtávanie bez presúvania a rozdelenie podľa obchodov. Ručnú položku sa dá aj **nadiktovať hlasom** (Web Speech API, `sk-SK`, s fallbackom na písanie). Nákup sa dá uložiť do histórie a neskôr obnoviť.
+- **Sledované produkty:** vlastný core sortiment s dashboardom/zoznamom, filtrami a vysvetliteľným odporúčaním. Oddeľuje aktívnu a budúcu ponuku, porovnáva rovnakú cenovú bázu a obchod, ukazuje kvalitu vstupov a zohľadňuje iba potvrdené nákupy, evidovanú zásobu a používateľské preferencie.
+- **Môj zoznam:** položky z akcií aj ručne zadané položky, množstvo, odškrtávanie bez presúvania a rozdelenie podľa obchodov. Ručnú položku sa dá aj **nadiktovať hlasom** (Web Speech API, `sk-SK`, s fallbackom na písanie). Zoznam sa dá uložiť ako obnoviteľná šablóna; až výslovné potvrdenie označených položiek vytvorí nemenný záznam dokončeného nákupu.
 - **Legislatíva:** prehľad povinností a termínov pre maloobchod s potravinami a drogériou (eKasa, dane, hygiena, chémia, zálohy, ceny/spotrebiteľ) z `data/legislativa.json`, s odkazmi na oficiálne zdroje. Orientačné, nie právne poradenstvo. Položky s `confidence: "low"` sú v UI označené „orientačné – overiť“; ostatné hodnoty poľa `confidence` sa nezobrazujú.
 - **Detail produktu:** obrázok položky (`obrazok_url`, s kategóriovým emoji ako fallback), graf vývoja ceny, jednotková cena, podmienky akcie a porovnanie rovnakého `product_id` medzi obchodmi.
 - **PWA/offline:** stránku možno pridať na plochu mobilu; posledné načítané dáta a nákupný zoznam fungujú aj bez signálu. Pri novej verzii appky sa zobrazí banner „Obnoviť“.
 
 ## Súkromie a účty
 
-- Appka funguje **bez účtu**: zoznam, nastavenia a stavy legislatívy sa ukladajú iba do `localStorage` tohto prehliadača a dajú sa jednorazovo preniesť linkom.
-- **Voliteľné prihlásenie (Supabase):** po prihlásení e-mailom a heslom sa nákupný zoznam, história nákupov, nastavenia a stavy legislatívy synchronizujú medzi zariadeniami. Účty vytvára správca; verejné registrácie sú vypnuté. Dáta každého používateľa chráni Row Level Security – presné pravidlá sú v [`supabase/schema.sql`](supabase/schema.sql).
+- Appka funguje **bez účtu**: zoznam, šablóny, potvrdené nákupy, sledované produkty, nastavenia a stavy legislatívy sa ukladajú iba do `localStorage` tohto prehliadača. Zdieľací link prenáša iba snapshot nákupného zoznamu, nie potvrdenú históriu ani analytické preferencie.
+- **Voliteľné prihlásenie (Supabase):** po prihlásení e-mailom a heslom sa nákupný zoznam, jeho šablóny, append-only potvrdené nákupy, sledované produkty, nastavenia a stavy legislatívy synchronizujú medzi zariadeniami. Účty vytvára správca; verejné registrácie sú vypnuté. Dáta každého používateľa chráni Row Level Security – presné pravidlá sú v [`supabase/schema.sql`](supabase/schema.sql).
 - Žiadna analytika ani cookies tretích strán.
 
 ## Architektúra
@@ -33,10 +33,12 @@ icons/app-icon.svg          # ikona aplikácie
 
 js/app.js                   # vstupný bod: action registry, routing, render, SW registrácia
 js/config.js                # konštanty (obchody, kľúče úložiska, limity, Supabase)
-js/state.js                 # zdieľaný stav + nastavenia, stavy legislatívy, história nákupov
+js/state.js                 # zdieľaný stav + nastavenia, legislatíva, uložené zoznamy/šablóny
 js/data.js                  # fetch + normalizácia dát (JEDINÉ miesto, kde sa čítajú kľúče schémy)
 js/shopping.js              # nákupný zoznam + tombstone merge pre sync
+js/purchases.js             # potvrdené nákupy: append-only udalosti + štatistiky spotreby
 js/tracking.js              # sledované produkty + lokálna/cloud perzistencia
+js/tracked-analytics.js     # deterministická vysvetliteľná analytika a dátové brány
 js/charts.js                # sparkline + veľký graf ceny (zdieľaná matematika)
 js/sync.js                  # Supabase login a synchronizácia (zvyšok appky o Supabase nevie)
 js/share.js                 # zdieľací link, JSON export/import, hlasové zadávanie
@@ -51,6 +53,9 @@ js/views/tracked.js         # Sledované produkty + analytický dashboard
 js/views/list.js            # Môj zoznam
 js/views/legislativa.js     # Legislatíva
 js/views/profil.js          # Profil a nastavenia
+
+scripts/test_tracked_foundations.mjs # deterministický test nákupov, histórie a sync základov
+scripts/test_tracked_analytics.mjs   # rozhodovacie brány, ceny, balenie, ponuky a zásoba
 
 data/latest.json            # aktuálny týždeň (schema v2)
 data/schema-v2.json         # JSON Schema pre routine
@@ -74,9 +79,12 @@ GitHub Pages je nastavený na deploy z `main`, root `/`. Každý push do `main` 
 | `letaky.shoppingDeleted.v1` | tombstones zmazaných položiek (TTL 30 dní, kvôli syncu) |
 | `letaky.settings.v1` | nastavenia: `dph`, `hideCard`, `dphPeriod` |
 | `letaky.legStates.v2` | stavy legislatívy: `{ kluc: { st, updatedAt } }`; prázdne `st` je tombstone |
-| `letaky.savedLists.v1` | história uložených nákupov |
-| `letaky.savedListsDeleted.v1` | tombstones zmazaných nákupov (TTL 30 dní) |
-| `letaky.trackedProducts.v1` | sledované produkty, posledný snapshot a tombstones pre sync |
+| `letaky.savedLists.v1` | obnoviteľné zoznamy/šablóny; nie dôkaz uskutočneného nákupu |
+| `letaky.savedListsDeleted.v1` | tombstones zmazaných šablón (TTL 30 dní) |
+| `letaky.purchases.v1` | nemenné potvrdené nákupy; append-only union podľa ID pri syncu |
+| `letaky.trackedProducts.v1` | sledované produkty, používateľská zásoba/preferencie, cenové pozorovania podľa obchodu a tombstones pre sync |
+
+Cloudový sync prenáša potvrdené nákupy ako samostatnú časť payloadu: zariadenia ich zlučujú append-only unionom podľa nemenného ID. Šablóny a sledované produkty si zachovávajú svoje existujúce merge/tombstone pravidlá. Odvodený výstup z `js/tracked-analytics.js` sa neukladá ani nesynchronizuje; po merge sa vždy deterministicky prepočíta z rovnakých podkladov.
 
 Položka zoznamu (úplný tvar, ktorý zapisuje `sanitizeListItem`):
 
@@ -109,6 +117,23 @@ Položka zoznamu (úplný tvar, ktorý zapisuje `sanitizeListItem`):
 Ukladajú sa **obe cenové bázy** (`price` bez DPH, `priceVat` s DPH), takže prepnutie nastavenia „Platca DPH“ nemieša v súčtoch rôzne základy. `updatedAt`/`deletedAt` riadia merge pri synchronizácii – ručne vytvorené položky bez týchto polí sa pri merge považujú za najstaršie.
 
 Ručné položky majú `source: "manual"` a môžu mať `store` aj ceny prázdne. Tlačidlo **Zdieľať link** vloží snapshot zoznamu do URL fragmentu `#share=…`; fragment sa neposiela serveru. Kto má link, môže jeho obsah načítať – zdieľaj ho ako nákupný zoznam, nie ako tajnú informáciu. Export/import JSON zostáva ako záloha a riešenie pre veľmi dlhé zoznamy.
+
+Uložený zoznam je šablóna: môže obsahovať plánované aj nezaškrtnuté položky, dá sa obnoviť a šablóna s rovnakým názvom sa môže aktualizovať. Potvrdený nákup je samostatná append-only udalosť. Vznikne iba explicitným potvrdením označených položiek, zachová cenu v báze, ktorú používateľ pri nákupe videl, a nikdy sa podľa názvu zoznamu neprepíše. Rytmus spotreby v Sledovaných produktoch používa výhradne tieto potvrdené udalosti so zhodným `product_id`; podobnosť názvu nie je náhradou identity.
+
+## Analytika sledovaných produktov
+
+Analytika beží lokálne v prehliadači ako deterministický a vysvetliteľný rozhodovací modul. Nie je to trénované ML a číslo v rozhraní sa neprezentuje ako kalibrovaná pravdepodobnosť. Výstup oddeľuje odporúčanú akciu, cenovú pozíciu, potrebu doplnenia a kvalitu dát.
+
+Zásady rozhodovania:
+
+1. Aktívna ponuka a ponuka, ktorá ešte len začne platiť, sú samostatné stavy. Budúca cena sa nesmie označiť ako dnešná ani viesť k pokynu kúpiť ihneď.
+2. Jedno porovnanie používa vždy koherentnú cenovú bázu (s DPH alebo bez DPH). História uchováva bázu aj obchod; cenová pozícia pre konkrétnu predajňu sa nemieša s iným obchodom a samostatne možno ukázať trhové porovnanie.
+3. Cenová pozícia je robustná voči ojedinelým extrémom. Silné odporúčanie vyžaduje overenú ponuku a dostatočný počet porovnateľných pozorovaní; inak UI otvorene uvedie, že dát je málo.
+4. Frekvencia a typické množstvo vychádzajú len z potvrdených nákupov. Pri nedostatočnej histórii môže používateľ zadať vlastný interval, no systém si ho nesmie zameniť za naučenú predikciu.
+5. Odporúčanie množstva zohľadňuje evidovanú zásobu, minimálnu zásobu, cieľovú cenu, skladovateľnosť a používateľský profil produktu. Bez týchto vstupov zostáva konzervatívne.
+6. UI používa zrozumiteľné štítky kvality dát (napríklad málo/stredne/dosť údajov a overená/neoverená ponuka), nie falošnú „istotu 68 %“ ani zmiešané skóre 55/25/20.
+
+Hranice a pravidlá sú zámerne pevné, kontrolovateľné a deterministicky testované. Pokročilejší predikčný model má zmysel až po nazbieraní dostatočnej, pravdivej histórie potvrdených nákupov; dovtedy sa README ani UI nesmú tváriť, že aplikácia používa ML.
 
 ## Dátová schéma v2
 
@@ -206,8 +231,8 @@ Minimálny odporúčaný príklad:
 Claude Code routine beží denne s change detection; celé nezmenené letáky znovu nečíta. Globálne dáta a personalizovaná analytika majú oddelené vlastníctvo:
 
 - routine zbiera a overuje ponuky, ceny, históriu, verdikty, TOP/promo, otváracie hodiny, sviatky a legislatívu,
-- prehliadač počíta používateľské Sledované produkty zo stabilného `product_id`, verejnej cenovej histórie a lokálnych uložených nákupov,
-- algoritmus Sledovaných produktov je pevná vysvetliteľná heuristika 55 % cena / 25 % nákupný rytmus / 20 % skladovateľnosť, nie trénované ML.
+- prehliadač počíta používateľské Sledované produkty zo stabilného `product_id`, cenovej histórie podľa obchodu, potvrdených nákupov, evidovanej zásoby a používateľských preferencií,
+- analytika používa deterministické dátové brány a vysvetliteľné pravidlá; uložené zoznamy/šablóny sa do spotreby nepočítajú a nejde o trénované ML.
 
 Denný update upravuje:
 
@@ -236,3 +261,10 @@ python -m http.server 8000
 ```
 
 Potom otvor `http://127.0.0.1:8000/`.
+
+Deterministické základy potvrdených nákupov, cenových pozorovaní, používateľských preferencií a merge správania možno overiť bez servera:
+
+```powershell
+node scripts/test_tracked_foundations.mjs
+node scripts/test_tracked_analytics.mjs
+```

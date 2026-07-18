@@ -451,47 +451,90 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 .view-switch button.active { background: var(--surface); color: var(--brand-strong); box-shadow: var(--shadow-sm); }
 .tracking-method { margin-bottom: 14px; color: var(--muted); font-size: 11.5px; }
 .tracking-method summary { display: inline-flex; align-items: center; color: var(--brand); font-weight: 600; cursor: pointer; }
-.tracking-method p { max-width: 78ch; margin-top: 7px; padding: 9px 11px; border-left: 3px solid var(--brand); background: var(--brand-soft); }
+.tracking-method p { max-width: 78ch; margin-top: 7px; padding: 9px 11px; border: 1px solid color-mix(in srgb, var(--brand) 20%, var(--line)); border-radius: var(--radius-sm); background: var(--brand-soft); }
 .tracked-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.tracked-card { padding: 14px; border: 1px solid var(--line); border-top: 3px solid var(--brand); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); }
-.tracked-card.signal-stock { border-top-color: var(--green); }
-.tracked-card.signal-wait { border-top-color: var(--amber); }
-.tracked-card.signal-nooffer { border-top-color: var(--line-strong); }
+.tracked-card { min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); }
+.tracked-card.signal-buy, .tracked-card.signal-upcoming { border-color: color-mix(in srgb, var(--brand) 30%, var(--line)); }
+.tracked-card.signal-stock { border-color: color-mix(in srgb, var(--green) 32%, var(--line)); }
+.tracked-card.signal-wait, .tracked-card.signal-needsdata { border-color: color-mix(in srgb, var(--amber) 32%, var(--line)); }
+.tracked-card.signal-nooffer { border-color: var(--line-strong); }
 .tracked-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-.tracked-card-head h2 { font-size: 14px; line-height: 1.3; }
+.tracked-card-head > div:first-child { min-width: 0; }
+.tracked-card-head h2 { overflow-wrap: anywhere; font-size: 14px; line-height: 1.3; }
 .tracked-card-head p { margin-top: 2px; color: var(--muted); font-size: 11px; }
 .tracked-kicker { margin-bottom: 3px; color: var(--faint); font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
-.tracked-price-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-top: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
-.tracked-price-row > strong { font-size: 22px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.tracked-price-row > div { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 5px 8px; font-size: 10.5px; }
+.tracked-price-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; min-width: 0; margin-top: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.tracked-price-row > div { min-width: 0; }
+.tracked-price-row > div:first-child { display: grid; justify-items: start; line-height: 1.25; }
+.tracked-price-row > div:first-child > span { color: var(--muted); font-size: 10.5px; }
+.tracked-price-row > div:first-child > strong { margin-top: 1px; font-size: 22px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.tracked-price-row > div:first-child > small { color: var(--faint); font-size: 9.5px; }
+.tracked-price-row > div:last-child { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 5px 8px; font-size: 10.5px; text-align: right; }
+.tracked-price-row.upcoming > div:first-child > span { color: var(--brand-strong); font-weight: 700; }
 .muted-line { color: var(--muted); }
-.track-score-row { display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: center; gap: 12px; margin-top: 12px; }
-.track-score { --score: 0; width: 62px; height: 62px; display: grid; place-content: center; position: relative; border-radius: 50%; background: conic-gradient(var(--brand) calc(var(--score) * 1%), var(--surface-2) 0); text-align: center; }
-.track-score::after { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: var(--surface); }
-.track-score strong, .track-score span { position: relative; z-index: 1; line-height: 1; }
-.track-score strong { font-size: 18px; }
-.track-score span { margin-top: 2px; color: var(--faint); font-size: 9px; }
-.track-recommendation { margin-bottom: 4px; }
-.track-score-row p { color: var(--muted); font-size: 11.5px; line-height: 1.45; }
-.track-signal { display: inline-flex; align-items: center; padding: 3px 7px; border-radius: 4px; background: var(--brand-soft); color: var(--brand-strong); font-size: 10.5px; font-weight: 700; }
-.track-signal.stock { background: var(--green-soft); color: var(--green); }
-.track-signal.wait { background: var(--amber-soft); color: var(--amber); }
-.track-signal.nooffer { background: var(--surface-2); color: var(--muted); }
-.track-meter { height: 4px; margin-top: 12px; border-radius: 2px; background: var(--surface-2); overflow: hidden; }
-.track-meter i { display: block; height: 100%; background: var(--brand); }
-.track-facts { display: flex; flex-wrap: wrap; gap: 5px 10px; margin-top: 7px; color: var(--faint); font-size: 10px; }
-.track-facts span + span::before { content: "·"; margin-right: 10px; }
+.track-decision { margin-top: 11px; padding: 11px 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); }
+.track-decision-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 10px; }
+.track-decision h3 { margin-top: 8px; font-size: 13.5px; line-height: 1.35; }
+.track-decision > p { margin-top: 3px; color: var(--muted); font-size: 11.5px; line-height: 1.45; }
+.track-timing { color: var(--muted); font-size: 10.5px; font-weight: 600; }
+.track-quantity { display: flex; align-items: baseline; gap: 8px; margin-top: 9px; padding-top: 8px; border-top: 1px solid var(--line); }
+.track-quantity strong { color: var(--brand-strong); font-size: 15px; font-variant-numeric: tabular-nums; }
+.track-quantity span { color: var(--muted); font-size: 10.5px; }
+.track-signal { display: inline-flex; align-items: center; min-height: 24px; padding: 3px 8px; border: 1px solid color-mix(in srgb, var(--brand) 20%, var(--line)); border-radius: 4px; background: var(--brand-soft); color: var(--brand-strong); font-size: 10.5px; font-weight: 700; line-height: 1.2; }
+.track-signal.buy { border-color: color-mix(in srgb, var(--brand) 28%, var(--line)); }
+.track-signal.stock { border-color: color-mix(in srgb, var(--green) 30%, var(--line)); background: var(--green-soft); color: var(--green); }
+.track-signal.wait { border-color: color-mix(in srgb, var(--amber) 30%, var(--line)); background: var(--amber-soft); color: var(--amber); }
+.track-signal.upcoming { border-color: color-mix(in srgb, var(--brand) 28%, var(--line)); background: var(--brand-soft); color: var(--brand-strong); }
+.track-signal.observe { border-color: var(--line-strong); background: var(--surface); color: var(--muted); }
+.track-signal.needsdata { border-color: color-mix(in srgb, var(--amber) 30%, var(--line)); background: var(--amber-soft); color: var(--amber); }
+.track-signal.nooffer { border-color: var(--line-strong); background: var(--surface-2); color: var(--muted); }
+.track-evidence-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; margin-top: 11px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--line); overflow: hidden; }
+.track-evidence-grid > div { min-width: 0; padding: 10px 11px; background: var(--surface); }
+.track-evidence-grid > div > strong { display: block; font-size: 11.5px; line-height: 1.35; }
+.track-evidence-grid > div > span { display: block; margin-top: 3px; color: var(--muted); font-size: 10.5px; line-height: 1.4; }
+.track-inventory { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px 8px; }
+.track-inventory > span { color: var(--muted); font-size: 10.5px; }
+.track-inventory > small { grid-column: 1 / -1; color: var(--faint); font-size: 9.5px; }
+.track-stock-stepper { display: inline-grid; grid-template-columns: 30px auto 30px; align-items: center; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); overflow: hidden; }
+.track-stock-stepper button { width: 30px; height: 30px; padding: 0; border: 0; background: var(--surface-2); color: var(--brand-strong); font-size: 16px; font-weight: 700; }
+.track-stock-stepper button:hover { background: var(--brand-soft); }
+.track-stock-stepper strong { min-width: 48px; padding-inline: 5px; text-align: center; font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.track-quality-row { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 6px 9px; margin-top: 10px; color: var(--muted); font-size: 10.5px; line-height: 1.4; }
+.track-quality-row > span:last-child { min-width: 0; flex: 1 1 220px; padding-top: 2px; }
+.track-quality { display: inline-flex; align-items: center; min-height: 22px; flex: none; padding: 2px 7px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface-2); color: var(--muted); font-size: 10px; font-weight: 700; white-space: nowrap; }
+.track-quality.quality-high { border-color: color-mix(in srgb, var(--green) 32%, var(--line)); background: var(--green-soft); color: var(--green); }
+.track-quality.quality-medium { border-color: color-mix(in srgb, var(--brand) 28%, var(--line)); background: var(--brand-soft); color: var(--brand-strong); }
+.track-quality.quality-low { border-color: color-mix(in srgb, var(--amber) 30%, var(--line)); background: var(--amber-soft); color: var(--amber); }
+.track-data-issues, .tracked-settings-panel { margin-top: 9px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); color: var(--muted); font-size: 10.5px; }
+.track-data-issues > summary, .tracked-settings-panel > summary { display: flex; align-items: center; gap: 6px; padding: 8px 10px; list-style: none; color: var(--text); font-weight: 600; cursor: pointer; }
+.track-data-issues > summary::-webkit-details-marker, .tracked-settings-panel > summary::-webkit-details-marker { display: none; }
+.track-data-issues > summary::after, .tracked-settings-panel > summary::after { content: "+"; margin-left: auto; color: var(--faint); font-size: 14px; line-height: 1; }
+.track-data-issues[open] > summary::after, .tracked-settings-panel[open] > summary::after { content: "−"; }
+.track-data-issues ul { margin: 0; padding: 0 12px 10px 28px; }
+.track-data-issues li + li { margin-top: 3px; }
+.tracked-settings-panel > summary .icon { color: var(--brand); }
+.tracked-settings-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px 10px; padding: 11px; border-top: 1px solid var(--line); background: var(--surface-2); }
+.tracked-settings-form label { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto 34px; align-items: center; gap: 4px 6px; min-width: 0; color: var(--muted); font-size: 10px; font-weight: 600; }
+.tracked-settings-form label > span { grid-column: 1 / -1; }
+.tracked-settings-form input, .tracked-settings-form select { min-width: 0; width: 100%; height: 34px; padding: 0 8px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font-size: 11.5px; }
+.tracked-settings-form label > select { grid-column: 1 / -1; }
+.tracked-settings-form label > small { color: var(--faint); font-size: 10px; font-weight: 500; }
+.tracked-settings-form .primary-btn { grid-column: 1 / -1; justify-self: start; margin-top: 2px; }
 .tracked-card-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
 .tracked-card-actions .secondary-btn { padding: 6px 10px; font-size: 11.5px; }
 .tracked-list { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
-.tracked-list-head, .tracked-list-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(180px, 1fr) 130px 76px; align-items: center; gap: 12px; padding: 10px 14px; }
+.tracked-list-head, .tracked-list-row { display: grid; grid-template-columns: minmax(150px, 1.35fr) minmax(190px, 1.2fr) minmax(120px, 0.75fr) minmax(110px, 0.7fr) 82px; align-items: center; gap: 12px; padding: 10px 14px; }
 .tracked-list-head { background: var(--nav); color: var(--nav-text); font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
 .tracked-list-row { border-top: 1px solid var(--line); }
 .tracked-list-row:first-of-type { border-top: 0; }
-.tracked-list-row > div:first-child strong { display: block; font-size: 12.5px; }
+.tracked-list-row > div { min-width: 0; }
+.tracked-list-row > div:first-child strong { display: block; overflow-wrap: anywhere; font-size: 12.5px; }
 .tracked-list-row > div:first-child span, .track-row-note, .tracked-list-price span { display: block; margin-top: 3px; color: var(--muted); font-size: 10.5px; }
-.tracked-list-price { text-align: right; }
+.tracked-list-row > div:nth-child(3) strong { display: block; font-size: 11.5px; }
+.tracked-list-row > div:nth-child(3) span { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+.tracked-list-price { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
 .tracked-list-price > strong { font-size: 14px; font-variant-numeric: tabular-nums; }
+.tracked-list-price .store-logo { margin-top: 4px; }
 
 /* == 11. Nákupný zoznam =================================================== */
 .list-summary { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
@@ -704,6 +747,7 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 @media (max-width: 1120px) {
   .overview-layout, .profile-grid { grid-template-columns: 1fr; }
   .tracked-grid { grid-template-columns: 1fr; }
+  .tracked-list-head, .tracked-list-row { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1.15fr) minmax(0, 0.75fr) minmax(0, 0.7fr) 76px; gap: 10px; }
   .shopping-layout { grid-template-columns: 1fr; }
   .list-side { position: static; }
 }
@@ -751,12 +795,25 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
   .tracked-summary span:nth-child(odd) { border-left: 0; }
   .tracked-summary span:nth-child(n+3) { border-top: 1px solid var(--line); }
   .tracked-toolbar { align-items: stretch; }
-  .tracked-toolbar .filter-row { order: 3; }
-  .tracked-toolbar .sort-select { width: 100%; margin-left: 0; }
+  .tracked-toolbar .filter-row { order: 3; flex-basis: 100%; }
+  .tracked-toolbar .sort-select { width: 100%; flex-basis: 100%; margin-left: 0; }
   .tracked-list-head { display: none; }
-  .tracked-list-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: 8px; }
-  .tracked-list-row > div:nth-child(2), .tracked-list-price { grid-column: 1; text-align: left; }
-  .tracked-list-row > .product-actions { grid-area: 1 / 2 / span 3; align-self: center; }
+  .tracked-list-row { grid-template-columns: minmax(0, 1fr) auto; gap: 7px 12px; padding: 12px 14px; }
+  .tracked-list-row > div:first-child { grid-area: 1 / 1; }
+  .tracked-list-row > div:nth-child(2) { grid-area: 2 / 1 / auto / -1; }
+  .tracked-list-row > div:nth-child(3) { grid-area: 3 / 1; }
+  .tracked-list-row > .tracked-list-price { grid-area: 4 / 1; align-items: flex-start; text-align: left; }
+  .tracked-list-row > .product-actions { grid-area: 1 / 2; align-self: start; }
+  .tracked-toolbar .chip, .tracked-toolbar .sort-select, .tracked-toolbar .view-switch button { min-height: 44px; }
+  .tracked-toolbar .view-switch { flex: 1 1 auto; padding: 2px; }
+  .tracked-toolbar .view-switch button { flex: 1; }
+  .track-stock-stepper { grid-template-columns: 44px auto 44px; }
+  .track-stock-stepper button { width: 44px; height: 44px; }
+  .tracked-settings-form input, .tracked-settings-form select { height: 44px; }
+  .tracked-settings-form label { grid-template-rows: auto 44px; }
+  .track-data-issues > summary, .tracked-settings-panel > summary { min-height: 44px; }
+  .tracked-card-actions .secondary-btn, .tracked-settings-form .primary-btn { min-height: 44px; }
+  .tracked-card .watch-btn, .tracked-card .circle-add, .tracked-list-row .watch-btn, .tracked-list-row .circle-add { width: 44px; height: 44px; }
   .detail-product-actions { grid-template-columns: 1fr; }
   .detail-product-actions .watch-btn.wide { width: 100%; }
   .leg-filter-bar label { width: 100%; min-width: 0; }
@@ -783,4 +840,23 @@ code { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2)
 
   .leg-item-head { flex-direction: column; gap: 8px; }
   .leg-head-right { order: -1; }
+}
+
+@media (max-width: 390px) {
+  .tracked-summary { grid-template-columns: 1fr; }
+  .tracked-summary span { border-left: 0; border-top: 1px solid var(--line); }
+  .tracked-summary span:first-child { border-top: 0; }
+  .tracked-card { padding: 12px; }
+  .tracked-price-row { align-items: flex-start; flex-direction: column; gap: 7px; }
+  .tracked-price-row > div:last-child { justify-content: flex-start; text-align: left; }
+  .track-evidence-grid { grid-template-columns: 1fr; }
+  .track-inventory { grid-template-columns: 1fr; }
+  .track-inventory > small { grid-column: 1; }
+  .track-stock-stepper { justify-self: start; }
+  .tracked-settings-form { grid-template-columns: 1fr; }
+  .tracked-settings-form .primary-btn { width: 100%; }
+  .tracked-card-actions { align-items: stretch; }
+  .tracked-card-actions .secondary-btn { flex: 1; white-space: normal; }
+  .track-quantity { align-items: flex-start; flex-direction: column; gap: 1px; }
+  .tracked-list-row { padding: 12px; }
 }

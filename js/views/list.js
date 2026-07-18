@@ -1,9 +1,10 @@
 // Pohľad Môj zoznam: súhrn, formulár na vlastnú položku, položky podľa
-// obchodov, bočný panel (dokončenie nákupu, prenos zoznamu) a história nákupov.
+// obchodov, bočný panel, uložené šablóny a pravdivá história potvrdených nákupov.
 
 import { state } from '../state.js';
 import { sortedStores } from '../data.js';
 import * as shopping from '../shopping.js';
+import * as purchases from '../purchases.js';
 import { pageHead, storeLogo, validityMeta } from './shared.js';
 import { svg } from '../lib/icons.js';
 import { esc, fmtPrice, fmtDate, arr } from '../lib/util.js';
@@ -37,7 +38,7 @@ function listGroup([storeName, items]) {
   </section>`;
 }
 
-function historySection() {
+function savedListsSection() {
   if (!state.savedLists.length) return '';
   const rows = state.savedLists
     .map(
@@ -48,35 +49,62 @@ function historySection() {
         </div>
         <div class="hist-actions">
           <button class="secondary-btn" data-action="restore-list" data-id="${esc(l.id)}" title="Nahradí aktuálny zoznam týmto uloženým snapshotom">Obnoviť</button>
-          <button class="remove-btn" data-action="delete-list" data-id="${esc(l.id)}" aria-label="Zmazať uložený nákup">${svg('close')}</button>
+          <button class="remove-btn" data-action="delete-list" data-id="${esc(l.id)}" aria-label="Zmazať uloženú šablónu">${svg('close')}</button>
         </div>
       </div>`,
     )
     .join('');
   return `<section class="panel hist-panel">
     <div class="panel-head">
-      <div><h2>História nákupov</h2><p>Presné snapshoty množstiev · názov nákupu je jedinečný${state.user ? ' · synchronizované' : ' · v tomto zariadení'}</p></div>
-      ${svg('cart')}
+      <div><h2>Uložené zoznamy/šablóny</h2><p>Obnoviteľné snapshoty na opakované použitie · neznamenajú uskutočnený nákup${state.user ? ' · synchronizované' : ' · v tomto zariadení'}</p></div>
+      ${svg('list')}
     </div>
     <div class="hist-list">${rows}</div>
   </section>`;
 }
 
+function confirmedPurchasesSection() {
+  const rows = purchases.records.map(record => {
+    const purchasedAt = new Intl.DateTimeFormat('sk-SK', {
+      day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit',
+    }).format(new Date(record.purchasedAt));
+    const count = record.items.reduce((sum, item) => sum + item.quantity, 0);
+    const hasPrice = record.items.some(item => item.purchasePrice != null);
+    const names = record.items.slice(0, 3).map(item => item.name);
+    const remaining = record.items.length - names.length;
+    const itemSummary = names.join(', ') + (remaining > 0 ? ` a ďalšie ${remaining}` : '');
+    const bases = new Set(record.items.map(item => item.priceBasis));
+    const priceBasis = bases.size === 1
+      ? (bases.has('bez_dph') ? 'ceny bez DPH' : 'ceny s DPH')
+      : 'zmiešaná cenová báza';
+    return `<div class="hist-row">
+      <div class="hist-info">
+        <div class="hist-name">Nákup ${esc(purchasedAt)}</div>
+        <div class="hist-meta">${count} ks · ${hasPrice ? fmtPrice(record.total) : 'bez evidovanej ceny'}${record.savings > 0 ? ` · ušetrené ${fmtPrice(record.savings)}` : ''} · ${esc(priceBasis)}</div>
+        <div class="hist-meta" title="${esc(itemSummary)}">${esc(itemSummary)}</div>
+      </div>
+      <div class="hist-actions"><span class="badge good">${svg('check')} Potvrdené</span></div>
+    </div>`;
+  }).join('');
+
+  return `<section class="panel hist-panel">
+    <div class="panel-head">
+      <div><h2>Potvrdené nákupy</h2><p>Iba položky, ktoré si výslovne označil a potvrdil ako zakúpené${state.user ? ' · synchronizované' : ' · v tomto zariadení'}</p></div>
+      ${svg('check')}
+    </div>
+    <div class="hist-list">${rows || '<div class="hist-row"><div class="hist-info"><div class="hist-meta">Zatiaľ tu nie je žiadny potvrdený nákup.</div></div></div>'}</div>
+  </section>`;
+}
+
 function finishCard(totals) {
-  const checkedLabel =
-    totals.checked === 1
-      ? 'Jednu označenú položku'
-      : totals.checked < 5
-        ? `${totals.checked} označené položky`
-        : `${totals.checked} označených položiek`;
   return `<section class="finish-card">
-    <h2>${totals.checked ? 'Dokončiť nákup' : 'Tip pri nákupe'}</h2>
-    <p>${totals.checked ? `${checkedLabel} môžeš po nákupe odstrániť. Položky zostávajú na svojom mieste.` : 'Odškrtnuté položky zostanú viditeľné presne tam, kde boli.'}</p>
+    <h2>${totals.checked ? 'Potvrdiť nákup' : 'Ako dokončiť nákup'}</h2>
+    <p>${totals.checked ? `Označené: ${totals.checked}. Po potvrdení sa výber uloží do histórie dokončených nákupov a odstráni z aktívneho zoznamu.` : 'Zakúpené položky najprv označ. Potom ich jedným krokom potvrdíš a uložíš do nákupnej histórie.'}</p>
     <div class="finish-actions">
-      <button class="secondary-btn full" data-action="save-list">${svg('list')} Uložiť ako nákup</button>
+      <button class="secondary-btn full" data-action="save-list">${svg('list')} Uložiť zoznam ako šablónu</button>
       ${
         totals.checked
-          ? `<button class="primary-btn full" data-action="remove-checked">${svg('check')} Odstrániť nakúpené</button>
+          ? `<button class="primary-btn full" data-action="complete-purchase">${svg('check')} Potvrdiť označené ako nakúpené</button>
              <button class="secondary-btn full" data-action="uncheck-all">Ponechať a odškrtnúť všetko</button>`
           : ''
       }
@@ -100,10 +128,10 @@ export function renderList() {
     </div>
     <div class="summary-card">
       <div class="label">Odhadovaná úspora</div>
-      <div class="value" style="color:var(--green)">${totals.savings > 0 ? '−' + fmtPrice(totals.savings) : '—'}</div>
+      <div class="value" style="color:var(--green)">${totals.savings > 0 ? fmtPrice(totals.savings) : '—'}</div>
     </div>
     <div class="summary-card">
-      <div class="label">Nakúpené</div>
+      <div class="label">Označené</div>
       <div class="value">${totals.checked} / ${shopping.items.length}</div>
     </div>
   </div>`;
@@ -148,5 +176,6 @@ export function renderList() {
     ${summary}
     ${manualForm}
     ${shopping.items.length ? layout : emptyState}
-    ${historySection()}`;
+    ${confirmedPurchasesSection()}
+    ${savedListsSection()}`;
 }

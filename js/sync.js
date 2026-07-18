@@ -8,6 +8,7 @@
 import { SUPABASE, PUSH_DEBOUNCE_MS } from './config.js';
 import { state, sanitizeSettings, saveSettings, mergeLegStates, mergeSavedLists } from './state.js';
 import * as shopping from './shopping.js';
+import * as purchases from './purchases.js';
 import * as tracking from './tracking.js';
 
 let client = null;
@@ -66,6 +67,7 @@ export function initSync(onChangeCallback) {
   // po návrate pripojenia skúsime klienta načítať znova
   addEventListener('online', () => {
     if (state.syncUnavailable) connect();
+    else if (state.user) schedulePush();
   });
 }
 
@@ -74,6 +76,7 @@ export function initSync(onChangeCallback) {
 function mergeCloudData(remote, { includeSettings }) {
   if (!remote || typeof remote !== 'object') return;
   shopping.mergeRemote(remote.shopping, remote.shoppingDeleted);
+  purchases.mergeRemote(remote.purchases);
   mergeLegStates(remote.legStates);
   mergeSavedLists(remote.savedLists, remote.savedListsDeleted);
   tracking.mergeRemote(remote.trackedProducts);
@@ -126,9 +129,10 @@ export async function cloudPush() {
       onChange();
     }
     const payload = {
-      sync_version: 3,
+      sync_version: 4,
       shopping: shopping.items,
       shoppingDeleted: shopping.deleted,
+      purchases: purchases.records,
       settings: state.settings,
       legStates: state.legStates,
       savedLists: state.savedLists,

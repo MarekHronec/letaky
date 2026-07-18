@@ -137,9 +137,9 @@ export function mergeLegStates(remote) {
 }
 
 // ---------------------------------------------------------------------------
-// História nákupov (uložené zoznamy) + tombstones pre sync mazania.
-// Uložený nákup sa nikdy needituje, len vzniká a maže sa – preto pri merge
-// tombstone vždy vyhráva nad záznamom s rovnakým id.
+// Uložené zoznamy/šablóny + tombstones pre sync mazania. Nejde o potvrdené
+// nákupy; tie sú append-only záznamy v purchases.js. Šablóna s rovnakým názvom
+// sa vedome aktualizuje, tombstone pri merge vyhráva nad rovnakým id.
 // ---------------------------------------------------------------------------
 
 export function sanitizeSavedList(x) {

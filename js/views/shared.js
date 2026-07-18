@@ -46,11 +46,11 @@ export function renderStoreTabs(className = '') {
   const tabs = sortedStores()
     .map(s => {
       const active = state.store === s.id ? 'active' : '';
-      return `<button class="store-tab ${active}" data-action="store" data-store="${esc(s.id)}" style="${storeStyle(s.id)}"><i class="store-dot"></i>${esc(s.name)}</button>`;
+      return `<button class="store-tab ${active}" data-action="store" data-store="${esc(s.id)}" style="${storeStyle(s.id)}" aria-pressed="${active ? 'true' : 'false'}"><i class="store-dot"></i>${esc(s.name)}</button>`;
     })
     .join('');
   return `<div class="store-tabs${className ? ` ${esc(className)}` : ''}" role="group" aria-label="Filtrovať podľa obchodu">
-    <button class="store-tab ${state.store === 'all' ? 'active' : ''}" data-action="store" data-store="all">Všetky obchody</button>
+    <button class="store-tab ${state.store === 'all' ? 'active' : ''}" data-action="store" data-store="all" aria-pressed="${state.store === 'all' ? 'true' : 'false'}">Všetky obchody</button>
     ${tabs}
   </div>`;
 }

@@ -295,6 +295,22 @@ export function removeChecked() {
   return deleteWhere(x => x.checked) > 0;
 }
 
+// Vytvorí samostatné snapshoty iba výslovne označených položiek pre
+// purchases.recordPurchase(). Efektívnu cenu uložíme presne v báze, ktorú
+// používateľ pri potvrdení vidí; následná zmena nastavenia DPH tak spätne
+// nezmení hodnotu dokončeného nákupu.
+export function checkedItemsForPurchase() {
+  const priceBasis = state.settings.dph === 'platca' ? 'bez_dph' : 's_dph';
+  return items
+    .filter(item => item.checked)
+    .map(item => ({
+      ...item,
+      purchasePrice: itemPrice(item),
+      originalPurchasePrice: itemOriginalPrice(item),
+      priceBasis,
+    }));
+}
+
 export function uncheckAll() {
   const at = nextUpdatedAt();
   items.forEach(item => {
@@ -355,7 +371,8 @@ export function groupByStore() {
 }
 
 // ---------------------------------------------------------------------------
-// História nákupov (snapshoty zoznamu)
+// Uložené zoznamy/šablóny. Nejde o dôkaz uskutočneného nákupu; pravdivé
+// dokončené transakcie spravuje samostatný modul purchases.js.
 // ---------------------------------------------------------------------------
 
 export function snapshotForHistory(name, totals = listTotals()) {

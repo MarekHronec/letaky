@@ -6,6 +6,7 @@ import { VIEWS, DEALS_PAGE_SIZE, SEARCH_DEBOUNCE_MS } from './config.js';
 import { state, setLegState, saveSettings, addSavedList, deleteSavedList } from './state.js';
 import { loadWeek, loadArchiveWeeks, loadLegislativa, loadReference, offerByKey } from './data.js';
 import * as shopping from './shopping.js';
+import * as purchases from './purchases.js';
 import * as tracking from './tracking.js';
 import { initSync, schedulePush, login, logout } from './sync.js';
 import { shareList, consumeSharedLink, exportList, importList, startVoice } from './share.js';
@@ -164,10 +165,10 @@ function saveCurrentList() {
     return;
   }
   const defaultName =
-    'Nákup ' + new Intl.DateTimeFormat('sk-SK', { day: 'numeric', month: 'numeric', year: 'numeric' }).format(new Date());
+    'Zoznam ' + new Intl.DateTimeFormat('sk-SK', { day: 'numeric', month: 'numeric', year: 'numeric' }).format(new Date());
   let name = defaultName;
   try {
-    const input = prompt('Názov nákupu:', defaultName);
+    const input = prompt('Názov uloženého zoznamu:', defaultName);
     if (input === null) return;
     name = input.trim() || defaultName;
   } catch {
@@ -176,7 +177,7 @@ function saveCurrentList() {
   const status = addSavedList(shopping.snapshotForHistory(name));
   schedulePush();
   render();
-  showToast(status === 'updated' ? 'Nákup s týmto názvom bol aktualizovaný' : 'Nákup uložený do histórie');
+  showToast(status === 'updated' ? 'Šablóna s týmto názvom bola aktualizovaná' : 'Zoznam uložený ako šablóna');
 }
 
 function restoreList(id) {
@@ -229,6 +230,16 @@ const ACTIONS = {
     schedulePush();
     showToast('Produkt už nesleduješ');
   },
+  'tracked-stock-down': b => {
+    if (!tracking.adjustOnHand(b.dataset.productId, -1)) return;
+    schedulePush();
+    render();
+  },
+  'tracked-stock-up': b => {
+    if (!tracking.adjustOnHand(b.dataset.productId, 1)) return;
+    schedulePush();
+    render();
+  },
   'more-deals': () => {
     state.dealsLimit += DEALS_PAGE_SIZE;
     render();
@@ -246,7 +257,7 @@ const ACTIONS = {
     deleteSavedList(b.dataset.id);
     schedulePush();
     render();
-    showToast('Uložený nákup zmazaný');
+    showToast('Uložená šablóna zmazaná');
   },
   detail: b => openDetail(offerByKey(b.dataset.key)),
   'toggle-deal': b => toggleDeal(b.dataset.key),
@@ -269,11 +280,15 @@ const ACTIONS = {
       showToast('Položka odstránená');
     }
   },
-  'remove-checked': () => {
-    if (shopping.removeChecked()) {
-      afterListChange();
-      showToast('Nákup dokončený');
+  'complete-purchase': () => {
+    const transaction = purchases.recordPurchase(shopping.checkedItemsForPurchase());
+    if (!transaction) {
+      showToast('Najprv označ zakúpené položky');
+      return;
     }
+    shopping.removeChecked();
+    afterListChange();
+    showToast('Nákup potvrdený a uložený do histórie');
   },
   'uncheck-all': () => {
     shopping.uncheckAll();
@@ -324,6 +339,25 @@ app.addEventListener('change', e => {
 });
 
 app.addEventListener('submit', async e => {
+  if (e.target.dataset?.form === 'tracked-settings') {
+    e.preventDefault();
+    const form = new FormData(e.target);
+    const productId = String(form.get('productId') || '');
+    const updated = tracking.updatePreferences(productId, {
+      onHand: form.get('onHand'),
+      minStock: form.get('minStock'),
+      targetPrice: form.get('targetPrice'),
+      targetBasis: form.get('targetBasis'),
+      stockProfile: form.get('stockProfile'),
+      shelfLifeDays: form.get('shelfLifeDays'),
+      manualCadenceDays: form.get('manualCadenceDays'),
+    });
+    if (!updated) return;
+    schedulePush();
+    render();
+    showToast('Nastavenie produktu uložené');
+    return;
+  }
   if (e.target.id === 'manual-form') {
     e.preventDefault();
     const form = new FormData(e.target);
@@ -471,7 +505,9 @@ async function showWeek(week) {
   app.innerHTML = '<div class="empty-state">Načítavam aktuálne akcie…</div>';
   try {
     await loadWeek(week);
-    tracking.refreshFromOffers(state.items, state.data.generated);
+    // Archív je iba na prezeranie. Sledovanému produktu nesmie prepísať
+    // poslednú cenu ani dátum starším snapshotom.
+    if (state.week === 'latest') tracking.refreshFromOffers(state.items, state.data.generated);
     state.dealsLimit = DEALS_PAGE_SIZE;
     updateWeekSelectLabel();
     render();

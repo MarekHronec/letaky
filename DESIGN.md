@@ -59,7 +59,8 @@ Sidebar `236px` (desktop), topbar `56px` (Primer-kompaktná). Obsah max šírka 
 | **Page header** | Na Prehľade bez duplicitného nadpisu obdobia; obdobie je súčasťou výberu týždňa v topbare |
 | **App navigácia** | Kompaktný tlmený navy sidebar (desktop) / topbar + bottom-nav (mobil), profil vždy na pravom okraji |
 | **Filter obchodov** | Segmentovaná lišta s indigovým aktívnym stavom a jemnými indikátormi obchodov, priamo pod KPI pásom |
-| **Sledované produkty** | Samostatný core-sortiment: produktová záložka v každom riadku, dashboard/list prepínač, filtre, nákupné skóre a viditeľná miera istoty |
+| **Sledované produkty** | Samostatný core-sortiment: produktová záložka v každom riadku, dashboard/list prepínač, filtre a vysvetliteľná akcia. Karta oddeľuje aktívnu/budúcu ponuku, cenovú pozíciu, potrebu, zásobu a kvalitu dát; nepoužíva falošnú percentuálnu istotu ani zmiešané skóre 55/25/20 |
+| **Môj zoznam a nákupy** | Uložený zoznam je obnoviteľná šablóna. Až explicitné potvrdenie označených položiek vytvorí samostatnú nemennú nákupnú udalosť, z ktorej môže analytika počítať rytmus spotreby |
 | **Katalóg akcií** | Nahradený: karta-grid → **hustá dátová tabuľka** (názov · obchod · cena · zľava · verdikt · platnosť · akcia); na mobile štruktúrované riadky |
 | **Top príležitosti** | Rebríček ako tabuľkový list s poradím, cenou, zľavou |
 | **Špeciálne akcie (promo)** | Kompaktný list bez dekoratívneho ľavého akcentu; prvá akcia má dátový TOP badge, priorita → top 4 + rozbalenie |
@@ -73,6 +74,22 @@ Sidebar `236px` (desktop), topbar `56px` (Primer-kompaktná). Obsah max šírka 
 | **Legislatíva** | Timeline termínov + list povinností so závažnosťou |
 | **Legislatívne filtre** | Oblasť a stav sú kompaktné selecty; stav podporuje nevyriešené, hotové aj skrytie ignorovaných/nerelevantných |
 | **Stavy** | Prázdny / načítava / chyba (inline retry) / úspech (toast) — jednotné |
+
+### Sledované produkty — rozhodovacia hierarchia
+
+Rozhranie má používateľovi najprv povedať **čo spraviť a kedy**, potom ukázať dôvody. Akcia „kúpiť teraz“ nesmie vychádzať z ponuky, ktorá ešte nezačala; budúca ponuka má vlastný stav a dátum začiatku. Silná akcia je dostupná iba pri overenej ponuke a splnenom minime porovnateľných dát. Pri slabých dátach je správny výstup „sledovať cenu“ alebo „doplniť údaje“, nie sebavedomé odporúčanie.
+
+Cena sa porovnáva vždy v jednej báze a história zachováva obchod. Cenová pozícia má byť robustná voči extrémom a UI má rozlíšiť pozíciu v konkrétnom obchode od porovnania trhu. Rytmus spotreby používa iba potvrdené append-only nákupy so stabilným `product_id`; uložené zoznamy a podobné názvy produktov nie sú nákupnou históriou.
+
+Na karte majú byť podľa dostupnosti viditeľné:
+
+- odporúčaná akcia a jej časovanie,
+- aktuálna alebo najbližšia cena a robustná cenová pozícia,
+- posledný potvrdený nákup, typický interval a odhad potreby,
+- stav zásoby, minimum, cieľová cena a profil skladovateľnosti,
+- stručné dôvody a štítky kvality vstupov namiesto neodôvodneného percenta istoty.
+
+Odporúčané množstvo je konzervatívne a rešpektuje zásobu, minimum, skladovateľnosť a používateľské nastavenia. Dizajn nesmie naznačovať ML predikciu, kým aplikácia nemá dostatok pravdivých udalostí na tréning a spätné vyhodnotenie; aktuálne pravidlá sú pevné, vysvetliteľné a deterministicky testovateľné.
 
 ## 5. Prístupnosť
 Viditeľný `:focus-visible`, kontrast textu ≥ 4.5:1, ciele dotyku ≥ 40 px na mobile, `aria-label` na ikonových tlačidlách, `role="dialog"`+focus-trap v detaile, redukcia pohybu rešpektovaná.

@@ -27,6 +27,7 @@ export const KEYS = {
   legStatesV1: 'letaky.legStates.v1', // stará podoba, číta sa už len pri migrácii
   savedLists: 'letaky.savedLists.v1',
   savedListsDeleted: 'letaky.savedListsDeleted.v1',
+  purchases: 'letaky.purchases.v1',
   trackedProducts: 'letaky.trackedProducts.v1',
 };
 
@@ -39,6 +40,7 @@ export const SHARE_URL_MAX = 14000; // dlhší zdieľací link odmietneme vytvor
 export const SHARE_HASH_MAX = 20000; // dlhší prijatý #share= fragment odmietneme čítať
 export const SHARE_ITEMS_MAX = 200; // max položiek prijatých z linku alebo importu
 export const HISTORY_MAX_POINTS = 16; // max bodov cenovej histórie v grafe
+export const TRACKING_HISTORY_MAX_POINTS = 104; // cca dva roky týždenných pozorovaní pre odporúčania
 export const PROMO_PREVIEW_COUNT = 4; // koľko špeciálnych akcií vidno bez rozbalenia
 export const TOP_COUNT = 10; // veľkosť rebríčka Top príležitostí
 export const DEALS_PAGE_SIZE = 120; // koľko kariet katalógu sa vykreslí naraz
