@@ -73,10 +73,9 @@ function simpleListItem(item) {
 
 function simpleListGroup([storeName, items]) {
   const remaining = items.filter(item => !item.checked).length;
-  const orderedItems = items.slice().sort((a, b) => Number(a.checked) - Number(b.checked));
   return `<section class="simple-list-group">
     <div class="simple-list-group-head">${storeLogo(storeName)}<span>${remaining ? `Zostáva ${remaining}` : 'hotovo'}</span></div>
-    <div class="simple-list-items">${orderedItems.map(simpleListItem).join('')}</div>
+    <div class="simple-list-items">${items.map(simpleListItem).join('')}</div>
   </section>`;
 }
 
