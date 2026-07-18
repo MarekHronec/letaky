@@ -6,6 +6,16 @@ import { arr, num, isoValue, norm, readJSON, writeJSON, removeStored } from './l
 
 export const LEG_STATE_VALUES = ['done', 'irrelevant', 'ignored'];
 
+function loadListMode() {
+  const stored = readJSON(KEYS.listViewMode, '');
+  if (stored === 'simple' || stored === 'full') return stored;
+  // Prvý vstup na telefóne je zameraný na samotný nákup. Používateľ
+  // si voľbu môže zmeniť a odvtedy zostáva lokálne zapamätaná.
+  return typeof matchMedia === 'function' && matchMedia('(max-width: 720px)').matches
+    ? 'simple'
+    : 'full';
+}
+
 function initialView() {
   const v = location.hash.slice(1);
   return VIEWS.includes(v) ? v : 'overview';
@@ -29,6 +39,7 @@ export const state = {
   trackedMode: 'dashboard',
   trackedFilter: 'all',
   trackedSort: 'priority',
+  listMode: loadListMode(),
 
   // legislatíva a referenčné ceny
   legData: null, // null = načítava sa, false = zlyhalo
@@ -49,6 +60,11 @@ export const state = {
   savedLists: loadSavedLists(),
   savedListsDeleted: loadSavedListsDeleted(),
 };
+
+export function setListMode(mode) {
+  state.listMode = mode === 'simple' ? 'simple' : 'full';
+  writeJSON(KEYS.listViewMode, state.listMode);
+}
 
 // ---------------------------------------------------------------------------
 // Nastavenia

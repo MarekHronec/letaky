@@ -59,8 +59,8 @@ Sidebar `236px` (desktop), topbar `56px` (Primer-kompaktná). Obsah max šírka 
 | **Page header** | Na Prehľade bez duplicitného nadpisu obdobia; obdobie je súčasťou výberu týždňa v topbare |
 | **App navigácia** | Kompaktný tlmený navy sidebar (desktop) / topbar + bottom-nav (mobil), profil vždy na pravom okraji |
 | **Filter obchodov** | Segmentovaná lišta s indigovým aktívnym stavom a jemnými indikátormi obchodov, priamo pod KPI pásom |
-| **Sledované produkty** | Samostatný core-sortiment: produktová záložka v každom riadku, dashboard/list prepínač, filtre a vysvetliteľná akcia. Karta oddeľuje aktívnu/budúcu ponuku, cenovú pozíciu, potrebu, zásobu a kvalitu dát; nepoužíva falošnú percentuálnu istotu ani zmiešané skóre 55/25/20 |
-| **Môj zoznam a nákupy** | Uložený zoznam je obnoviteľná šablóna. Až explicitné potvrdenie označených položiek vytvorí samostatnú nemennú nákupnú udalosť, z ktorej môže analytika počítať rytmus spotreby |
+| **Sledované produkty** | Samostatný core-sortiment: na desktope tri kompaktné karty, na mobile jeden stĺpec. Primárne sú rozhodnutie, cena, zásoba, percentilový cenový bar a 1–3 bodky kvality; dôkazy, história a nastavenia sú v jednom rozbaliteľnom paneli. Žiadna falošná percentuálna istota ani zmiešané skóre |
+| **Môj zoznam a nákupy** | Hore je prepínač „V obchode / Správa zoznamu“. Nákupný režim na mobile skryje súhrny, formulár, share/import a históriu; ponechá šablóny, 44 px check/remove a explicitné potvrdenie. Uložený zoznam je obnoviteľná šablóna, nie nákupná udalosť |
 | **Katalóg akcií** | Nahradený: karta-grid → **hustá dátová tabuľka** (názov · obchod · cena · zľava · verdikt · platnosť · akcia); na mobile štruktúrované riadky |
 | **Top príležitosti** | Rebríček ako tabuľkový list s poradím, cenou, zľavou |
 | **Špeciálne akcie (promo)** | Kompaktný list bez dekoratívneho ľavého akcentu; prvá akcia má dátový TOP badge, priorita → top 4 + rozbalenie |
@@ -81,18 +81,19 @@ Rozhranie má používateľovi najprv povedať **čo spraviť a kedy**, potom uk
 
 Cena sa porovnáva vždy v jednej báze a história zachováva obchod. Cenová pozícia má byť robustná voči extrémom a UI má rozlíšiť pozíciu v konkrétnom obchode od porovnania trhu. Rytmus spotreby používa iba potvrdené append-only nákupy so stabilným `product_id`; uložené zoznamy a podobné názvy produktov nie sú nákupnou históriou.
 
-Na karte majú byť podľa dostupnosti viditeľné:
+Na zatvorenej karte majú byť podľa dostupnosti viditeľné:
 
 - odporúčaná akcia a jej časovanie,
 - aktuálna alebo najbližšia cena a robustná cenová pozícia,
-- posledný potvrdený nákup, typický interval a odhad potreby,
-- stav zásoby, minimum, cieľová cena a profil skladovateľnosti,
-- stručné dôvody a štítky kvality vstupov namiesto neodôvodneného percenta istoty.
+- stav zásoby s rýchlym `−/+`, minimum a odporúčané množstvo,
+- cenová pozícia ako označený bar a kvalita podkladov ako slovný štítok s 1–3 bodkami.
+
+Potvrdené nákupy, typický interval, úspora, skladovateľnosť, detailné dôvody, problémy vstupov a formulár pravidiel patria do rozbalenia „Viac informácií“. Na mobile globálna hlavička v nákupnom režime neukazuje týždeň ani vyhľadávanie; obsah má bezpečný spodný odstup od bottom-nav aj `safe-area-inset-bottom`.
 
 Odporúčané množstvo je konzervatívne a rešpektuje zásobu, minimum, skladovateľnosť a používateľské nastavenia. Dizajn nesmie naznačovať ML predikciu, kým aplikácia nemá dostatok pravdivých udalostí na tréning a spätné vyhodnotenie; aktuálne pravidlá sú pevné, vysvetliteľné a deterministicky testovateľné.
 
 ## 5. Prístupnosť
-Viditeľný `:focus-visible`, kontrast textu ≥ 4.5:1, ciele dotyku ≥ 40 px na mobile, `aria-label` na ikonových tlačidlách, `role="dialog"`+focus-trap v detaile, redukcia pohybu rešpektovaná.
+Viditeľný `:focus-visible`, kontrast textu ≥ 4.5:1, primárne ciele dotyku ≥ 44 px na mobile, `aria-label` na ikonových tlačidlách, `role="dialog"`+focus-trap v detaile, redukcia pohybu rešpektovaná.
 
 ## 6. Závislosti
 Bez build-stepu, natívne ES moduly. Jediná runtime závislosť: `@supabase/supabase-js` (MIT) cez esm.sh. Grafy sú ručne písané SVG (bez React/Tremor — nekompatibilné s vanilla architektúrou; rozhodnutie zdokumentované). Licencie v `THIRD_PARTY_NOTICES.md`.

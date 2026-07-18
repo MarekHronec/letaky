@@ -38,6 +38,74 @@ function listGroup([storeName, items]) {
   </section>`;
 }
 
+function listModeSwitch() {
+  return `<div class="list-mode-switch" role="group" aria-label="Zobrazenie nákupného zoznamu">
+    <button id="list-mode-simple" type="button" class="${state.listMode === 'simple' ? 'active' : ''}" data-action="list-mode" data-mode="simple" aria-pressed="${state.listMode === 'simple'}">V obchode</button>
+    <button id="list-mode-full" type="button" class="${state.listMode === 'full' ? 'active' : ''}" data-action="list-mode" data-mode="full" aria-pressed="${state.listMode === 'full'}">Správa zoznamu</button>
+  </div>`;
+}
+
+function simpleTemplateSwitcher() {
+  const options = state.savedLists.map(list => {
+    const count = list.count || arr(list.items).length;
+    return `<option value="${esc(list.id)}">${esc(list.name)} · ${count} ks</option>`;
+  }).join('');
+  return `<section class="simple-list-templates" aria-labelledby="simple-list-templates-title">
+    <label id="simple-list-templates-title" for="list-template-select">Načítať uloženú šablónu</label>
+    <select id="list-template-select" ${state.savedLists.length ? '' : 'disabled'}>
+      <option value="">${state.savedLists.length ? 'Vybrať šablónu…' : 'Nemáš uloženú šablónu'}</option>
+      ${options}
+    </select>
+  </section>`;
+}
+
+function simpleListItem(item) {
+  const details = [item.amount, item.quantity > 1 ? `${item.quantity} ks` : null].filter(Boolean).join(' · ');
+  return `<div class="simple-list-item ${item.checked ? 'checked' : ''}">
+    <button class="check-btn" data-action="toggle-check" data-id="${esc(item.id)}" aria-label="${item.checked ? 'Vrátiť medzi nenakúpené' : 'Označiť ako kúpené'} ${esc(item.name)}">${item.checked ? svg('check') : ''}</button>
+    <div class="simple-list-item-main">
+      <div class="item-name">${esc(item.name)}</div>
+      ${details ? `<div class="item-meta">${esc(details)}</div>` : ''}
+    </div>
+    <button class="remove-btn" data-action="remove-item" data-id="${esc(item.id)}" aria-label="Odstrániť ${esc(item.name)}">${svg('close')}</button>
+  </div>`;
+}
+
+function simpleListGroup([storeName, items]) {
+  const remaining = items.filter(item => !item.checked).length;
+  const orderedItems = items.slice().sort((a, b) => Number(a.checked) - Number(b.checked));
+  return `<section class="simple-list-group">
+    <div class="simple-list-group-head">${storeLogo(storeName)}<span>${remaining ? `Zostáva ${remaining}` : 'hotovo'}</span></div>
+    <div class="simple-list-items">${orderedItems.map(simpleListItem).join('')}</div>
+  </section>`;
+}
+
+function renderSimpleList(totals, groups) {
+  const remaining = shopping.items.length - totals.checked;
+  const emptyState = `<div class="empty-state simple-list-empty">
+    <div aria-hidden="true" style="font-size:38px;margin-bottom:8px">🛒</div>
+    <strong>Aktuálny zoznam je prázdny.</strong><br>
+    Obnov si uložený zoznam vyššie alebo pridaj produkty z akcií.<br>
+    <button class="primary-btn" data-view="deals" style="margin-top:15px">Vybrať z akcií</button>
+  </div>`;
+  const confirmation = totals.checked
+    ? `<section class="simple-purchase-confirm" aria-label="Potvrdenie nákupu">
+        <div><strong>Označené: ${totals.checked}</strong><span>Do histórie sa uložia až po potvrdení.</span></div>
+        <button class="primary-btn" data-action="complete-purchase">${svg('check')} Potvrdiť nákup</button>
+      </section>`
+    : '';
+
+  return `<div class="shopping-view list-mode-simple">
+    <header class="simple-list-header">
+      <div><h1>Môj zoznam</h1><p>${shopping.items.length ? `Zostáva ${remaining} z ${shopping.items.length}` : 'Pripravený na nákup'}</p></div>
+      ${listModeSwitch()}
+    </header>
+    ${simpleTemplateSwitcher()}
+    ${shopping.items.length ? `<div class="simple-list-groups">${groups.map(simpleListGroup).join('')}</div>` : emptyState}
+    ${confirmation}
+  </div>`;
+}
+
 function savedListsSection() {
   if (!state.savedLists.length) return '';
   const rows = state.savedLists
@@ -117,6 +185,8 @@ export function renderList() {
   const groups = shopping.groupByStore();
   const stores = sortedStores();
 
+  if (state.listMode === 'simple') return renderSimpleList(totals, groups);
+
   const summary = `<div class="list-summary">
     <div class="summary-main">
       <div class="cart-icon">${svg('cart')}</div>
@@ -172,10 +242,13 @@ export function renderList() {
     </aside>
   </div>`;
 
-  return `${pageHead({ eyebrow: state.data.period || 'Aktuálny týždeň', title: 'Môj nákupný zoznam', desc: 'Pridávaj akcie aj vlastné položky, v obchode ich odškrtávaj. Zoznam si tento mobil zapamätá.', withArchiveNote: true })}
+  return `<div class="shopping-view list-mode-full">
+    ${pageHead({ eyebrow: state.data.period || 'Aktuálny týždeň', title: 'Môj nákupný zoznam', desc: 'Pridávaj akcie aj vlastné položky, v obchode ich odškrtávaj. Zoznam si tento mobil zapamätá.', withArchiveNote: true })}
+    <div class="list-mode-toolbar">${listModeSwitch()}</div>
     ${summary}
     ${manualForm}
     ${shopping.items.length ? layout : emptyState}
     ${confirmedPurchasesSection()}
-    ${savedListsSection()}`;
+    ${savedListsSection()}
+  </div>`;
 }

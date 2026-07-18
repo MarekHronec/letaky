@@ -37,14 +37,24 @@ function signalBadge(analysis) {
   return `<span class="track-signal ${esc(analysis.signal)}">${esc(SIGNAL_LABELS[analysis.signal] || analysis.title)}</span>`;
 }
 
-function qualityBadge(analysis) {
-  return `<span class="track-quality quality-${esc(analysis.quality.key)}">${esc(analysis.quality.label)}</span>`;
-}
-
 function confirmedPurchasesLabel(count) {
   if (count === 1) return '1 potvrdený nákup';
   if (count >= 2 && count <= 4) return `${count} potvrdené nákupy`;
   return `${count} potvrdených nákupov`;
+}
+
+function pricePointsLabel(count) {
+  if (count === 1) return '1 cenový bod';
+  if (count >= 2 && count <= 4) return `${count} cenové body`;
+  return `${count} cenových bodov`;
+}
+
+function compactEvidenceLabel(analysis) {
+  const prices = analysis.price.count;
+  const purchases = analysis.purchases.count;
+  const priceWord = prices === 1 ? 'cena' : prices >= 2 && prices <= 4 ? 'ceny' : 'cien';
+  const purchaseWord = purchases === 1 ? 'nákup' : purchases >= 2 && purchases <= 4 ? 'nákupy' : 'nákupov';
+  return `${prices} ${priceWord} · ${purchases} ${purchaseWord}`;
 }
 
 function presentedPrice(analysis) {
@@ -63,6 +73,13 @@ function presentedBasisLabel(analysis) {
     : 'cena s DPH';
 }
 
+function presentedBasisShortLabel(analysis) {
+  const hasExplicitPair = analysis.best
+    ? analysis.best.priceVat != null && analysis.best.price != null
+    : analysis.record.lastPriceVat != null && analysis.record.lastPrice != null;
+  return state.settings.dph === 'platca' && hasExplicitPair ? 'bez DPH' : 's DPH';
+}
+
 function recordAction(analysis, wide = false) {
   if (analysis.best) return watchButton(analysis.best, wide);
   return `<button class="watch-btn ${wide ? 'wide' : ''} tracked" data-action="untrack-record" data-product-id="${esc(analysis.record.productId)}" aria-label="Prestať sledovať ${esc(analysis.record.name)}" title="Prestať sledovať">${svg('bookmark')}${wide ? '<span>Sledované</span>' : ''}</button>`;
@@ -73,7 +90,7 @@ function pricePosition(analysis) {
   if (!price.count || price.percentile == null) return '<strong>Bez histórie</strong><span>Na porovnanie treba ďalšie merania</span>';
   const compared = metric.key === 'unit' && price.comparisonPrice != null
     ? `${fmtPrice(price.comparisonPrice)} / ${esc(metric.unit)}`
-    : `${price.count} cenových bodov`;
+    : pricePointsLabel(price.count);
   return `<strong>${esc(price.positionLabel)}</strong><span>${Math.round(price.percentile)}. cenový percentil · ${compared}</span>`;
 }
 
@@ -89,15 +106,82 @@ function purchaseFact(analysis) {
 
 function inventoryControl(analysis) {
   const id = esc(analysis.record.productId);
-  return `<div class="track-inventory" aria-label="Domáca zásoba">
-    <span>Máme doma</span>
+  return `<div class="track-inventory track-inventory-quick" aria-label="Domáca zásoba">
+    <span>Zásoba doma</span>
     <div class="track-stock-stepper">
       <button type="button" data-action="tracked-stock-down" data-product-id="${id}" aria-label="Znížiť zásobu ${esc(analysis.record.name)}">−</button>
       <strong>${analysis.stock.onHand} ks</strong>
       <button type="button" data-action="tracked-stock-up" data-product-id="${id}" aria-label="Zvýšiť zásobu ${esc(analysis.record.name)}">+</button>
     </div>
-    ${analysis.stock.minStock ? `<small>minimum ${analysis.stock.minStock} ks</small>` : '<small>minimum nie je nastavené</small>'}
+    ${analysis.stock.minStock ? `<small>Minimum ${analysis.stock.minStock} ks</small>` : '<small>Minimum nenastavené</small>'}
   </div>`;
+}
+
+function pricePositionVisual(analysis) {
+  const { price } = analysis;
+  if (!price.count || price.percentile == null) {
+    return `<div class="track-compact-metric track-price-visual is-empty">
+      <div><span>Cenová pozícia</span><strong>Bez histórie</strong></div>
+      <span class="track-price-bar" role="img" aria-label="Cenová pozícia sa zatiaľ nedá určiť"></span>
+      <small>Treba ďalšie merania</small>
+    </div>`;
+  }
+  const percentile = Math.max(0, Math.min(100, Math.round(price.percentile)));
+  const pointLabel = pricePointsLabel(price.count);
+  return `<div class="track-compact-metric track-price-visual position-${esc(price.position)}">
+    <div><span>Cenová pozícia</span><strong>${esc(price.positionLabel)}</strong></div>
+    <span class="track-price-bar" role="img" aria-label="${esc(price.positionLabel)}, ${percentile}. cenový percentil; nižšie je výhodnejšie">
+      <i class="track-price-marker" style="--track-position:${percentile}%"></i>
+    </span>
+    <small>${pointLabel} · nižšie je výhodnejšie</small>
+  </div>`;
+}
+
+function qualityVisual(analysis) {
+  const levels = { low: 1, medium: 2, high: 3 };
+  const active = levels[analysis.quality.key] || 1;
+  const dots = [1, 2, 3]
+    .map(level => `<i class="${level <= active ? 'is-filled' : ''}"></i>`)
+    .join('');
+  return `<div class="track-compact-metric track-quality-visual quality-${esc(analysis.quality.key)}">
+    <div><span>Kvalita podkladov</span><strong>${esc(analysis.quality.label)}</strong></div>
+    <span class="track-quality-dots" role="img" aria-label="Kvalita podkladov: ${esc(analysis.quality.label)}">${dots}</span>
+    <small>Slovné hodnotenie dát</small>
+  </div>`;
+}
+
+function savingsFact(analysis) {
+  const { price } = analysis;
+  if (price.median == null || price.displayPrice == null) {
+    return '<strong>Úsporu zatiaľ nemožno spočítať</strong><span>Chýba porovnateľná cenová kotva</span>';
+  }
+  const headline = analysis.expectedSavings > 0
+    ? `Odhad úspory ${fmtPrice(analysis.expectedSavings)}${analysis.quantity > 1 ? ` pri ${analysis.quantity} ks` : ''}`
+    : 'Bez preukázanej úspory';
+  return `<strong>${esc(headline)}</strong><span>Robustný medián ${fmtPrice(price.median)}</span>`;
+}
+
+function evidenceDetails(analysis) {
+  const best = analysis.best;
+  const issueList = analysis.quality.issues.length
+    ? `<div class="track-detail-issues"><strong>Čo znižuje kvalitu dát</strong><ul>${analysis.quality.issues.map(issue => `<li>${esc(issue)}</li>`).join('')}</ul></div>`
+    : '';
+  return `<details class="tracked-insights-panel">
+    <summary><span>Viac informácií</span><small>${compactEvidenceLabel(analysis)}</small></summary>
+    <div class="tracked-insights-body">
+      <p class="track-detail-summary">${esc(analysis.detail)}</p>
+      <div class="track-evidence-grid track-evidence-details">
+        <div>${pricePosition(analysis)}</div>
+        <div>${savingsFact(analysis)}</div>
+        <div>${purchaseFact(analysis)}</div>
+        <div><strong>${esc(analysis.shelf.label)}</strong><span>${analysis.shelf.explicit ? 'Zadaná skladovateľnosť' : 'Iba automatický odhad skladovateľnosti'}</span></div>
+      </div>
+      <div class="track-reasons"><strong>Prečo toto odporúčanie</strong><ul>${analysis.reasons.map(reason => `<li>${esc(reason)}</li>`).join('')}</ul></div>
+      ${issueList}
+      ${best ? `<button class="secondary-btn track-history-btn" data-action="detail" data-key="${esc(best.key)}">Detail a cenová história</button>` : ''}
+      ${settingsForm(analysis)}
+    </div>
+  </details>`;
 }
 
 function settingsForm(analysis) {
@@ -134,35 +218,31 @@ function offerMeta(analysis) {
 }
 
 function dashboardCard(analysis) {
-  const { record, best, price, purchases } = analysis;
+  const { record, best } = analysis;
   const shownPrice = presentedPrice(analysis);
-  const savings = price.median != null && price.displayPrice != null
-    ? analysis.expectedSavings > 0
-      ? `Odhad úspory ${fmtPrice(analysis.expectedSavings)}${analysis.quantity > 1 ? ` pri ${analysis.quantity} ks` : ''}`
-      : 'Bez preukázanej úspory oproti mediánu'
-    : 'Úsporu zatiaľ nemožno spočítať';
   const timingClass = analysis.offerState === 'upcoming' ? ' upcoming' : '';
-  return `<article class="tracked-card signal-${esc(analysis.signal)}">
-    <div class="tracked-card-head">
-      <div><div class="tracked-kicker">${esc(record.category || 'Sledovaný produkt')}</div><h2>${esc(record.name)}</h2>${record.amount ? `<p>${esc(record.amount)}</p>` : ''}</div>
-      ${recordAction(analysis)}
+  return `<article class="tracked-card tracked-card-compact signal-${esc(analysis.signal)}">
+    <header class="tracked-card-head tracked-card-primary">
+      <div class="tracked-card-title"><div class="tracked-kicker">${esc(record.category || 'Sledovaný produkt')}</div><h2>${esc(record.name)}</h2>${record.amount ? `<p>${esc(record.amount)}</p>` : ''}</div>
+      <div class="tracked-card-controls product-actions">${recordAction(analysis)}${best ? circleAddButton(best) : ''}</div>
+    </header>
+    <div class="tracked-price-row tracked-price-compact${timingClass}">
+      <div><span>${esc(analysis.offerState === 'upcoming' ? 'Budúca cena' : analysis.offerState === 'active' ? 'Aktuálna cena' : 'Posledná známa cena')}</span><strong>${shownPrice != null ? fmtPrice(shownPrice) : '—'}</strong><small title="${esc(presentedBasisLabel(analysis))}">${esc(presentedBasisShortLabel(analysis))}</small></div>
+      <div class="tracked-offer-meta">${offerMeta(analysis)}</div>
     </div>
-    <div class="tracked-price-row${timingClass}"><div><span>${esc(analysis.offerState === 'upcoming' ? 'Budúca cena' : analysis.offerState === 'active' ? 'Aktuálna cena' : 'Posledná známa cena')}</span><strong>${shownPrice != null ? fmtPrice(shownPrice) : '—'}</strong><small>${esc(presentedBasisLabel(analysis))}</small></div><div>${offerMeta(analysis)}</div></div>
-    <div class="track-decision">
-      <div class="track-decision-head">${signalBadge(analysis)}<span class="track-timing">${esc(analysis.timing)}</span></div>
-      <h3>${esc(analysis.title)}</h3><p>${esc(analysis.detail)}</p>
-      ${analysis.quantity ? `<div class="track-quantity"><strong>${analysis.quantity} ks</strong><span>odporúčané množstvo po odpočítaní zásoby</span></div>` : ''}
+    <section class="track-decision track-decision-compact">
+      <div class="track-decision-main">
+        <div class="track-decision-head">${signalBadge(analysis)}<span class="track-timing">${esc(analysis.timing)}</span></div>
+        <h3>${esc(analysis.title)}</h3><p>${esc(analysis.detail)}</p>
+      </div>
+      ${analysis.quantity ? `<div class="track-quantity track-quantity-compact"><strong>${analysis.quantity} ks</strong><span>odporúčané</span></div>` : ''}
+    </section>
+    <div class="tracked-quick-grid">
+      ${inventoryControl(analysis)}
+      ${pricePositionVisual(analysis)}
+      ${qualityVisual(analysis)}
     </div>
-    <div class="track-evidence-grid">
-      <div>${pricePosition(analysis)}</div>
-      <div><strong>${esc(savings)}</strong><span>${price.median != null ? `Robustný medián ${fmtPrice(price.median)}` : 'Chýba cenová kotva'}</span></div>
-      <div>${purchaseFact(analysis)}</div>
-      <div>${inventoryControl(analysis)}</div>
-    </div>
-    <div class="track-quality-row">${qualityBadge(analysis)}<span>${esc(analysis.reasons.slice(0, 3).join(' · '))}</span></div>
-    ${analysis.quality.issues.length ? `<details class="track-data-issues"><summary>Čo znižuje kvalitu dát</summary><ul>${analysis.quality.issues.map(issue => `<li>${esc(issue)}</li>`).join('')}</ul></details>` : ''}
-    ${settingsForm(analysis)}
-    ${best ? `<div class="tracked-card-actions"><button class="secondary-btn" data-action="detail" data-key="${esc(best.key)}">Detail a história</button><div class="product-actions">${circleAddButton(best)}</div></div>` : ''}
+    ${evidenceDetails(analysis)}
   </article>`;
 }
 
@@ -173,9 +253,9 @@ function listRow(analysis) {
     ? `${analysis.price.positionLabel} · ${analysis.quality.label}`
     : analysis.quality.label;
   return `<div class="tracked-list-row signal-${esc(analysis.signal)}">
-    <div><strong>${esc(analysis.record.name)}</strong><span>${esc(analysis.record.amount || analysis.record.category || '')}</span></div>
-    <div>${signalBadge(analysis)}<span class="track-row-note">${esc(analysis.title)} · ${esc(analysis.timing)}</span></div>
-    <div><strong>${analysis.stock.onHand} ks doma</strong><span>${confirmedPurchasesLabel(analysis.purchases.count)}</span></div>
+    <div class="tracked-list-product"><strong>${esc(analysis.record.name)}</strong><span>${esc(analysis.record.amount || analysis.record.category || '')}</span></div>
+    <div class="tracked-list-decision">${signalBadge(analysis)}<span class="track-row-note">${esc(analysis.title)} · ${esc(analysis.timing)}</span></div>
+    <div class="tracked-list-stock">${inventoryControl(analysis)}</div>
     <div class="tracked-list-price"><strong>${shownPrice != null ? fmtPrice(shownPrice) : '—'}</strong><span>${esc(priceNote)}</span>${best ? storeLogo(best.store) : ''}</div>
     <div class="product-actions">${recordAction(analysis)}${best ? circleAddButton(best) : ''}</div>
   </div>`;
@@ -241,10 +321,10 @@ export function renderTracked() {
         ? `<div class="tracked-grid">${analyses.map(dashboardCard).join('')}</div>`
         : `<div class="tracked-list"><div class="tracked-list-head"><span>Produkt</span><span>Odporúčanie</span><span>Zásoba</span><span>Cena</span><span>Akcie</span></div>${analyses.map(listRow).join('')}</div>`;
 
-  return `${pageHead({ eyebrow: 'Core sortiment', title: 'Sledované produkty', desc: 'Pravdivá cenová pozícia, potvrdený nákupný rytmus a odporúčanie podľa tvojej zásoby.' })}
+  return `<div class="tracked-view">${pageHead({ eyebrow: 'Core sortiment', title: 'Sledované produkty', desc: 'Pravdivá cenová pozícia, potvrdený nákupný rytmus a odporúčanie podľa tvojej zásoby.' })}
     ${summary}
     ${renderStoreTabs()}
     ${toolbar}
     ${method}
-    ${content}`;
+    ${content}</div>`;
 }

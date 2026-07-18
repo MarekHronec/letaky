@@ -29,6 +29,7 @@ export const KEYS = {
   savedListsDeleted: 'letaky.savedListsDeleted.v1',
   purchases: 'letaky.purchases.v1',
   trackedProducts: 'letaky.trackedProducts.v1',
+  listViewMode: 'letaky.listViewMode.v1',
 };
 
 // Časy a limity (predtým magické čísla roztrúsené po kóde).

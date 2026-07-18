@@ -8,8 +8,8 @@ Responzívna statická aplikácia na prehľad potravinových akcií, rozlíšeni
 
 - **Prehľad:** najlepšie overené ponuky, špeciálne akcie, stav zdrojov a aktuálne otváracie hodiny pobočiek vrátane sviatočných výnimiek.
 - **Všetky akcie:** vyhľadávanie, obchodné filtre, verdikt zľavy, triedenie a vývoj ceny z overenej histórie. V aktuálnom týždni zobrazuje iba ešte platné ponuky; staršie ostávajú v archíve a cenovej histórii.
-- **Sledované produkty:** vlastný core sortiment s dashboardom/zoznamom, filtrami a vysvetliteľným odporúčaním. Oddeľuje aktívnu a budúcu ponuku, porovnáva rovnakú cenovú bázu a obchod, ukazuje kvalitu vstupov a zohľadňuje iba potvrdené nákupy, evidovanú zásobu a používateľské preferencie.
-- **Môj zoznam:** položky z akcií aj ručne zadané položky, množstvo, odškrtávanie bez presúvania a rozdelenie podľa obchodov. Ručnú položku sa dá aj **nadiktovať hlasom** (Web Speech API, `sk-SK`, s fallbackom na písanie). Zoznam sa dá uložiť ako obnoviteľná šablóna; až výslovné potvrdenie označených položiek vytvorí nemenný záznam dokončeného nákupu.
+- **Sledované produkty:** vlastný core sortiment s dashboardom/zoznamom, filtrami a vysvetliteľným odporúčaním. Kompaktná karta ukazuje najprv rozhodnutie, cenu, zásobu, cenovú pozíciu a slovnú kvalitu dát; dôkazy a nastavenia sú rozbaliteľné. Oddeľuje aktívnu a budúcu ponuku a zohľadňuje iba potvrdené nákupy.
+- **Môj zoznam:** má režim **V obchode** s celoplošným zoznamom, 44 px odškrtávaním, odstránením položky a načítaním šablóny; na mobile je predvolený. Režim **Správa zoznamu** pridáva množstvá, ručné/hlasové zadanie, ceny, zdieľanie, import, šablóny a históriu. Až výslovné potvrdenie označených položiek vytvorí nemenný záznam nákupu.
 - **Legislatíva:** prehľad povinností a termínov pre maloobchod s potravinami a drogériou (eKasa, dane, hygiena, chémia, zálohy, ceny/spotrebiteľ) z `data/legislativa.json`, s odkazmi na oficiálne zdroje. Orientačné, nie právne poradenstvo. Položky s `confidence: "low"` sú v UI označené „orientačné – overiť“; ostatné hodnoty poľa `confidence` sa nezobrazujú.
 - **Detail produktu:** obrázok položky (`obrazok_url`, s kategóriovým emoji ako fallback), graf vývoja ceny, jednotková cena, podmienky akcie a porovnanie rovnakého `product_id` medzi obchodmi.
 - **PWA/offline:** stránku možno pridať na plochu mobilu; posledné načítané dáta a nákupný zoznam fungujú aj bez signálu. Pri novej verzii appky sa zobrazí banner „Obnoviť“.
@@ -26,7 +26,7 @@ Projekt nemá build step ani npm závislosti – GitHub Pages servuje priamo tie
 
 ```text
 index.html                  # HTML shell (bez inline skriptov a štýlov) + CSP
-styles.css                  # všetky štýly (sekcie + presne 3 media bloky)
+styles.css                  # všetky štýly vrátane responzívnych breakpointov
 sw.js                       # offline cache (network-first) + update flow
 manifest.webmanifest        # PWA manifest
 icons/app-icon.svg          # ikona aplikácie
@@ -56,6 +56,7 @@ js/views/profil.js          # Profil a nastavenia
 
 scripts/test_tracked_foundations.mjs # deterministický test nákupov, histórie a sync základov
 scripts/test_tracked_analytics.mjs   # rozhodovacie brány, ceny, balenie, ponuky a zásoba
+scripts/test_list_mode.mjs           # mobilný nákupný režim a skrytý obsah plnej správy
 
 data/latest.json            # aktuálny týždeň (schema v2)
 data/schema-v2.json         # JSON Schema pre routine
@@ -83,6 +84,7 @@ GitHub Pages je nastavený na deploy z `main`, root `/`. Každý push do `main` 
 | `letaky.savedListsDeleted.v1` | tombstones zmazaných šablón (TTL 30 dní) |
 | `letaky.purchases.v1` | nemenné potvrdené nákupy; append-only union podľa ID pri syncu |
 | `letaky.trackedProducts.v1` | sledované produkty, používateľská zásoba/preferencie, cenové pozorovania podľa obchodu a tombstones pre sync |
+| `letaky.listViewMode.v1` | lokálna voľba `simple`/`full` pre zobrazenie nákupného zoznamu |
 
 Cloudový sync prenáša potvrdené nákupy ako samostatnú časť payloadu: zariadenia ich zlučujú append-only unionom podľa nemenného ID. Šablóny a sledované produkty si zachovávajú svoje existujúce merge/tombstone pravidlá. Odvodený výstup z `js/tracked-analytics.js` sa neukladá ani nesynchronizuje; po merge sa vždy deterministicky prepočíta z rovnakých podkladov.
 
@@ -118,7 +120,7 @@ Ukladajú sa **obe cenové bázy** (`price` bez DPH, `priceVat` s DPH), takže p
 
 Ručné položky majú `source: "manual"` a môžu mať `store` aj ceny prázdne. Tlačidlo **Zdieľať link** vloží snapshot zoznamu do URL fragmentu `#share=…`; fragment sa neposiela serveru. Kto má link, môže jeho obsah načítať – zdieľaj ho ako nákupný zoznam, nie ako tajnú informáciu. Export/import JSON zostáva ako záloha a riešenie pre veľmi dlhé zoznamy.
 
-Uložený zoznam je šablóna: môže obsahovať plánované aj nezaškrtnuté položky, dá sa obnoviť a šablóna s rovnakým názvom sa môže aktualizovať. Potvrdený nákup je samostatná append-only udalosť. Vznikne iba explicitným potvrdením označených položiek, zachová cenu v báze, ktorú používateľ pri nákupe videl, a nikdy sa podľa názvu zoznamu neprepíše. Rytmus spotreby v Sledovaných produktoch používa výhradne tieto potvrdené udalosti so zhodným `product_id`; podobnosť názvu nie je náhradou identity.
+Uložený zoznam je šablóna: môže obsahovať plánované aj nezaškrtnuté položky, dá sa obnoviť a šablóna s rovnakým názvom sa môže aktualizovať. Načítanie šablóny do neprázdneho aktívneho zoznamu vyžaduje potvrdenie, pretože snapshot aktuálny zoznam nahradí. Potvrdený nákup je samostatná append-only udalosť. Vznikne iba explicitným potvrdením označených položiek, zachová cenu v báze, ktorú používateľ pri nákupe videl, a nikdy sa podľa názvu zoznamu neprepíše. Rytmus spotreby v Sledovaných produktoch používa výhradne tieto potvrdené udalosti so zhodným `product_id`; podobnosť názvu nie je náhradou identity.
 
 ## Analytika sledovaných produktov
 
@@ -267,4 +269,5 @@ Deterministické základy potvrdených nákupov, cenových pozorovaní, použív
 ```powershell
 node scripts/test_tracked_foundations.mjs
 node scripts/test_tracked_analytics.mjs
+node scripts/test_list_mode.mjs
 ```

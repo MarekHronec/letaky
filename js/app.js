@@ -3,7 +3,7 @@
 // takže tok „klik → zmena stavu → uloženie → render → sync" je na jednom mieste.
 
 import { VIEWS, DEALS_PAGE_SIZE, SEARCH_DEBOUNCE_MS } from './config.js';
-import { state, setLegState, saveSettings, addSavedList, deleteSavedList } from './state.js';
+import { state, setLegState, saveSettings, setListMode, addSavedList, deleteSavedList } from './state.js';
 import { loadWeek, loadArchiveWeeks, loadLegislativa, loadReference, offerByKey } from './data.js';
 import * as shopping from './shopping.js';
 import * as purchases from './purchases.js';
@@ -50,6 +50,9 @@ function restoreFocus(saved) {
 
 export function render() {
   const focus = captureFocus();
+  document.body.classList.toggle('shopping-simple-active', state.view === 'list' && state.listMode === 'simple');
+  document.body.classList.toggle('tracked-view-active', state.view === 'tracked');
+  document.body.classList.toggle('has-active-query', Boolean(state.query));
   if (state.view === 'legislativa') {
     app.innerHTML = renderLegislativa();
   } else if (state.view === 'profil') {
@@ -183,6 +186,18 @@ function saveCurrentList() {
 function restoreList(id) {
   const saved = state.savedLists.find(x => x.id === id);
   if (!saved) return;
+  if (shopping.items.length) {
+    let replace = false;
+    try {
+      replace = confirm(`Načítanie šablóny „${saved.name}“ nahradí aktuálny zoznam. Pokračovať?`);
+    } catch {
+      replace = false;
+    }
+    if (!replace) {
+      render();
+      return;
+    }
+  }
   const restored = shopping.restoreSavedItems(saved);
   afterListChange();
   showToast(`Obnovený uložený zoznam · ${restored} položiek`);
@@ -221,6 +236,10 @@ const ACTIONS = {
   },
   'tracked-mode': b => {
     state.trackedMode = b.dataset.mode === 'list' ? 'list' : 'dashboard';
+    render();
+  },
+  'list-mode': b => {
+    setListMode(b.dataset.mode);
     render();
   },
   'untrack-record': b => {
@@ -327,6 +346,8 @@ app.addEventListener('change', e => {
   } else if (e.target.id === 'tracked-sort') {
     state.trackedSort = e.target.value;
     render();
+  } else if (e.target.id === 'list-template-select') {
+    if (e.target.value) restoreList(e.target.value);
   } else if (e.target.id === 'leg-category') {
     state.legCat = e.target.value;
     render();
