@@ -23,7 +23,6 @@ Odporúčaný hlavný model pre koordináciu je Sonnet. Premenná CLAUDE_CODE_SU
 - Nevymýšľaj ceny, hodiny, sviatočné výnimky ani právne tvrdenia.
 - Pri právnych a prevádzkových údajoch používaj primárne oficiálne zdroje.
 - Routine nemá prístup k osobným localStorage/Supabase nákupom a netrénuje ML.
-- E-mail vytvor iba ako koncept a neodosielaj bez potvrdenia používateľa.
 - Pri špinavom pracovnom strome zachovaj cudzie zmeny a skonči BLOCKED.
 
 ## Git

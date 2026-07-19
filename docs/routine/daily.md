@@ -10,7 +10,6 @@
 - Koordinátor môže bežať na Sonnet. Mechanické úlohy deleguje na Haiku, zložité čítanie a párovanie na Sonnet. Finálnu syntézu, konflikt resolution, zápis produkčných súborov a publish smie vykonať iba daily-finalizer na Opus s effort max.
 - Claude Cloud Routine začína každý beh z čerstvého klonu default branchu. Trvalý stav preto čítaj z `data/routine-state.json`; `.routine-work/` je iba dočasný scratch priestor.
 - Ak má cloudové prostredie povolený neobmedzený push vetiev, finalizer môže po PASS pushnúť priamo `main`. Inak pushne `claude/routine-{run_id}` a vráti `NEEDS_MERGE`. Nepoužívaj GitHub Contents API ani PAT.
-- Nikdy neodosielaj e-mail. Vytvor iba koncept.
 - Subagenti nesmú meniť data/latest.json, data/archive, data/legislativa.json, README, schému ani aplikačný kód. Zapisujú iba do súkromného run priečinka.
 - Produkčné súbory upravuje iba finalizer po dokončení všetkých povinných agentov a po PASS validačných bránach.
 - Pri nezávislých úlohách používaj paralelné subagenty. Subagent nesmie delegovať ďalšieho subagenta.
@@ -163,7 +162,7 @@ Ak je v prostredí nastavené CLAUDE_CODE_SUBAGENT_MODEL, upozorni na to: má vy
 4. Načítaj `data/routine-state.json`. Pri `product_id_migration.status: complete` migráciu preskoč a spusti iba regresnú kontrolu prefixov. Iný stav je recovery režim: vykonaj najprv dry-run z kroku 2 a odovzdaj report finalizeru.
 5. Načítaj posledný `source_manifest` z `data/routine-state.json` a vypočítaj nový fingerprint.
 6. Denný beh nesmie pridávať nový historický bod len preto, že prešiel ďalší deň. Bod pridaj iba pri novej edícii letáku, novej ponuke alebo skutočnej zmene ceny/podmienky.
-7. Aj pri nezmenených letákoch dokonči dennú kontrolu hodín/sviatkov a ľahký legislatívny watch. Nový dátum skutočného overenia zobrazených hodín je legitímna verification-only zmena; commitni ho najviac raz denne. Ak sú už produkčné verifikačné dátumy dnešné a nič iné sa nezmenilo, vytvor outcome NO_CHANGE bez commitu a e-mailu.
+7. Aj pri nezmenených letákoch dokonči dennú kontrolu hodín/sviatkov a ľahký legislatívny watch. Nový dátum skutočného overenia zobrazených hodín je legitímna verification-only zmena; commitni ho najviac raz denne. Ak sú už produkčné verifikačné dátumy dnešné a nič iné sa nezmenilo, vytvor outcome NO_CHANGE bez commitu.
 
 Source manifest smie obsahovať iba kanonickú verejnú URL, čas kontroly, status, ETag/Last-Modified a obsahový hash. Pred uložením odstráň fragment a všetky citlivé query parametre (`token`, `sig`, `signature`, `credential`, `X-Amz-*`, `X-Goog-*` a ekvivalenty). Neukladaj cookies, request hlavičky, response body, lokálne cesty ani prihlasovacie údaje. Pred finalizáciou spusti secret scan trackovaných zmien a skontroluj veľkosť diffu; neočakávaný bulk rewrite je BLOCKED.
 
@@ -394,7 +393,7 @@ Finalizer:
 6. po nasadení overí live latest.json a základné UI,
 7. vytvorí outcome.json a report.md.
 
-Verification-only refresh generovane/overene môže vytvoriť jeden denný commit, ale nevytvára e-mail draft. Ak sa nezmenil ani obsah, ani dnešné verifikačné metadáta, outcome.status je NO_CHANGE a commit nevytváraj.
+Verification-only refresh generovane/overene môže vytvoriť jeden denný commit. Ak sa nezmenil ani obsah, ani dnešné verifikačné metadáta, outcome.status je NO_CHANGE a commit nevytváraj.
 
 Minimálny outcome:
 
@@ -415,26 +414,7 @@ Minimálny outcome:
 
 Zelené ukončenie nástroja nie je dôkaz úspechu úlohy. Publikovaný úspech je iba outcome.status PASS alebo NO_CHANGE so všetkými povinnými kontrolami. NEEDS_MERGE znamená, že validná zmena je bezpečne pushnutá na `claude/` vetvu, ale cloud nemal oprávnenie pushnúť `main`; používateľ ju musí zlúčiť.
 
-## 15. Notifikačný e-mail — iba koncept
-
-Draft vytvor iba pri PASS s materiálnou zmenou.
-
-Predmet:
-
-    🛒 Letáky {týždeň} online · TOP: {položka a úspora} · {počet promo}
-
-Telo 5–8 riadkov:
-
-- link na stránku,
-- tri najlepšie položky,
-- významné promo a platnosť,
-- najbližší sviatok/prevádzková výnimka alebo legislatívny termín,
-- počty položiek po obchodoch,
-- stručný stav zdrojov.
-
-Neodosielaj bez výslovného potvrdenia používateľa.
-
-## 16. Periodické hlbšie kontroly v rámci denného vstupu
+## 15. Periodické hlbšie kontroly v rámci denného vstupu
 
 - Denne: fingerprinty, zmenené letáky, promo expiry, hodiny/sviatky, ľahký legislatívny watch, validácia a deploy health.
 - Streda a štvrtok: úplné overenie nových cyklov všetkých obchodov a homepage.
@@ -443,7 +423,7 @@ Neodosielaj bez výslovného potvrdenia používateľa.
 
 Žiadny periodický audit automaticky nemení váhy algoritmu alebo legislatívny význam bez Opus review.
 
-## 17. Poučenia, ktoré zostávajú záväzné
+## 16. Poučenia, ktoré zostávajú záväzné
 
 - Metro má viac letákov; jeden agregátor nikdy nestačí.
 - Promo obsahuje mechaniku, nie obyčajnú percentuálnu zľavu.
