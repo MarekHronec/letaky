@@ -2,7 +2,7 @@
  "schema_version": 2,
  "tyzden": "2026-W29",
  "obdobie": "13. júl – 25. august 2026",
- "generovane": "2026-07-19T22:34:50+02:00",
+ "generovane": "2026-07-19T22:39:17+02:00",
  "top_ids": [
   "kaufland-cerstve-zo-slovenska-paradajky-miniroma-sladke-500-g-balenie-2026-w29",
   "kaufland-paradajky-cherry-strapcove-500-g-balenie-2026-w29",
@@ -54065,9 +54065,9 @@
   },
   {
    "zdroj": "legislatívny watch (6 portálov)",
-   "ok": false,
+   "ok": true,
    "url": null,
-   "poznamka": "financnasprava-novinky"
+   "poznamka": "bez zmien"
   }
  ]
 }
