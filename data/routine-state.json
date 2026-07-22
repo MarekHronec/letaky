@@ -151,15 +151,15 @@
   "note": "Jednorazová migrácia odstránila iba známy obchodný prefix. Bežné denné behy ju znovu nezapisujú; schema a validator ostávajú regresnou bránou."
  },
  "quality_baseline": {
-  "offers": 2114,
-  "active": 1685,
+  "offers": 2113,
+  "active": 1684,
   "upcoming": 429,
   "expired": 0,
-  "history_two_or_more": 33,
-  "verdict_unverified": 2076,
-  "verdict_real": 14,
-  "verdict_artificial": 24,
+  "history_two_or_more": 37,
+  "verdict_unverified": 2073,
+  "verdict_real": 15,
+  "verdict_artificial": 25,
   "promo_priority_one": 1,
-  "missing_images": 1194
+  "missing_images": 1193
  }
 }

@@ -1,11 +1,11 @@
 {
- "generovane": "2026-07-21T09:09:46+02:00",
- "run_id": "2026-07-21T090618",
+ "generovane": "2026-07-22T09:09:04+02:00",
+ "run_id": "2026-07-22T090742",
  "outcome": "DEGRADED",
  "counts": {
   "kaufland": 920,
   "lidl": 605,
-  "metro": 589
+  "metro": 588
  },
  "fresh": {
   "kaufland": 920,
@@ -14,7 +14,7 @@
  },
  "carry_forward": {
   "lidl": 605,
-  "metro": 363
+  "metro": 362
  },
  "validation_ok": true,
  "anomalies": [],

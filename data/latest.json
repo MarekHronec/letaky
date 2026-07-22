@@ -2,12 +2,12 @@
  "schema_version": 2,
  "tyzden": "2026-W29",
  "obdobie": "15. júl – 25. august 2026",
- "generovane": "2026-07-21T09:09:46+02:00",
+ "generovane": "2026-07-22T09:09:04+02:00",
  "top_ids": [
   "kaufland-cerstve-zo-slovenska-paradajky-miniroma-sladke-500-g-balenie-2026-w29",
   "kaufland-costa-d-oro-olivovy-olej-1-l-2026-w29-2",
+  "kaufland-k-carinura-granule-pre-psy-1-5-kg-2026-w29",
   "kaufland-baron-vysocina-salama-700-g-2026-w29",
-  "kaufland-viedenske-parky-100-g-2026-w29",
   "lidl-koktejlove-paradajky-krickove-500-g-balenie-2026-w30",
   "lidl-paradajky-krickove-1-kg-2026-w29",
   "lidl-datlove-cherry-paradajky-500-g-2026-w30",
@@ -125,16 +125,6 @@
    "podmienka": null,
    "zdroj_url": "https://letaky.metro.sk/maloobchod-mp2616/page/38",
    "priorita": 3
-  },
-  {
-   "id": "billa-tento-toaletny-papier-1-plus-1-2026-w29",
-   "obchod": "Billa",
-   "text": "Tento toaletný papier 3-vrstvový, 8 ks: 1 + 1; dve balenia spolu za 5,48 EUR",
-   "plati_od": "2026-07-15",
-   "plati_do": "2026-07-21",
-   "podmienka": "pri kúpe 2 balení; 2,74 EUR za balenie, samostatne 5,49 EUR; rôzne druhy",
-   "zdroj_url": "https://letak.billa.sk/64070/3224395/pdfs/249af678-f4e4-4f89-8540-84c177786a8c.pdf#page=1",
-   "priorita": 2
   },
   {
    "id": "metro-gril-mesiaca-podlozka",
@@ -6446,7 +6436,7 @@
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       },
       {
-       "datum": "2026-07-21",
+       "datum": "2026-07-22",
        "cena": 1.69,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -7538,6 +7528,18 @@
        "cena": 0.99,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      },
+      {
+       "datum": "2026-07-21",
+       "cena": 0.65,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      },
+      {
+       "datum": "2026-07-22",
+       "cena": 0.99,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       }
      ]
     },
@@ -8116,7 +8118,7 @@
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       },
       {
-       "datum": "2026-07-21",
+       "datum": "2026-07-22",
        "cena": 0.59,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -8218,7 +8220,7 @@
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       },
       {
-       "datum": "2026-07-21",
+       "datum": "2026-07-22",
        "cena": 0.62,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -8256,7 +8258,7 @@
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       },
       {
-       "datum": "2026-07-21",
+       "datum": "2026-07-22",
        "cena": 12.99,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -8326,7 +8328,7 @@
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       },
       {
-       "datum": "2026-07-21",
+       "datum": "2026-07-22",
        "cena": 0.59,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -8364,7 +8366,7 @@
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       },
       {
-       "datum": "2026-07-21",
+       "datum": "2026-07-22",
        "cena": 0.69,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -8482,8 +8484,8 @@
      "zlava_letak_pct": 33,
      "zlava_realna_pct": null,
      "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "verdikt": "umela",
+     "dovod_verdiktu": "Rovnaká akciová cena 0,39 € sa opakuje (2 predchádzajúcich meraní) – zľava nie je výnimočná.",
      "podmienka": "s Kaufland Card XTRA 0,35 € (bez karty 0,39 €)",
      "poznamka": null,
      "plati_od": "2026-07-16",
@@ -8493,6 +8495,18 @@
      "historia_cien": [
       {
        "datum": "2026-07-15",
+       "cena": 0.39,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      },
+      {
+       "datum": "2026-07-21",
+       "cena": 1.39,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      },
+      {
+       "datum": "2026-07-22",
        "cena": 0.39,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -11154,7 +11168,7 @@
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       },
       {
-       "datum": "2026-07-21",
+       "datum": "2026-07-22",
        "cena": 3.99,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -17846,6 +17860,18 @@
        "cena": 7.69,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      },
+      {
+       "datum": "2026-07-21",
+       "cena": 5.19,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      },
+      {
+       "datum": "2026-07-22",
+       "cena": 7.69,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       }
      ]
     },
@@ -19096,7 +19122,7 @@
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       },
       {
-       "datum": "2026-07-21",
+       "datum": "2026-07-22",
        "cena": 26.99,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -25778,10 +25804,10 @@
      "jednotkova_cena": 1.99,
      "jednotka": "kg",
      "zlava_letak_pct": 25,
-     "zlava_realna_pct": null,
+     "zlava_realna_pct": 51,
      "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "verdikt": "realna",
+     "dovod_verdiktu": "Najnižšia pozorovaná cena: 2,99 € oproti minulému minimu 6,14 € (−51 %).",
      "podmienka": "s Kaufland Card XTRA 2,39 € (bez karty 2,99 €)",
      "poznamka": null,
      "plati_od": "2026-07-23",
@@ -25791,6 +25817,12 @@
      "historia_cien": [
       {
        "datum": "2026-07-21",
+       "cena": 6.14,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      },
+      {
+       "datum": "2026-07-22",
        "cena": 2.99,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -57545,38 +57577,6 @@
      ]
     },
     {
-     "id": "metro-fine-life-paprika-zlta-flowpack-500-g-2026-w29",
-     "product_id": "fine-life-paprika-zlta-flowpack-500-g",
-     "nazov": "Fine Life Paprika žltá",
-     "mnozstvo": "flowpack 500 g",
-     "kategoria": "Ovocie a zelenina",
-     "cena": 2.69,
-     "cena_s_dph": 2.82,
-     "cena_povodna": null,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": null,
-     "jednotka": null,
-     "zlava_letak_pct": null,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": "akciová cena platná 15.7.–21.7.2026",
-     "poznamka": null,
-     "zdroj_url": "https://www.metro.sk/aktualna-ponuka",
-     "historia_cien": [
-      {
-       "datum": "2026-07-15",
-       "cena": 2.69,
-       "obchod": "Metro",
-       "zdroj_url": "https://www.metro.sk/aktualna-ponuka",
-       "cena_s_dph": 2.82
-      }
-     ],
-     "plati_od": "2026-07-15",
-     "plati_do": "2026-07-21"
-    },
-    {
      "id": "metro-cesnak-biely-50-siet-3-ks-cena-za-1-siet-2026-w29",
      "product_id": "cesnak-biely-50-siet-3-ks-cena-za-1-siet",
      "nazov": "Cesnak biely 50+",
@@ -67093,7 +67093,7 @@
   "obdobie": "15. – 26. júl 2026",
   "checked_through": "2026-08-09",
   "lokalita": "Bratislava – Devínska Nová Ves",
-  "poznamka_sviatky": "Do 4. 8. 2026 nie je štátny sviatok ani deň pracovného pokoja; platia bežné hodiny.",
+  "poznamka_sviatky": "Do 5. 8. 2026 nie je štátny sviatok ani deň pracovného pokoja; platia bežné hodiny.",
   "zdroj_sviatky_url": "https://www.vlada.gov.sk/slovensko/statne-sviatky/",
   "predajne": [
    {
@@ -67134,7 +67134,7 @@
     ],
     "vynimky": [],
     "zdroj_url": "https://predajne.kaufland.sk/servis/predajne/bratislava-devinska-nova-ves-1830.html",
-    "overene": "2026-07-21"
+    "overene": "2026-07-22"
    },
    {
     "id": "lidl",
@@ -67152,7 +67152,7 @@
     ],
     "vynimky": [],
     "zdroj_url": "https://www.lidl.sk/s/sk-SK/vyhladavac-predajni/bratislava/eisnerova-6964-60/",
-    "overene": "2026-07-21"
+    "overene": "2026-07-22"
    }
   ]
  },
@@ -67173,7 +67173,7 @@
    "zdroj": "letaky.metro.sk – oficiálne PDF (Publitas)",
    "ok": true,
    "url": "https://letaky.metro.sk/",
-   "poznamka": "Čerstvo 226 položiek z letaky.metro.sk PDF (bbox), 363 prenesených platných."
+   "poznamka": "Čerstvo 226 položiek z letaky.metro.sk PDF (bbox), 362 prenesených platných."
   },
   {
    "zdroj": "otváracie hodiny pobočiek",
@@ -67189,7 +67189,7 @@
   },
   {
    "zdroj": "legislatívny watch (6 portálov)",
-   "ok": false,
+   "ok": true,
    "url": null,
    "poznamka": "financnasprava-novinky"
   }
