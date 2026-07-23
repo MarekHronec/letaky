@@ -1,14 +1,14 @@
 {
- "generovane": "2026-07-22T09:09:04+02:00",
- "run_id": "2026-07-22T090742",
+ "generovane": "2026-07-23T09:05:47+02:00",
+ "run_id": "2026-07-23T090433",
  "outcome": "DEGRADED",
  "counts": {
-  "kaufland": 920,
+  "kaufland": 529,
   "lidl": 605,
   "metro": 588
  },
  "fresh": {
-  "kaufland": 920,
+  "kaufland": 529,
   "lidl": 0,
   "metro": 226
  },
