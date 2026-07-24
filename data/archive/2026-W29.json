@@ -2,7 +2,7 @@
  "schema_version": 2,
  "tyzden": "2026-W29",
  "obdobie": "20. júl – 25. august 2026",
- "generovane": "2026-07-23T09:05:47+02:00",
+ "generovane": "2026-07-24T09:06:11+02:00",
  "top_ids": [
   "kaufland-costa-d-oro-olivovy-olej-1-l-2026-w29",
   "kaufland-k-carinura-granule-pre-psy-1-5-kg-2026-w29",
@@ -7256,7 +7256,7 @@
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       },
       {
-       "datum": "2026-07-23",
+       "datum": "2026-07-24",
        "cena": 2.99,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -9182,7 +9182,7 @@
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       },
       {
-       "datum": "2026-07-23",
+       "datum": "2026-07-24",
        "cena": 3.99,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -70122,7 +70122,7 @@
   "obdobie": "15. – 26. júl 2026",
   "checked_through": "2026-08-09",
   "lokalita": "Bratislava – Devínska Nová Ves",
-  "poznamka_sviatky": "Do 6. 8. 2026 nie je štátny sviatok ani deň pracovného pokoja; platia bežné hodiny.",
+  "poznamka_sviatky": "Do 7. 8. 2026 nie je štátny sviatok ani deň pracovného pokoja; platia bežné hodiny.",
   "zdroj_sviatky_url": "https://www.vlada.gov.sk/slovensko/statne-sviatky/",
   "predajne": [
    {
@@ -70163,7 +70163,7 @@
     ],
     "vynimky": [],
     "zdroj_url": "https://predajne.kaufland.sk/servis/predajne/bratislava-devinska-nova-ves-1830.html",
-    "overene": "2026-07-23"
+    "overene": "2026-07-24"
    },
    {
     "id": "lidl",
@@ -70181,7 +70181,7 @@
     ],
     "vynimky": [],
     "zdroj_url": "https://www.lidl.sk/s/sk-SK/vyhladavac-predajni/bratislava/eisnerova-6964-60/",
-    "overene": "2026-07-23"
+    "overene": "2026-07-24"
    }
   ]
  },
@@ -70220,7 +70220,7 @@
    "zdroj": "legislatívny watch (6 portálov)",
    "ok": true,
    "url": null,
-   "poznamka": "financnasprava-novinky"
+   "poznamka": "financnasprava-novinky, soi-verejnost"
   }
  ]
 }
