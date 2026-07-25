@@ -2,12 +2,12 @@
  "schema_version": 2,
  "tyzden": "2026-W29",
  "obdobie": "20. júl – 25. august 2026",
- "generovane": "2026-07-24T09:06:11+02:00",
+ "generovane": "2026-07-25T08:38:20+02:00",
  "top_ids": [
+  "kaufland-k-purland-mlete-hovadzie-maso-500-g-2026-w29",
   "kaufland-costa-d-oro-olivovy-olej-1-l-2026-w29",
   "kaufland-k-carinura-granule-pre-psy-1-5-kg-2026-w29",
   "kaufland-baron-vysocina-salama-700-g-2026-w29",
-  "kaufland-viedenske-parky-100-g-2026-w29",
   "lidl-koktejlove-paradajky-krickove-500-g-balenie-2026-w30",
   "lidl-paradajky-krickove-1-kg-2026-w29",
   "lidl-datlove-cherry-paradajky-500-g-2026-w30",
@@ -1218,38 +1218,6 @@
       {
        "datum": "2026-07-21",
        "cena": 14.99,
-       "obchod": "Kaufland",
-       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
-      }
-     ]
-    },
-    {
-     "id": "kaufland-klincek-pink-kisses-v-kosiku-dianthus-pink-kisses-1-kus-2026-w29",
-     "product_id": "klincek-pink-kisses-v-kosiku-dianthus-pink-kisses-1-kus",
-     "nazov": "Klinček \"Pink Kisses\" v košíku (Dianthus \"Pink Kisses\")",
-     "mnozstvo": "1 kus",
-     "kategoria": "Čerstvé ovocie a zelenina, Kvety",
-     "cena": 5.99,
-     "cena_s_dph": null,
-     "cena_povodna": null,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": null,
-     "jednotka": null,
-     "zlava_letak_pct": null,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": null,
-     "plati_od": "2026-07-23",
-     "plati_do": "2026-07-29",
-     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/00029431_P-1",
-     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
-     "historia_cien": [
-      {
-       "datum": "2026-07-23",
-       "cena": 5.99,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       }
@@ -2632,70 +2600,6 @@
       {
        "datum": "2026-07-21",
        "cena": 3.99,
-       "obchod": "Kaufland",
-       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
-      }
-     ]
-    },
-    {
-     "id": "kaufland-fjord-sumcek-africky-cena-za-100-g-2026-w29",
-     "product_id": "fjord-sumcek-africky-cena-za-100-g",
-     "nazov": "Fjord Sumček africký",
-     "mnozstvo": "cena za 100 g",
-     "kategoria": "Čerstvé ryby",
-     "cena": 1.59,
-     "cena_s_dph": null,
-     "cena_povodna": 1.99,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": 15.9,
-     "jednotka": "kg",
-     "zlava_letak_pct": 20,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": null,
-     "plati_od": "2026-07-23",
-     "plati_do": "2026-07-29",
-     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/20922993_P",
-     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
-     "historia_cien": [
-      {
-       "datum": "2026-07-21",
-       "cena": 1.59,
-       "obchod": "Kaufland",
-       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
-      }
-     ]
-    },
-    {
-     "id": "kaufland-fjord-tilapia-filety-bez-koze-cena-za-100-g-2026-w29",
-     "product_id": "fjord-tilapia-filety-bez-koze-cena-za-100-g",
-     "nazov": "Fjord Tilapia filety bez kože",
-     "mnozstvo": "cena za 100 g",
-     "kategoria": "Čerstvé ryby",
-     "cena": 1.19,
-     "cena_s_dph": null,
-     "cena_povodna": 1.49,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": 11.9,
-     "jednotka": "kg",
-     "zlava_letak_pct": 20,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": null,
-     "plati_od": "2026-07-23",
-     "plati_do": "2026-07-29",
-     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/20922994_P",
-     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
-     "historia_cien": [
-      {
-       "datum": "2026-07-21",
-       "cena": 1.19,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       }
@@ -7256,7 +7160,7 @@
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       },
       {
-       "datum": "2026-07-24",
+       "datum": "2026-07-25",
        "cena": 2.99,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -9182,7 +9086,7 @@
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       },
       {
-       "datum": "2026-07-24",
+       "datum": "2026-07-25",
        "cena": 3.99,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -17426,6 +17330,390 @@
      ]
     },
     {
+     "id": "kaufland-k-purland-mlete-hovadzie-maso-500-g-2026-w29",
+     "product_id": "k-purland-mlete-hovadzie-maso-500-g",
+     "nazov": "K-Purland Mleté hovädzie mäso",
+     "mnozstvo": "500 g",
+     "kategoria": "Senzačný víkend  25.07.2026 - 26.07.2026",
+     "cena": 4.99,
+     "cena_s_dph": null,
+     "cena_povodna": 11.98,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 4.99,
+     "jednotka": "kg",
+     "zlava_letak_pct": 58,
+     "zlava_realna_pct": 58,
+     "bezna_cena_60d": null,
+     "verdikt": "realna",
+     "dovod_verdiktu": "Najnižšia jednotková cena naprieč obchodmi: 4,99 €/kg oproti 11,33 €/kg (Metro, Hovädzie mleté mäso); zľava −58 % z letáku.",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-25",
+     "plati_do": "2026-07-26",
+     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/20608729_P",
+     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
+     "historia_cien": [
+      {
+       "datum": "2026-07-25",
+       "cena": 4.99,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      }
+     ]
+    },
+    {
+     "id": "kaufland-razna-kocka-s-vysokym-obsahom-vlakniny-70-g-2026-w29",
+     "product_id": "razna-kocka-s-vysokym-obsahom-vlakniny-70-g",
+     "nazov": "Ražná kocka s vysokým obsahom vlákniny",
+     "mnozstvo": "70 g",
+     "kategoria": "Senzačný víkend  25.07.2026 - 26.07.2026",
+     "cena": 1.05,
+     "cena_s_dph": null,
+     "cena_povodna": 2.1,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 2.5,
+     "jednotka": "kg",
+     "zlava_letak_pct": 50,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-25",
+     "plati_do": "2026-07-26",
+     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/00099721_P",
+     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
+     "historia_cien": [
+      {
+       "datum": "2026-07-25",
+       "cena": 1.05,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      }
+     ]
+    },
+    {
+     "id": "kaufland-prepelicie-cestoviny-250-g-2026-w29",
+     "product_id": "prepelicie-cestoviny-250-g",
+     "nazov": "Prepeličie cestoviny",
+     "mnozstvo": "250 g",
+     "kategoria": "Senzačný víkend  25.07.2026 - 26.07.2026",
+     "cena": 1.38,
+     "cena_s_dph": null,
+     "cena_povodna": 2.76,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 2.76,
+     "jednotka": "kg",
+     "zlava_letak_pct": 50,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-25",
+     "plati_do": "2026-07-26",
+     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/8588001128371_SK_P-1",
+     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
+     "historia_cien": [
+      {
+       "datum": "2026-07-25",
+       "cena": 1.38,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      }
+     ]
+    },
+    {
+     "id": "kaufland-krusovice-svetle-pivo-10-0-5-l-2026-w29",
+     "product_id": "krusovice-svetle-pivo-10-0-5-l",
+     "nazov": "Krušovice Svetlé pivo  10 %",
+     "mnozstvo": "0,5 l",
+     "kategoria": "Senzačný víkend  25.07.2026 - 26.07.2026",
+     "cena": 7.7,
+     "cena_s_dph": null,
+     "cena_povodna": 9.0,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 0.77,
+     "jednotka": "l",
+     "zlava_letak_pct": 14,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-25",
+     "plati_do": "2026-07-26",
+     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/00034789_P",
+     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
+     "historia_cien": [
+      {
+       "datum": "2026-07-25",
+       "cena": 7.7,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      }
+     ]
+    },
+    {
+     "id": "kaufland-magnum-mrazeny-krem-smotanovy-297-303-g-2026-w29",
+     "product_id": "magnum-mrazeny-krem-smotanovy-297-303-g",
+     "nazov": "Magnum Mrazený krém smotanový",
+     "mnozstvo": "297 - 303 g",
+     "kategoria": "Senzačný víkend  25.07.2026 - 26.07.2026",
+     "cena": 6.99,
+     "cena_s_dph": null,
+     "cena_povodna": 13.98,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 11.77,
+     "jednotka": "kg",
+     "zlava_letak_pct": 50,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-25",
+     "plati_do": "2026-07-26",
+     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/00077779_P",
+     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
+     "historia_cien": [
+      {
+       "datum": "2026-07-25",
+       "cena": 6.99,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      }
+     ]
+    },
+    {
+     "id": "kaufland-k-classic-smotanovy-jogurt-150-g-2026-w29",
+     "product_id": "k-classic-smotanovy-jogurt-150-g",
+     "nazov": "K-Classic Smotanový jogurt",
+     "mnozstvo": "150 g",
+     "kategoria": "Senzačný víkend  25.07.2026 - 26.07.2026",
+     "cena": 0.84,
+     "cena_s_dph": null,
+     "cena_povodna": 1.68,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 1.4,
+     "jednotka": "kg",
+     "zlava_letak_pct": 50,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-25",
+     "plati_do": "2026-07-26",
+     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/00409831_P",
+     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
+     "historia_cien": [
+      {
+       "datum": "2026-07-25",
+       "cena": 0.84,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      }
+     ]
+    },
+    {
+     "id": "kaufland-vodnanske-kure-kuracie-nugety-vyprazane-360-g-2026-w29",
+     "product_id": "vodnanske-kure-kuracie-nugety-vyprazane-360-g",
+     "nazov": "Vodňanské kuře Kuracie nugety vyprážané",
+     "mnozstvo": "360 g",
+     "kategoria": "Senzačný víkend  25.07.2026 - 26.07.2026",
+     "cena": 1.99,
+     "cena_s_dph": null,
+     "cena_povodna": 3.98,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 2.76,
+     "jednotka": "kg",
+     "zlava_letak_pct": 50,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-25",
+     "plati_do": "2026-07-26",
+     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/00704060_P",
+     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
+     "historia_cien": [
+      {
+       "datum": "2026-07-25",
+       "cena": 1.99,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      }
+     ]
+    },
+    {
+     "id": "kaufland-k-classic-sledove-filety-200-g-2026-w29",
+     "product_id": "k-classic-sledove-filety-200-g",
+     "nazov": "K-Classic Sleďové filety",
+     "mnozstvo": "200 g",
+     "kategoria": "Senzačný víkend  25.07.2026 - 26.07.2026",
+     "cena": 2.78,
+     "cena_s_dph": null,
+     "cena_povodna": 5.56,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 3.48,
+     "jednotka": "kg",
+     "zlava_letak_pct": 50,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-25",
+     "plati_do": "2026-07-26",
+     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/5902335331512_SK_P",
+     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
+     "historia_cien": [
+      {
+       "datum": "2026-07-25",
+       "cena": 2.78,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      }
+     ]
+    },
+    {
+     "id": "kaufland-cerstve-zo-slovenska-cucoriedky-125-g-balenie-2026-w29",
+     "product_id": "cerstve-zo-slovenska-cucoriedky-125-g-balenie",
+     "nazov": "Čerstvé zo Slovenska Čučoriedky",
+     "mnozstvo": "125 g balenie",
+     "kategoria": "Čerešnička na víkend  25.07.2026 - 26.07.2026",
+     "cena": 1.29,
+     "cena_s_dph": null,
+     "cena_povodna": 2.19,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 10.32,
+     "jednotka": "kg",
+     "zlava_letak_pct": 41,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-25",
+     "plati_do": "2026-07-26",
+     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/09702751_P-1",
+     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
+     "historia_cien": [
+      {
+       "datum": "2026-07-25",
+       "cena": 1.29,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      }
+     ]
+    },
+    {
+     "id": "kaufland-klincek-pink-kisses-v-kosiku-dianthus-pink-kisses-1-kus-2026-w29",
+     "product_id": "klincek-pink-kisses-v-kosiku-dianthus-pink-kisses-1-kus",
+     "nazov": "Klinček \"Pink Kisses\" v košíku (Dianthus \"Pink Kisses\")",
+     "mnozstvo": "1 kus",
+     "kategoria": "Čerstvé ovocie a zelenina, Kvety",
+     "cena": 5.99,
+     "cena_s_dph": null,
+     "cena_povodna": null,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": null,
+     "jednotka": null,
+     "zlava_letak_pct": null,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-23",
+     "plati_do": "2026-07-29",
+     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/00029431_P-1",
+     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
+     "historia_cien": [
+      {
+       "datum": "2026-07-23",
+       "cena": 5.99,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      }
+     ]
+    },
+    {
+     "id": "kaufland-fjord-sumcek-africky-cena-za-100-g-2026-w29",
+     "product_id": "fjord-sumcek-africky-cena-za-100-g",
+     "nazov": "Fjord Sumček africký",
+     "mnozstvo": "cena za 100 g",
+     "kategoria": "Čerstvé ryby",
+     "cena": 1.59,
+     "cena_s_dph": null,
+     "cena_povodna": 1.99,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 15.9,
+     "jednotka": "kg",
+     "zlava_letak_pct": 20,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-23",
+     "plati_do": "2026-07-29",
+     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/20922993_P",
+     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
+     "historia_cien": [
+      {
+       "datum": "2026-07-21",
+       "cena": 1.59,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      }
+     ]
+    },
+    {
+     "id": "kaufland-fjord-tilapia-filety-bez-koze-cena-za-100-g-2026-w29",
+     "product_id": "fjord-tilapia-filety-bez-koze-cena-za-100-g",
+     "nazov": "Fjord Tilapia filety bez kože",
+     "mnozstvo": "cena za 100 g",
+     "kategoria": "Čerstvé ryby",
+     "cena": 1.19,
+     "cena_s_dph": null,
+     "cena_povodna": 1.49,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 11.9,
+     "jednotka": "kg",
+     "zlava_letak_pct": 20,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-23",
+     "plati_do": "2026-07-29",
+     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/20922994_P",
+     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
+     "historia_cien": [
+      {
+       "datum": "2026-07-21",
+       "cena": 1.19,
+       "obchod": "Kaufland",
+       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
+      }
+     ]
+    },
+    {
      "id": "kaufland-broskyne-2-kg-balenie-2026-w29",
      "product_id": "broskyne-2-kg-balenie",
      "nazov": "Broskyne",
@@ -17490,38 +17778,6 @@
       {
        "datum": "2026-07-15",
        "cena": 2.79,
-       "obchod": "Kaufland",
-       "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
-      }
-     ]
-    },
-    {
-     "id": "kaufland-cerstve-zo-slovenska-cucoriedky-125-g-balenie-2026-w29",
-     "product_id": "cerstve-zo-slovenska-cucoriedky-125-g-balenie",
-     "nazov": "Čerstvé zo Slovenska Čučoriedky",
-     "mnozstvo": "125 g balenie",
-     "kategoria": "Čerstvé ovocie a zelenina, Kvety",
-     "cena": 1.39,
-     "cena_s_dph": null,
-     "cena_povodna": 2.19,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": 11.12,
-     "jednotka": "kg",
-     "zlava_letak_pct": 36,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": null,
-     "plati_od": "2026-07-16",
-     "plati_do": "2026-07-22",
-     "obrazok_url": "https://kaufland.media.schwarz/is/image/schwarz/09702751_P-1",
-     "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
-     "historia_cien": [
-      {
-       "datum": "2026-07-15",
-       "cena": 1.39,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       }
@@ -32288,6 +32544,102 @@
      ]
     },
     {
+     "id": "lidl-zadarmo-0-5-l-2026-w29",
+     "product_id": "zadarmo-0-5-l",
+     "nazov": "ZADARMO",
+     "mnozstvo": "0,5 l",
+     "kategoria": "Potraviny",
+     "cena": 0.6,
+     "cena_s_dph": null,
+     "cena_povodna": 0.89,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 1.2,
+     "jednotka": "l",
+     "zlava_letak_pct": null,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": "+ záloh za obal 0,15 €",
+     "plati_od": "2026-07-01",
+     "plati_do": "2026-07-31",
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-20",
+       "cena": 0.6,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/c/letaky"
+      }
+     ]
+    },
+    {
+     "id": "lidl-zadarmo-120-ml-2026-w29",
+     "product_id": "zadarmo-120-ml",
+     "nazov": "ZADARMO",
+     "mnozstvo": "120 ml",
+     "kategoria": "Potraviny",
+     "cena": 0.49,
+     "cena_s_dph": null,
+     "cena_povodna": 0.65,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 4.08,
+     "jednotka": "l",
+     "zlava_letak_pct": null,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": "rôzne druhy",
+     "plati_od": "2026-07-01",
+     "plati_do": "2026-07-31",
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-20",
+       "cena": 0.49,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/c/letaky"
+      }
+     ]
+    },
+    {
+     "id": "lidl-halloumi-225-g-2026-w29",
+     "product_id": "halloumi-225-g",
+     "nazov": "Halloumi",
+     "mnozstvo": "225 g",
+     "kategoria": "Potraviny",
+     "cena": 2.39,
+     "cena_s_dph": null,
+     "cena_povodna": 2.99,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 10.6,
+     "jednotka": "kg",
+     "zlava_letak_pct": 20,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": "s aplikáciou Lidl Plus",
+     "poznamka": null,
+     "plati_od": "2026-07-01",
+     "plati_do": "2026-07-31",
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-17",
+       "cena": 2.39,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/l/sk/letak/online-letak-platny-od-20-07-2026/view/flyer/page/90"
+      }
+     ]
+    },
+    {
      "id": "lidl-aperol-0-7-l-2026-w29",
      "product_id": "aperol-0-7-l",
      "nazov": "Aperol",
@@ -32352,6 +32704,70 @@
      ]
     },
     {
+     "id": "lidl-aperol-0-7-l-2026-w29-2",
+     "product_id": "aperol-0-7-l",
+     "nazov": "Aperol",
+     "mnozstvo": "0,7 l",
+     "kategoria": "Potraviny",
+     "cena": 10.99,
+     "cena_s_dph": null,
+     "cena_povodna": 13.99,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 15.7,
+     "jednotka": "l",
+     "zlava_letak_pct": 21,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": "s aplikáciou Lidl Plus",
+     "poznamka": null,
+     "plati_od": "2026-07-01",
+     "plati_do": "2026-07-31",
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-17",
+       "cena": 10.99,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/l/sk/letak/online-letak-platny-od-20-07-2026/view/flyer/page/90"
+      }
+     ]
+    },
+    {
+     "id": "lidl-zadarmo-1-5-l-2026-w29-2",
+     "product_id": "zadarmo-1-5-l",
+     "nazov": "ZADARMO",
+     "mnozstvo": "1,5 l",
+     "kategoria": "Potraviny",
+     "cena": 0.56,
+     "cena_s_dph": null,
+     "cena_povodna": 0.84,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 0.37,
+     "jednotka": "l",
+     "zlava_letak_pct": null,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": "rôzne druhy; + záloh za obal 0,15 €",
+     "plati_od": "2026-07-01",
+     "plati_do": "2026-07-31",
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-20",
+       "cena": 0.56,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/c/letaky"
+      }
+     ]
+    },
+    {
      "id": "lidl-pomarance-1-kg-2026-w29",
      "product_id": "pomarance-1-kg",
      "nazov": "Pomaranče",
@@ -32378,6 +32794,38 @@
       {
        "datum": "2026-07-20",
        "cena": 1.69,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/c/letaky"
+      }
+     ]
+    },
+    {
+     "id": "lidl-kava-klasik-150-g-2026-w29",
+     "product_id": "kava-klasik-150-g",
+     "nazov": "Káva klasik",
+     "mnozstvo": "150 g",
+     "kategoria": "Káva",
+     "cena": 1.27,
+     "cena_s_dph": null,
+     "cena_povodna": null,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 8.5,
+     "jednotka": "kg",
+     "zlava_letak_pct": null,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-01",
+     "plati_do": "2026-07-31",
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-20",
+       "cena": 1.27,
        "obchod": "Lidl",
        "zdroj_url": "https://www.lidl.sk/c/letaky"
       }
@@ -32814,8 +33262,8 @@
      "zlava_letak_pct": 30,
      "zlava_realna_pct": null,
      "bezna_cena_60d": null,
-     "verdikt": "umela",
-     "dovod_verdiktu": "Po zľave −30 % vychádza 1,38 €/l, pričom Kaufland má Steiger Tmavé pivo za 1,18 €/l – pôvodná cena je pravdepodobne nadsadená.",
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
      "podmienka": "s aplikáciou Lidl Plus",
      "poznamka": "+ záloh za obal 0,15 €",
      "plati_od": "2026-07-20",
@@ -33568,102 +34016,6 @@
      ]
     },
     {
-     "id": "lidl-pasta-gyoza-bowl-400-g-2026-w29",
-     "product_id": "pasta-gyoza-bowl-400-g",
-     "nazov": "Pasta/Gyoza bowl",
-     "mnozstvo": "400 g",
-     "kategoria": "Potraviny",
-     "cena": 2.99,
-     "cena_s_dph": null,
-     "cena_povodna": null,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": 7.48,
-     "jednotka": "kg",
-     "zlava_letak_pct": 25,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": null,
-     "plati_od": "2026-07-20",
-     "plati_do": "2026-07-26",
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-20",
-       "cena": 2.99,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/c/letaky"
-      }
-     ]
-    },
-    {
-     "id": "lidl-orechova-100-g-2026-w29",
-     "product_id": "orechova-100-g",
-     "nazov": "Orechová/",
-     "mnozstvo": "100 g",
-     "kategoria": "Sladkosti",
-     "cena": 1.79,
-     "cena_s_dph": null,
-     "cena_povodna": 2.49,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": 9.0,
-     "jednotka": "kg",
-     "zlava_letak_pct": 28,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": "s aplikáciou Lidl Plus",
-     "poznamka": null,
-     "plati_od": "2026-07-20",
-     "plati_do": "2026-07-26",
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-20",
-       "cena": 1.79,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/c/letaky"
-      }
-     ]
-    },
-    {
-     "id": "lidl-baby-mrkva-250-g-2026-w29",
-     "product_id": "baby-mrkva-250-g",
-     "nazov": "Baby mrkva",
-     "mnozstvo": "250 g",
-     "kategoria": "Ovocie a zelenina",
-     "cena": 1.15,
-     "cena_s_dph": null,
-     "cena_povodna": null,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": 4.6,
-     "jednotka": "kg",
-     "zlava_letak_pct": null,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": null,
-     "plati_od": "2026-07-20",
-     "plati_do": "2026-07-26",
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-20",
-       "cena": 1.15,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/c/letaky"
-      }
-     ]
-    },
-    {
      "id": "lidl-gerbery-2026-w29",
      "product_id": "gerbery",
      "nazov": "Gerbery",
@@ -33850,6 +34202,230 @@
       {
        "datum": "2026-07-20",
        "cena": 3.99,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/c/letaky"
+      }
+     ]
+    },
+    {
+     "id": "lidl-performance-postrekovac-20-v-61-8-l-2026-w29",
+     "product_id": "performance-postrekovac-20-v-61-8-l",
+     "nazov": "PERFORMANCE postrekovač, 20 V",
+     "mnozstvo": "61,8 l",
+     "kategoria": "Potraviny",
+     "cena": 39.99,
+     "cena_s_dph": null,
+     "cena_povodna": null,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 0.65,
+     "jednotka": "l",
+     "zlava_letak_pct": null,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-23",
+     "plati_do": null,
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-20",
+       "cena": 39.99,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/c/letaky"
+      }
+     ]
+    },
+    {
+     "id": "lidl-sensiplast-bandaz-2026-w29",
+     "product_id": "sensiplast-bandaz",
+     "nazov": "SENSIPLAST Bandáž",
+     "mnozstvo": null,
+     "kategoria": "Potraviny",
+     "cena": 1.99,
+     "cena_s_dph": null,
+     "cena_povodna": null,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": null,
+     "jednotka": null,
+     "zlava_letak_pct": null,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-23",
+     "plati_do": null,
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-20",
+       "cena": 1.99,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/c/letaky"
+      }
+     ]
+    },
+    {
+     "id": "lidl-sensiplast-bandaz-s-medenou-priadzou-2026-w29",
+     "product_id": "sensiplast-bandaz-s-medenou-priadzou",
+     "nazov": "SENSIPLAST Bandáž s medenou priadzou",
+     "mnozstvo": null,
+     "kategoria": "Potraviny",
+     "cena": 3.99,
+     "cena_s_dph": null,
+     "cena_povodna": null,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": null,
+     "jednotka": null,
+     "zlava_letak_pct": null,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-23",
+     "plati_do": null,
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-20",
+       "cena": 3.99,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/c/letaky"
+      }
+     ]
+    },
+    {
+     "id": "lidl-sensiplast-sortiment-obvazov-a-bandazi-2026-w29",
+     "product_id": "sensiplast-sortiment-obvazov-a-bandazi",
+     "nazov": "SENSIPLAST Sortiment obväzov a bandáží",
+     "mnozstvo": null,
+     "kategoria": "Potraviny",
+     "cena": 1.99,
+     "cena_s_dph": null,
+     "cena_povodna": null,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": null,
+     "jednotka": null,
+     "zlava_letak_pct": null,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-23",
+     "plati_do": null,
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-20",
+       "cena": 1.99,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/c/letaky"
+      }
+     ]
+    },
+    {
+     "id": "lidl-na-chrbat-2026-w29",
+     "product_id": "na-chrbat",
+     "nazov": "na chrbát",
+     "mnozstvo": null,
+     "kategoria": "Potraviny",
+     "cena": 9.99,
+     "cena_s_dph": null,
+     "cena_povodna": null,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": null,
+     "jednotka": null,
+     "zlava_letak_pct": null,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-23",
+     "plati_do": null,
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-20",
+       "cena": 9.99,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/c/letaky"
+      }
+     ]
+    },
+    {
+     "id": "lidl-sensiplast-pomocka-na-spravne-drzanie-tela-2026-w29",
+     "product_id": "sensiplast-pomocka-na-spravne-drzanie-tela",
+     "nazov": "SENSIPLAST Pomôcka na správne držanie tela",
+     "mnozstvo": null,
+     "kategoria": "Potraviny",
+     "cena": 5.99,
+     "cena_s_dph": null,
+     "cena_povodna": null,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": null,
+     "jednotka": null,
+     "zlava_letak_pct": null,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-23",
+     "plati_do": null,
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-20",
+       "cena": 5.99,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/c/letaky"
+      }
+     ]
+    },
+    {
+     "id": "lidl-ridder-kupelnova-podlozka-2026-w29",
+     "product_id": "ridder-kupelnova-podlozka",
+     "nazov": "RIDDER Kúpeľňová podložka",
+     "mnozstvo": null,
+     "kategoria": "Potraviny",
+     "cena": 4.99,
+     "cena_s_dph": null,
+     "cena_povodna": null,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": null,
+     "jednotka": null,
+     "zlava_letak_pct": null,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-23",
+     "plati_do": null,
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-20",
+       "cena": 4.99,
        "obchod": "Lidl",
        "zdroj_url": "https://www.lidl.sk/c/letaky"
       }
@@ -34297,6 +34873,12 @@
      "historia_cien": [
       {
        "datum": "2026-07-20",
+       "cena": 0.79,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/c/letaky"
+      },
+      {
+       "datum": "2026-07-25",
        "cena": 1.99,
        "obchod": "Lidl",
        "zdroj_url": "https://www.lidl.sk/c/letaky"
@@ -34752,16 +35334,80 @@
      ]
     },
     {
-     "id": "lidl-kava-klasik-150-g-2026-w29",
-     "product_id": "kava-klasik-150-g",
-     "nazov": "Káva klasik",
-     "mnozstvo": "150 g",
-     "kategoria": "Káva",
-     "cena": 1.27,
+     "id": "lidl-pasta-gyoza-bowl-400-g-2026-w29",
+     "product_id": "pasta-gyoza-bowl-400-g",
+     "nazov": "Pasta/Gyoza bowl",
+     "mnozstvo": "400 g",
+     "kategoria": "Potraviny",
+     "cena": 2.99,
      "cena_s_dph": null,
      "cena_povodna": null,
      "cena_povodna_s_dph": null,
-     "jednotkova_cena": 8.5,
+     "jednotkova_cena": 7.48,
+     "jednotka": "kg",
+     "zlava_letak_pct": 25,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": null,
+     "poznamka": null,
+     "plati_od": "2026-07-20",
+     "plati_do": "2026-07-26",
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-20",
+       "cena": 2.99,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/c/letaky"
+      }
+     ]
+    },
+    {
+     "id": "lidl-orechova-100-g-2026-w29",
+     "product_id": "orechova-100-g",
+     "nazov": "Orechová/",
+     "mnozstvo": "100 g",
+     "kategoria": "Sladkosti",
+     "cena": 1.79,
+     "cena_s_dph": null,
+     "cena_povodna": 2.49,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 9.0,
+     "jednotka": "kg",
+     "zlava_letak_pct": 28,
+     "zlava_realna_pct": null,
+     "bezna_cena_60d": null,
+     "verdikt": "neoverene",
+     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
+     "podmienka": "s aplikáciou Lidl Plus",
+     "poznamka": null,
+     "plati_od": "2026-07-20",
+     "plati_do": "2026-07-26",
+     "obrazok_url": null,
+     "zdroj_url": "https://www.lidl.sk/c/letaky",
+     "historia_cien": [
+      {
+       "datum": "2026-07-20",
+       "cena": 1.79,
+       "obchod": "Lidl",
+       "zdroj_url": "https://www.lidl.sk/c/letaky"
+      }
+     ]
+    },
+    {
+     "id": "lidl-baby-mrkva-250-g-2026-w29",
+     "product_id": "baby-mrkva-250-g",
+     "nazov": "Baby mrkva",
+     "mnozstvo": "250 g",
+     "kategoria": "Ovocie a zelenina",
+     "cena": 1.15,
+     "cena_s_dph": null,
+     "cena_povodna": null,
+     "cena_povodna_s_dph": null,
+     "jednotkova_cena": 4.6,
      "jednotka": "kg",
      "zlava_letak_pct": null,
      "zlava_realna_pct": null,
@@ -34770,398 +35416,14 @@
      "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
      "podmienka": null,
      "poznamka": null,
-     "plati_od": "2026-07-01",
-     "plati_do": "2026-07-31",
+     "plati_od": "2026-07-20",
+     "plati_do": "2026-07-26",
      "obrazok_url": null,
      "zdroj_url": "https://www.lidl.sk/c/letaky",
      "historia_cien": [
       {
        "datum": "2026-07-20",
-       "cena": 1.27,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/c/letaky"
-      }
-     ]
-    },
-    {
-     "id": "lidl-zadarmo-0-5-l-2026-w29",
-     "product_id": "zadarmo-0-5-l",
-     "nazov": "ZADARMO",
-     "mnozstvo": "0,5 l",
-     "kategoria": "Potraviny",
-     "cena": 0.6,
-     "cena_s_dph": null,
-     "cena_povodna": 0.89,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": 1.2,
-     "jednotka": "l",
-     "zlava_letak_pct": null,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": "+ záloh za obal 0,15 €",
-     "plati_od": "2026-07-01",
-     "plati_do": "2026-07-31",
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-20",
-       "cena": 0.6,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/c/letaky"
-      }
-     ]
-    },
-    {
-     "id": "lidl-zadarmo-120-ml-2026-w29",
-     "product_id": "zadarmo-120-ml",
-     "nazov": "ZADARMO",
-     "mnozstvo": "120 ml",
-     "kategoria": "Potraviny",
-     "cena": 0.49,
-     "cena_s_dph": null,
-     "cena_povodna": 0.65,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": 4.08,
-     "jednotka": "l",
-     "zlava_letak_pct": null,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": "rôzne druhy",
-     "plati_od": "2026-07-01",
-     "plati_do": "2026-07-31",
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-20",
-       "cena": 0.49,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/c/letaky"
-      }
-     ]
-    },
-    {
-     "id": "lidl-halloumi-225-g-2026-w29",
-     "product_id": "halloumi-225-g",
-     "nazov": "Halloumi",
-     "mnozstvo": "225 g",
-     "kategoria": "Potraviny",
-     "cena": 2.39,
-     "cena_s_dph": null,
-     "cena_povodna": 2.99,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": 10.6,
-     "jednotka": "kg",
-     "zlava_letak_pct": 20,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": "s aplikáciou Lidl Plus",
-     "poznamka": null,
-     "plati_od": "2026-07-01",
-     "plati_do": "2026-07-31",
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-17",
-       "cena": 2.39,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/l/sk/letak/online-letak-platny-od-20-07-2026/view/flyer/page/90"
-      }
-     ]
-    },
-    {
-     "id": "lidl-aperol-0-7-l-2026-w29-2",
-     "product_id": "aperol-0-7-l",
-     "nazov": "Aperol",
-     "mnozstvo": "0,7 l",
-     "kategoria": "Potraviny",
-     "cena": 10.99,
-     "cena_s_dph": null,
-     "cena_povodna": 13.99,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": 15.7,
-     "jednotka": "l",
-     "zlava_letak_pct": 21,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": "s aplikáciou Lidl Plus",
-     "poznamka": null,
-     "plati_od": "2026-07-01",
-     "plati_do": "2026-07-31",
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-17",
-       "cena": 10.99,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/l/sk/letak/online-letak-platny-od-20-07-2026/view/flyer/page/90"
-      }
-     ]
-    },
-    {
-     "id": "lidl-zadarmo-1-5-l-2026-w29-2",
-     "product_id": "zadarmo-1-5-l",
-     "nazov": "ZADARMO",
-     "mnozstvo": "1,5 l",
-     "kategoria": "Potraviny",
-     "cena": 0.56,
-     "cena_s_dph": null,
-     "cena_povodna": 0.84,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": 0.37,
-     "jednotka": "l",
-     "zlava_letak_pct": null,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": "rôzne druhy; + záloh za obal 0,15 €",
-     "plati_od": "2026-07-01",
-     "plati_do": "2026-07-31",
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-20",
-       "cena": 0.56,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/c/letaky"
-      }
-     ]
-    },
-    {
-     "id": "lidl-performance-postrekovac-20-v-61-8-l-2026-w29",
-     "product_id": "performance-postrekovac-20-v-61-8-l",
-     "nazov": "PERFORMANCE postrekovač, 20 V",
-     "mnozstvo": "61,8 l",
-     "kategoria": "Potraviny",
-     "cena": 39.99,
-     "cena_s_dph": null,
-     "cena_povodna": null,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": 0.65,
-     "jednotka": "l",
-     "zlava_letak_pct": null,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": null,
-     "plati_od": "2026-07-23",
-     "plati_do": null,
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-20",
-       "cena": 39.99,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/c/letaky"
-      }
-     ]
-    },
-    {
-     "id": "lidl-sensiplast-bandaz-2026-w29",
-     "product_id": "sensiplast-bandaz",
-     "nazov": "SENSIPLAST Bandáž",
-     "mnozstvo": null,
-     "kategoria": "Potraviny",
-     "cena": 1.99,
-     "cena_s_dph": null,
-     "cena_povodna": null,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": null,
-     "jednotka": null,
-     "zlava_letak_pct": null,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": null,
-     "plati_od": "2026-07-23",
-     "plati_do": null,
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-20",
-       "cena": 1.99,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/c/letaky"
-      }
-     ]
-    },
-    {
-     "id": "lidl-sensiplast-bandaz-s-medenou-priadzou-2026-w29",
-     "product_id": "sensiplast-bandaz-s-medenou-priadzou",
-     "nazov": "SENSIPLAST Bandáž s medenou priadzou",
-     "mnozstvo": null,
-     "kategoria": "Potraviny",
-     "cena": 3.99,
-     "cena_s_dph": null,
-     "cena_povodna": null,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": null,
-     "jednotka": null,
-     "zlava_letak_pct": null,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": null,
-     "plati_od": "2026-07-23",
-     "plati_do": null,
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-20",
-       "cena": 3.99,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/c/letaky"
-      }
-     ]
-    },
-    {
-     "id": "lidl-sensiplast-sortiment-obvazov-a-bandazi-2026-w29",
-     "product_id": "sensiplast-sortiment-obvazov-a-bandazi",
-     "nazov": "SENSIPLAST Sortiment obväzov a bandáží",
-     "mnozstvo": null,
-     "kategoria": "Potraviny",
-     "cena": 1.99,
-     "cena_s_dph": null,
-     "cena_povodna": null,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": null,
-     "jednotka": null,
-     "zlava_letak_pct": null,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": null,
-     "plati_od": "2026-07-23",
-     "plati_do": null,
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-20",
-       "cena": 1.99,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/c/letaky"
-      }
-     ]
-    },
-    {
-     "id": "lidl-na-chrbat-2026-w29",
-     "product_id": "na-chrbat",
-     "nazov": "na chrbát",
-     "mnozstvo": null,
-     "kategoria": "Potraviny",
-     "cena": 9.99,
-     "cena_s_dph": null,
-     "cena_povodna": null,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": null,
-     "jednotka": null,
-     "zlava_letak_pct": null,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": null,
-     "plati_od": "2026-07-23",
-     "plati_do": null,
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-20",
-       "cena": 9.99,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/c/letaky"
-      }
-     ]
-    },
-    {
-     "id": "lidl-sensiplast-pomocka-na-spravne-drzanie-tela-2026-w29",
-     "product_id": "sensiplast-pomocka-na-spravne-drzanie-tela",
-     "nazov": "SENSIPLAST Pomôcka na správne držanie tela",
-     "mnozstvo": null,
-     "kategoria": "Potraviny",
-     "cena": 5.99,
-     "cena_s_dph": null,
-     "cena_povodna": null,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": null,
-     "jednotka": null,
-     "zlava_letak_pct": null,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": null,
-     "plati_od": "2026-07-23",
-     "plati_do": null,
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-20",
-       "cena": 5.99,
-       "obchod": "Lidl",
-       "zdroj_url": "https://www.lidl.sk/c/letaky"
-      }
-     ]
-    },
-    {
-     "id": "lidl-ridder-kupelnova-podlozka-2026-w29",
-     "product_id": "ridder-kupelnova-podlozka",
-     "nazov": "RIDDER Kúpeľňová podložka",
-     "mnozstvo": null,
-     "kategoria": "Potraviny",
-     "cena": 4.99,
-     "cena_s_dph": null,
-     "cena_povodna": null,
-     "cena_povodna_s_dph": null,
-     "jednotkova_cena": null,
-     "jednotka": null,
-     "zlava_letak_pct": null,
-     "zlava_realna_pct": null,
-     "bezna_cena_60d": null,
-     "verdikt": "neoverene",
-     "dovod_verdiktu": "Bez cenovej histórie na overenie zľavy (prvé meranie).",
-     "podmienka": null,
-     "poznamka": null,
-     "plati_od": "2026-07-23",
-     "plati_do": null,
-     "obrazok_url": null,
-     "zdroj_url": "https://www.lidl.sk/c/letaky",
-     "historia_cien": [
-      {
-       "datum": "2026-07-20",
-       "cena": 4.99,
+       "cena": 1.15,
        "obchod": "Lidl",
        "zdroj_url": "https://www.lidl.sk/c/letaky"
       }
@@ -70122,7 +70384,7 @@
   "obdobie": "15. – 26. júl 2026",
   "checked_through": "2026-08-09",
   "lokalita": "Bratislava – Devínska Nová Ves",
-  "poznamka_sviatky": "Do 7. 8. 2026 nie je štátny sviatok ani deň pracovného pokoja; platia bežné hodiny.",
+  "poznamka_sviatky": "Do 8. 8. 2026 nie je štátny sviatok ani deň pracovného pokoja; platia bežné hodiny.",
   "zdroj_sviatky_url": "https://www.vlada.gov.sk/slovensko/statne-sviatky/",
   "predajne": [
    {
@@ -70163,7 +70425,7 @@
     ],
     "vynimky": [],
     "zdroj_url": "https://predajne.kaufland.sk/servis/predajne/bratislava-devinska-nova-ves-1830.html",
-    "overene": "2026-07-24"
+    "overene": "2026-07-25"
    },
    {
     "id": "lidl",
@@ -70181,7 +70443,7 @@
     ],
     "vynimky": [],
     "zdroj_url": "https://www.lidl.sk/s/sk-SK/vyhladavac-predajni/bratislava/eisnerova-6964-60/",
-    "overene": "2026-07-24"
+    "overene": "2026-07-25"
    }
   ]
  },
@@ -70190,13 +70452,13 @@
    "zdroj": "kaufland.sk – prehľad (SSR JSON)",
    "ok": true,
    "url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html",
-   "poznamka": "Čerstvá deterministická extrakcia (529 položiek)."
+   "poznamka": "Čerstvá deterministická extrakcia (535 položiek)."
   },
   {
    "zdroj": "lidl.sk – letáky (schwarz v4 API + PDF)",
    "ok": true,
    "url": "https://www.lidl.sk/c/letaky",
-   "poznamka": "Čerstvo 0 položiek z PDF (bbox), 605 prenesených platných z posledného behu."
+   "poznamka": "Čerstvo 95 položiek z PDF (bbox), 510 prenesených platných z posledného behu."
   },
   {
    "zdroj": "letaky.metro.sk – oficiálne PDF (Publitas)",
