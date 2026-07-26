@@ -2,7 +2,7 @@
  "schema_version": 2,
  "tyzden": "2026-W29",
  "obdobie": "20. júl – 25. august 2026",
- "generovane": "2026-07-25T08:38:20+02:00",
+ "generovane": "2026-07-26T09:12:49+02:00",
  "top_ids": [
   "kaufland-k-purland-mlete-hovadzie-maso-500-g-2026-w29",
   "kaufland-costa-d-oro-olivovy-olej-1-l-2026-w29",
@@ -7160,7 +7160,7 @@
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       },
       {
-       "datum": "2026-07-25",
+       "datum": "2026-07-26",
        "cena": 2.99,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -9086,7 +9086,7 @@
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
       },
       {
-       "datum": "2026-07-25",
+       "datum": "2026-07-26",
        "cena": 3.99,
        "obchod": "Kaufland",
        "zdroj_url": "https://predajne.kaufland.sk/aktualna-ponuka/prehlad.html"
@@ -70384,7 +70384,7 @@
   "obdobie": "15. – 26. júl 2026",
   "checked_through": "2026-08-09",
   "lokalita": "Bratislava – Devínska Nová Ves",
-  "poznamka_sviatky": "Do 8. 8. 2026 nie je štátny sviatok ani deň pracovného pokoja; platia bežné hodiny.",
+  "poznamka_sviatky": "Do 9. 8. 2026 nie je štátny sviatok ani deň pracovného pokoja; platia bežné hodiny.",
   "zdroj_sviatky_url": "https://www.vlada.gov.sk/slovensko/statne-sviatky/",
   "predajne": [
    {
@@ -70425,7 +70425,7 @@
     ],
     "vynimky": [],
     "zdroj_url": "https://predajne.kaufland.sk/servis/predajne/bratislava-devinska-nova-ves-1830.html",
-    "overene": "2026-07-25"
+    "overene": "2026-07-26"
    },
    {
     "id": "lidl",
@@ -70443,7 +70443,7 @@
     ],
     "vynimky": [],
     "zdroj_url": "https://www.lidl.sk/s/sk-SK/vyhladavac-predajni/bratislava/eisnerova-6964-60/",
-    "overene": "2026-07-25"
+    "overene": "2026-07-26"
    }
   ]
  },
@@ -70458,7 +70458,7 @@
    "zdroj": "lidl.sk – letáky (schwarz v4 API + PDF)",
    "ok": true,
    "url": "https://www.lidl.sk/c/letaky",
-   "poznamka": "Čerstvo 95 položiek z PDF (bbox), 510 prenesených platných z posledného behu."
+   "poznamka": "Čerstvo 0 položiek z PDF (bbox), 605 prenesených platných z posledného behu."
   },
   {
    "zdroj": "letaky.metro.sk – oficiálne PDF (Publitas)",
@@ -70480,9 +70480,9 @@
   },
   {
    "zdroj": "legislatívny watch (6 portálov)",
-   "ok": true,
+   "ok": false,
    "url": null,
-   "poznamka": "financnasprava-novinky, soi-verejnost"
+   "poznamka": "bez zmien"
   }
  ]
 }
