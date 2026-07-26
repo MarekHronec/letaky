@@ -12,13 +12,25 @@
 create table if not exists public.user_data (
   user_id uuid primary key references auth.users (id) on delete cascade,
   data jsonb not null,
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  constraint user_data_payload_object check (jsonb_typeof(data) = 'object'),
+  constraint user_data_payload_size check (pg_column_size(data) <= 1048576)
 );
+
+-- Pri aplikovaní na starší projekt sprísni aj už existujúcu tabuľku.
+alter table public.user_data drop constraint if exists user_data_payload_object;
+alter table public.user_data add constraint user_data_payload_object
+  check (jsonb_typeof(data) = 'object');
+alter table public.user_data drop constraint if exists user_data_payload_size;
+alter table public.user_data add constraint user_data_payload_size
+  check (pg_column_size(data) <= 1048576);
 
 -- Automatická aktualizácia updated_at pri každom zápise.
 create or replace function public.touch_user_data()
 returns trigger
 language plpgsql
+security invoker
+set search_path = ''
 as $$
 begin
   new.updated_at := now();
@@ -26,14 +38,21 @@ begin
 end;
 $$;
 
+-- Trigger ju môže volať interne; klienti ju nemajú volať ako RPC.
+revoke all on function public.touch_user_data() from public, anon, authenticated;
+
 drop trigger if exists user_data_touch on public.user_data;
 create trigger user_data_touch
-  before update on public.user_data
+  before insert or update on public.user_data
   for each row
   execute function public.touch_user_data();
 
 -- Row Level Security: každý prihlásený používateľ vidí a mení IBA svoj riadok.
 alter table public.user_data enable row level security;
+alter table public.user_data force row level security;
+
+revoke all on table public.user_data from public, anon;
+grant select, insert, update on table public.user_data to authenticated;
 
 drop policy if exists "own row select" on public.user_data;
 create policy "own row select"

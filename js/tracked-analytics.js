@@ -1,6 +1,6 @@
-// Čistý, vysvetliteľný analytický model pre sledované produkty.
+// Čistý, vysvetliteľný analytický výpočet pre sledované produkty.
 // Dôležité pravidlo: odporúčanie nikdy nemieša ceny s DPH a bez DPH.
-// Model nevracia falošnú percentuálnu "istotu", ale kvalitu vstupných dát.
+// Výpočet nevracia falošnú percentuálnu "istotu", ale kvalitu vstupných dát.
 
 const DAY_MS = 86_400_000;
 const STRONG_PRICE_POINTS = 3;
@@ -349,7 +349,7 @@ function shelfProfile(record) {
 function qualityTier({ priceStats, verified, packageState, basis, purchases, hasOffer }) {
   const issues = [];
   if (priceStats.count < STRONG_PRICE_POINTS || priceStats.distinctDates < 2) issues.push('Málo nezávislých cenových meraní');
-  if (hasOffer && !verified) issues.push('Ponuka nie je overená ako reálna zľava');
+  if (hasOffer && !verified) issues.push('Hodnotenie nemá dostatočnú cenovú históriu');
   if (packageState === 'mismatch' || (hasOffer && packageState !== 'exact')) issues.push('Balenie nie je spoľahlivo zhodné');
   if (basis === 'net') issues.push('Chýba spotrebiteľská cena s DPH');
   if (purchases.count < 2 && purchases.cadenceSource !== 'manual') issues.push('Chýba potvrdený nákupný rytmus');
@@ -476,12 +476,12 @@ export function analyseTrackedProduct(record, options = {}) {
     signal = 'needsdata';
     title = 'Potrebné lepšie dáta';
     detail = !verified
-      ? 'Cena môže vyzerať dobre, no ponuka nie je overená.'
+      ? 'Nedostatok cenovej histórie neumožňuje silné odporúčanie.'
       : 'Na silné nákupné odporúčanie treba aspoň 3 cenové body z 2 dátumov a presné balenie.';
   } else if (strongAllowed && favourable && shelf.stockable && (dueSoon || lowStock || targetMet)) {
     signal = 'stock';
     title = 'Doplniť zásobu';
-    detail = 'Overená priaznivá cena, použiteľná história a dostatočná trvanlivosť.';
+    detail = 'Cena je priaznivá podľa dostupnej histórie a produkt má dostatočnú trvanlivosť.';
   } else if (strongAllowed && (
     (favourable && (dueSoon || lowStock || targetMet || price.position === 'exceptional'))
     || ((dueSoon || lowStock) && price.median != null && comparisonPrice <= price.median * 1.03)
@@ -516,7 +516,9 @@ export function analyseTrackedProduct(record, options = {}) {
     purchases.count
       ? `${purchases.count} ${purchases.count === 1 ? 'potvrdený nákup' : purchases.count <= 4 ? 'potvrdené nákupy' : 'potvrdených nákupov'}${purchases.cadence ? ` · rytmus ${Math.round(purchases.cadence)} dní` : ''}`
       : purchases.cadenceSource === 'manual' ? `Ručný rytmus ${Math.round(purchases.cadence)} dní` : 'Bez potvrdených nákupov',
-    focalOffer ? (verified ? 'Ponuka je overená' : 'Ponuka nie je overená') : 'Bez platnej ponuky',
+    focalOffer
+      ? (verified ? 'Hodnotenie je podporené cenovou históriou' : 'Nedostatok cenovej histórie')
+      : 'Bez platnej ponuky',
   ];
   if (!shelf.explicit) reasons.push(`Skladovateľnosť je iba odhad: ${shelf.label}`);
   if (focalPackageState !== 'exact') reasons.push('Treba potvrdiť zhodu balenia');

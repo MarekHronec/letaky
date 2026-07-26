@@ -8,14 +8,14 @@ import { pageHead } from './shared.js';
 import { svg } from '../lib/icons.js';
 import { esc, arr, slug, daysTo, dateFrom, fmtDate, safeUrl } from '../lib/util.js';
 
-// Bodky závažnosti 1–5 (dopad/pokuta).
+// Orientačná závažnosť dopadu 1–5; nejde o odhad pokuty.
 function sevDots(n) {
   n = Math.max(0, Math.min(5, Math.round(Number(n)) || 0));
   if (!n) return '';
   const level = n >= 4 ? 'hi' : n === 3 ? 'mid' : 'lo';
   let dots = '';
   for (let k = 1; k <= 5; k++) dots += `<i class="${k <= n ? 'on' : ''}"></i>`;
-  return `<span class="sev sev-${level}" title="Závažnosť ${n}/5 (dopad/pokuta)" aria-label="Závažnosť ${n} z 5">${dots}</span>`;
+  return `<span class="sev sev-${level}" title="Orientačná závažnosť dopadu ${n}/5" aria-label="Orientačná závažnosť dopadu ${n} z 5">${dots}</span>`;
 }
 
 const header = () =>
@@ -152,6 +152,33 @@ function renderPortals(L) {
   </section>`;
 }
 
+function renderLegalReviewBanner(L) {
+  const published = state.pipelineStatus?.freshness?.legislation;
+  const fallback = state.data?.sources?.find(source => /legislatívny watch/i.test(source.name));
+  let changed = null;
+  const checkedAt = published?.checkedAt || state.pipelineStatus?.generated?.slice(0, 10) || state.data?.generated || '';
+  let detail = '';
+  if (published) {
+    changed = published.changedPortals.length > 0;
+    if (!['success', 'no_change'].includes(published.status)) changed = null;
+    detail = published.changedPortals.join(', ');
+  } else if (fallback) {
+    if (!fallback.ok || !fallback.note) changed = null;
+    else changed = !/bez zmien/i.test(fallback.note || '');
+    detail = changed ? fallback.note : '';
+  }
+  const sourceClass = changed === true ? 'changed' : changed === false ? 'unchanged' : 'unknown';
+  const sourceLabel = changed === true
+    ? 'Oficiálny zdroj sa zmenil'
+    : changed === false
+      ? 'Oficiálny zdroj: bez zistenej zmeny'
+      : 'Stav oficiálneho zdroja vyžaduje kontrolu';
+  return `<section class="legal-review-banner ${sourceClass}" aria-label="Stav právnej kontroly">
+    <div>${svg('shield')}<span><small>Naposledy právne skontrolované</small><strong>${L.aktualizovane ? esc(fmtDate(L.aktualizovane, true)) : 'dátum nie je uvedený'}</strong></span></div>
+    <div class="legal-source-state"><i></i><span><strong>${esc(sourceLabel)}</strong>${checkedAt ? `<small>monitor ${esc(fmtDate(checkedAt, true))}${detail ? ` · ${esc(detail)}` : ''}</small>` : ''}</span></div>
+  </section>`;
+}
+
 export function renderLegislativa() {
   const L = state.legData;
   if (L === null) return `${header()}<div class="empty-state">Načítavam prehľad povinností…</div>`;
@@ -177,17 +204,13 @@ export function renderLegislativa() {
 
   const intro = `<div class="leg-intro">
     <p>${esc(L.popis || 'Prehľad hlavných povinností a termínov pre maloobchod s potravinami a drogériou v SR.')}</p>
-    <div class="leg-disclaimer">${svg('alert')}<span>${esc(L.upozornenie || 'Ide o orientačný prehľad, nie právne poradenstvo. Konkrétne termíny, sadzby a povinnosti si over v oficiálnych zdrojoch alebo s účtovníkom/právnikom.')}</span></div>
-    <div class="sev-legend"><span>Guličky = závažnosť / dopad:</span> ${sevDots(1)} <span>malé (napr. platí roky)</span> · ${sevDots(5)} <span>vysoké (veľká pokuta / dopad)</span></div>
+    <div class="leg-disclaimer">${svg('alert')}<span>${esc(L.upozornenie || 'Ide iba o orientačný rozcestník, ktorý môže byť neúplný, neaktuálny alebo nepresný. Nenahrádza znenie práva ani odborné poradenstvo. Pred rozhodnutím vždy otvor odkazovaný oficiálny zdroj a aktuálnu časovú verziu predpisu.')}</span></div>
+    <div class="sev-legend"><span>Guličky = orientačná závažnosť dopadu:</span> ${sevDots(1)} <span>nižšia priorita</span> · ${sevDots(5)} <span>vysoká priorita</span></div>
   </div>`;
-
-  const updated = L.aktualizovane
-    ? `<div class="updated" style="margin:-8px 0 14px"><i class="dot"></i>Aktualizované ${esc(fmtDate(L.aktualizovane, true))}</div>`
-    : '';
 
   const groups = renderGroups(shown);
   const noResults = groups === '<div class="leg-groups"></div>'
     ? '<div class="empty-state"><strong>Tomuto filtru nič nezodpovedá.</strong><br>Skús inú oblasť alebo stav povinnosti.</div>'
     : groups;
-  return `${header()}${updated}${intro}${renderTimeline(L)}${filters}${noResults}${state.legCat === 'all' && state.legVisibility === 'all' ? renderPortals(L) : ''}`;
+  return `${header()}${renderLegalReviewBanner(L)}${intro}${renderTimeline(L)}${filters}${noResults}${state.legCat === 'all' && state.legVisibility === 'all' ? renderPortals(L) : ''}`;
 }

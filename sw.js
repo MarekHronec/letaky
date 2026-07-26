@@ -8,7 +8,9 @@
 // Pri KAŽDEJ zmene súborov aplikácie (index.html, styles.css, js/**) bumpni
 // číslo verzie v CACHE – inak si nainštalované PWA nechajú starú verziu.
 
-const CACHE = "letaky-app-v19";
+const CACHE_PREFIX = "letaky-app-";
+const CACHE = `${CACHE_PREFIX}v24`;
+const APP_SCOPE = new URL(self.registration.scope);
 
 const SHELL = [
   "./",
@@ -19,6 +21,7 @@ const SHELL = [
   "./js/app.js",
   "./js/config.js",
   "./js/state.js",
+  "./js/profile-storage.js",
   "./js/data.js",
   "./js/shopping.js",
   "./js/purchases.js",
@@ -38,10 +41,11 @@ const SHELL = [
   "./js/views/list.js",
   "./js/views/legislativa.js",
   "./js/views/profil.js",
+  "./js/vendor/supabase-js.mjs",
   "./data/latest.json",
+  "./data/pipeline-status.json",
   "./data/archive/index.json",
-  "./data/legislativa.json",
-  "./data/referencne-ceny.json"
+  "./data/legislativa.json"
 ];
 
 // Cache kľúč bez query stringu – jeden súbor = jeden záznam.
@@ -70,7 +74,11 @@ self.addEventListener("activate", event => {
   event.waitUntil(
     caches
       .keys()
-      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
+      .then(keys => Promise.all(
+        keys
+          .filter(key => key.startsWith(CACHE_PREFIX) && key !== CACHE)
+          .map(key => caches.delete(key))
+      ))
       .then(() => self.clients.claim())
   );
 });
@@ -95,6 +103,7 @@ async function networkFirst(request) {
 
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
-  if (new URL(event.request.url).origin !== location.origin) return;
+  const url = new URL(event.request.url);
+  if (url.origin !== APP_SCOPE.origin || !url.pathname.startsWith(APP_SCOPE.pathname)) return;
   event.respondWith(networkFirst(event.request));
 });

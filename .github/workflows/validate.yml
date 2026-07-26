@@ -1,0 +1,75 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repository:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout without persisted credentials
+        uses: actions/checkout@9f698171ed81b15d1823a05fc7211befd50c8ae0 # v6.0.3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12.11"
+
+      - name: Set up Node
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version: "24.14.0"
+
+      - name: Scan tracked files for credentials
+        run: python scripts/routine/scan_secrets.py
+
+      - name: Validate latest dataset and archive
+        shell: bash
+        run: |
+          # CI validates the committed point-in-time snapshot reproducibly.
+          # Live staleness is owned by pipeline-status + the read-only monitor.
+          python scripts/routine/validate_daily.py data/latest.json --mode latest --snapshot --archive-index data/archive/index.json
+          for file in data/archive/*.json; do
+            if [ "$file" != "data/archive/index.json" ]; then
+              python scripts/routine/validate_daily.py "$file" --mode archive
+            fi
+          done
+
+      - name: Parse every JSON file
+        run: python -c "import json,pathlib; files=list(pathlib.Path('.').rglob('*.json')); [json.loads(p.read_text(encoding='utf-8')) for p in files if '.git' not in p.parts]; print(f'parsed {len(files)} JSON files')"
+
+      - name: Validate public pipeline status contract
+        run: python scripts/routine/validate_pipeline_status.py data/pipeline-status.json
+
+      - name: Validate legal checklist contract and official sources
+        run: python scripts/routine/validate_legislativa.py data/legislativa.json
+
+      - name: Run browser-logic regression tests
+        shell: bash
+        run: |
+          for test in scripts/test_*.mjs; do node "$test"; done
+          find js -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check
+          node --check sw.js
+
+      - name: Check pull request patch hygiene
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: git diff --check "$BASE_SHA"...HEAD
+
+      - name: Check pushed commit hygiene
+        if: github.event_name == 'push'
+        run: git show --check --format= HEAD

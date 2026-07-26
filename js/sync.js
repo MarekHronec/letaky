@@ -1,78 +1,118 @@
-// Voliteľné prihlásenie a synchronizácia cez Supabase. Zvyšok aplikácie
-// o Supabase nevie – komunikuje sa cez initSync(onChange) a schedulePush().
-//
-// Bezpečnostný model: publishable kľúč je verejný, dáta chráni Row Level
-// Security na tabuľke user_data (každý používateľ vidí len svoj riadok).
-// Presné policies sú v supabase/schema.sql – pri zmene projektu ich over.
+// Voliteľné prihlásenie a synchronizácia cez Supabase. Osobné lokálne dáta
+// sú oddelené podľa user_id; guest ani iný účet sa nikdy implicitne nemerguje.
 
 import { SUPABASE, PUSH_DEBOUNCE_MS } from './config.js';
-import { state, sanitizeSettings, saveSettings, mergeLegStates, mergeSavedLists } from './state.js';
+import {
+  state,
+  sanitizeSettings,
+  saveSettings,
+  mergeLegStates,
+  mergeSavedLists,
+  reloadProfileState,
+} from './state.js';
+import { setActiveProfile } from './profile-storage.js';
 import * as shopping from './shopping.js';
 import * as purchases from './purchases.js';
 import * as tracking from './tracking.js';
 
 let client = null;
+let authSubscription = null;
+let onlineHandlerAttached = false;
 let pushTimer = null;
-let pushBusy = false;
-let pushQueued = false;
+let pushBusyContext = null;
+let pushQueuedContext = null;
+let syncReady = false;
+let syncDirty = false;
+let identityEpoch = 0;
+let authSerial = Promise.resolve();
 let onChange = () => {};
 
 async function getClient() {
   if (client) return client;
   if (!SUPABASE.url || !SUPABASE.key) return null;
   try {
-    const mod = await import(SUPABASE.clientUrl);
+    // Konfiguračná cesta je relatívna ku koreňu stránky. Dynamic import by ju
+    // inak vyhodnotil voči tomuto súboru a hľadal neexistujúce js/js/vendor/.
+    const moduleUrl = new URL(SUPABASE.clientUrl, document.baseURI).href;
+    const mod = await import(moduleUrl);
     client = mod.createClient(SUPABASE.url, SUPABASE.key, {
       auth: { persistSession: true, autoRefreshToken: true },
     });
     state.syncUnavailable = false;
     return client;
   } catch {
-    // esm.sh nedostupné alebo blokované – appka beží ďalej lokálne,
-    // profil zobrazí vysvetlenie namiesto prihlasovacieho formulára
     state.syncUnavailable = true;
     return null;
   }
 }
 
-async function connect() {
-  const wasUnavailable = state.syncUnavailable;
-  const c = await getClient();
-  if (!c) {
-    if (state.view === 'profil') onChange();
-    return;
-  }
-  if (wasUnavailable && state.view === 'profil') onChange();
-  try {
-    c.auth.onAuthStateChange((_event, session) => {
-      const prevId = state.user?.id;
-      state.user = session ? { id: session.user.id, email: session.user.email } : null;
-      // authOnly: stačí obnoviť indikátor prihlásenia, netreba prekresliť
-      // celý view (auth eventy chodia aj pri tichom obnovení tokenu)
-      onChange({ authOnly: true });
-      if (state.user && state.user.id !== prevId) {
-        cloudPull();
-      } else if (!state.user) {
-        state.sync = '';
-      }
-    });
-  } catch {
-    // bez auth eventov sa sync jednoducho nespustí
-  }
+function contextForCurrentUser() {
+  return state.user ? { userId: state.user.id, epoch: identityEpoch } : null;
 }
 
-export function initSync(onChangeCallback) {
-  onChange = onChangeCallback;
-  connect();
-  // po návrate pripojenia skúsime klienta načítať znova
-  addEventListener('online', () => {
-    if (state.syncUnavailable) connect();
-    else if (state.user) schedulePush();
-  });
+function sameContext(context) {
+  return Boolean(
+    context
+    && state.user
+    && context.userId === state.user.id
+    && context.epoch === identityEpoch,
+  );
 }
 
-// Zlúči vzdialené dáta do lokálnych. Nastavenia sa preberajú len pri pulle
-// (nemajú časové pečiatky) – pri pushi by prepísali práve vykonanú zmenu.
+function cancelScheduledPush() {
+  clearTimeout(pushTimer);
+  pushTimer = null;
+  pushQueuedContext = null;
+  syncDirty = false;
+}
+
+function reloadActiveProfile(userId) {
+  setActiveProfile(userId);
+  reloadProfileState();
+  shopping.reloadProfile();
+  purchases.reloadProfile();
+  tracking.reloadProfile();
+}
+
+// Jediný vstup pre INITIAL_SESSION, login, logout aj prepnutie účtu.
+// Rehydratácia prebehne skôr než UI uvidí novú identitu.
+export async function activateSession(session) {
+  const nextId = session?.user?.id || null;
+  const previousId = state.user?.id || null;
+
+  if (state.identityReady && nextId === previousId) {
+    state.user = session
+      ? { id: nextId, email: session.user.email || state.user?.email || '' }
+      : null;
+    onChange({ authOnly: true });
+    return contextForCurrentUser();
+  }
+
+  identityEpoch += 1;
+  cancelScheduledPush();
+  syncReady = !nextId;
+  state.user = session ? { id: nextId, email: session.user.email || '' } : null;
+  reloadActiveProfile(nextId);
+  state.identityReady = true;
+  state.sync = '';
+  onChange();
+
+  const context = contextForCurrentUser();
+  // Pull beží mimo auth callback/serial queue. Ďalší auth event tak môže
+  // okamžite zvýšiť epoch a oneskorenú odpoveď bezpečne zneplatniť.
+  if (context) cloudPull(context);
+  return context;
+}
+
+function queueSession(session) {
+  authSerial = authSerial.catch(() => {}).then(() => activateSession(session));
+  return authSerial;
+}
+
+function remoteMatchesOwner(remote, context) {
+  return !remote?.owner_id || remote.owner_id === context.userId;
+}
+
 function mergeCloudData(remote, { includeSettings }) {
   if (!remote || typeof remote !== 'object') return;
   shopping.mergeRemote(remote.shopping, remote.shoppingDeleted);
@@ -86,50 +126,72 @@ function mergeCloudData(remote, { includeSettings }) {
   }
 }
 
-export async function cloudPull() {
+export async function cloudPull(context = contextForCurrentUser()) {
   const c = await getClient();
-  if (!c || !state.user) return;
+  if (!c || !sameContext(context)) return;
   state.sync = 'syncing';
   if (state.view === 'profil') onChange();
   try {
-    const { data, error } = await c.from('user_data').select('data').eq('user_id', state.user.id).maybeSingle();
+    const { data, error } = await c
+      .from('user_data')
+      .select('data')
+      .eq('user_id', context.userId)
+      .maybeSingle();
     if (error) throw error;
-    mergeCloudData(data?.data || null, { includeSettings: true });
+    if (!sameContext(context)) return;
+    const remote = data?.data || null;
+    if (!remoteMatchesOwner(remote, context)) throw new Error('Cloud profil patrí inému účtu.');
+    mergeCloudData(remote, { includeSettings: true });
+    if (!sameContext(context)) return;
+    syncReady = true;
+    syncDirty = true; // uloží union a doplní owner_id/sync_version
     state.sync = 'saved';
     onChange();
-    schedulePush(); // po merge nahráme zjednotený stav späť
+    schedulePush(context);
   } catch {
+    if (!sameContext(context)) return;
+    syncReady = false;
     state.sync = 'error';
     if (state.view === 'profil') onChange();
   }
 }
 
-export async function cloudPush() {
+export async function cloudPush(context = contextForCurrentUser()) {
   const c = await getClient();
-  if (!c || !state.user) return;
-  if (pushBusy) {
-    pushQueued = true;
+  if (!c || !sameContext(context)) return;
+  if (!syncReady) {
+    syncDirty = true;
     return;
   }
-  pushBusy = true;
+  if (pushBusyContext) {
+    syncDirty = true;
+    pushQueuedContext = context;
+    return;
+  }
+
+  pushBusyContext = context;
+  syncDirty = false;
   state.sync = 'syncing';
   if (state.view === 'profil') onChange();
   try {
-    // read–merge–write: pred zápisom zlúčime, čo medzitým zapísalo iné
-    // zariadenie, aby sme mu neprepísali stavy legislatívy či históriu
     const { data: current, error: readError } = await c
       .from('user_data')
       .select('data')
-      .eq('user_id', state.user.id)
+      .eq('user_id', context.userId)
       .maybeSingle();
     if (readError) throw readError;
+    if (!sameContext(context)) return;
     const remote = current?.data || null;
+    if (!remoteMatchesOwner(remote, context)) throw new Error('Cloud profil patrí inému účtu.');
     if (remote) {
       mergeCloudData(remote, { includeSettings: false });
+      if (!sameContext(context)) return;
       onChange();
     }
+
     const payload = {
-      sync_version: 4,
+      sync_version: 5,
+      owner_id: context.userId,
       shopping: shopping.items,
       shoppingDeleted: shopping.deleted,
       purchases: purchases.records,
@@ -139,48 +201,107 @@ export async function cloudPush() {
       savedListsDeleted: state.savedListsDeleted,
       trackedProducts: tracking.records,
     };
+    if (!sameContext(context)) return;
     const { error } = await c
       .from('user_data')
-      .upsert({ user_id: state.user.id, data: payload }, { onConflict: 'user_id' });
+      .upsert({ user_id: context.userId, data: payload }, { onConflict: 'user_id' });
     if (error) throw error;
+    if (!sameContext(context)) return;
     state.sync = 'saved';
   } catch {
-    state.sync = 'error';
-  } finally {
-    pushBusy = false;
-    if (pushQueued) {
-      pushQueued = false;
-      schedulePush();
+    if (sameContext(context)) {
+      syncDirty = true;
+      state.sync = 'error';
     }
-    if (state.view === 'profil') onChange();
+  } finally {
+    if (pushBusyContext === context) pushBusyContext = null;
+    const queued = pushQueuedContext;
+    pushQueuedContext = null;
+    if (queued && sameContext(queued)) schedulePush(queued);
+    if (sameContext(context) && state.view === 'profil') onChange();
   }
 }
 
-// Odloží push, aby séria rýchlych zmien skončila jedným zápisom.
-export function schedulePush() {
-  if (!state.user) return;
+// Odloží push, ale kontext účtu zachytí už pri plánovaní. Timer účtu A sa po
+// prepnutí nikdy nesmie spustiť nad dátami účtu B.
+export function schedulePush(context = contextForCurrentUser()) {
+  if (!sameContext(context)) return;
+  syncDirty = true;
+  if (!syncReady) return;
   clearTimeout(pushTimer);
-  pushTimer = setTimeout(cloudPush, PUSH_DEBOUNCE_MS);
+  pushTimer = setTimeout(() => {
+    pushTimer = null;
+    cloudPush(context);
+  }, PUSH_DEBOUNCE_MS);
+}
+
+async function bootstrapClient() {
+  const c = await getClient();
+  if (!c) {
+    await queueSession(null);
+    return;
+  }
+
+  if (!authSubscription) {
+    const result = c.auth.onAuthStateChange((_event, session) => {
+      // Auth callback nesmie čakať na ďalšiu Supabase operáciu. Serializovaný
+      // prechod spustíme v ďalšom microtasku.
+      queueMicrotask(() => {
+        queueSession(session).catch(() => {});
+      });
+    });
+    authSubscription = result?.data?.subscription || result || true;
+  }
+
+  try {
+    const { data, error } = await c.auth.getSession();
+    if (error) throw error;
+    state.syncUnavailable = false;
+    await queueSession(data?.session || null);
+  } catch {
+    await queueSession(null);
+    state.syncUnavailable = true;
+  }
+}
+
+export async function initSync(onChangeCallback) {
+  onChange = onChangeCallback;
+  await bootstrapClient();
+  if (!onlineHandlerAttached) {
+    onlineHandlerAttached = true;
+    addEventListener('online', () => {
+      if (state.syncUnavailable) {
+        bootstrapClient();
+        return;
+      }
+      const context = contextForCurrentUser();
+      if (!context) return;
+      if (!syncReady) cloudPull(context);
+      else if (syncDirty) schedulePush(context);
+    });
+  }
 }
 
 export async function login(email, password) {
   const c = await getClient();
   if (!c) return { error: 'Prihlásenie je momentálne nedostupné – skontroluj pripojenie a skús znova.' };
-  const { error } = await c.auth.signInWithPassword({ email, password });
+  const { data, error } = await c.auth.signInWithPassword({ email, password });
+  if (!error && data?.session) await queueSession(data.session);
   return { error: error ? error.message : null };
 }
 
 export async function logout() {
-  const c = await getClient();
+  // Účtové dáta skryjeme okamžite. Aj keď sieťový signOut zlyhá, guest nikdy
+  // neuvidí cache účtu; tá zostane bezpečne v jeho vlastnom namespace.
+  const c = client;
+  await queueSession(null);
   if (c) {
     try {
       await c.auth.signOut();
     } catch {
-      // session zmažeme lokálne aj keď server nedopovedal
+      // Lokálny profil je už guest; serverový token sa skúsi zrušiť neskôr.
     }
   }
-  state.user = null;
-  state.sync = '';
 }
 
 export function syncLabel() {
@@ -191,4 +312,14 @@ export function syncLabel() {
       : state.sync === 'error'
         ? 'Synchronizácia zlyhala – skúsim znova'
         : '';
+}
+
+// Test seam bez vplyvu na produkčný tok.
+export function setSyncClientForTests(value) {
+  client = value;
+  authSubscription = null;
+}
+
+export function syncDebugStateForTests() {
+  return { identityEpoch, syncReady, syncDirty, pushBusy: Boolean(pushBusyContext) };
 }

@@ -8,6 +8,13 @@ import { arr, num, norm, slug, safeUrl, daysTo } from './lib/util.js';
 
 // Akcie viazané na vernostnú kartu (nastavenie „Skryť kartové akcie").
 export const CARD_CONDITION_RE = /karta|card|xtra|lidl ?plus/i;
+export const VERDICTS = Object.freeze(['realna', 'umela', 'neoverene']);
+const VERDICT_SET = new Set(VERDICTS);
+
+export function normalizeVerdict(value) {
+  const verdict = String(value || '').trim();
+  return VERDICT_SET.has(verdict) ? verdict : 'neoverene';
+}
 
 export function storeId(name) {
   const n = norm(name);
@@ -62,13 +69,15 @@ export function normalizeItem(raw, store) {
     oldPriceVat: num(raw.cena_povodna_s_dph),
     flyerDiscount: num(raw.zlava_letak_pct),
     realDiscount: num(raw.zlava_realna_pct),
-    verdict: raw.verdikt || 'neoverene',
+    // Hodnota končí aj v názve CSS triedy. Neznáme dáta preto nikdy
+    // neposúvame ďalej ako voľný reťazec.
+    verdict: normalizeVerdict(raw.verdikt),
     verdictReason: raw.dovod_verdiktu || null,
     condition: raw.podmienka || '',
     validFrom: raw.plati_od || store?.validFrom || '',
     validTo: raw.plati_do || store?.validTo || '',
     note: raw.poznamka || '',
-    image: raw.obrazok_url || '',
+    sourceUrl: safeUrl(raw.zdroj_url),
     unitPrice: num(raw.jednotkova_cena),
     unit: raw.jednotka || '',
     category: raw.kategoria || '',
@@ -92,20 +101,6 @@ function normalizePromo(raw) {
   };
 }
 
-function normalizePlan(raw) {
-  if (!raw || !arr(raw.zastavky).length) return null;
-  return {
-    stops: arr(raw.zastavky).map((z, i) => ({
-      order: z.poradie ?? i + 1,
-      name: z.nazov || '',
-      day: z.den || '',
-      note: z.poznamka || '',
-      estimate: num(z.odhad_eur),
-    })),
-    mapsUrl: safeUrl(raw.maps_url),
-  };
-}
-
 function normalizeOpeningHours(raw) {
   if (!raw || !arr(raw.predajne).length) return null;
   return {
@@ -118,6 +113,10 @@ function normalizeOpeningHours(raw) {
       name: store.nazov || 'Predajňa',
       address: store.adresa || '',
       verified: store.overene || '',
+      verificationStatus: ['verified', 'stale', 'unavailable'].includes(store.stav_overenia)
+        ? store.stav_overenia
+        : 'verified',
+      verificationNote: String(store.poznamka_overenia || '').slice(0, 300),
       sourceUrl: safeUrl(store.zdroj_url),
       hours: arr(store.hodiny).map(row => ({ days: row.dni || '', time: row.cas || '' })),
       exceptions: arr(store.vynimky).map(row => ({
@@ -161,9 +160,13 @@ export function normalizeData(raw) {
     stores,
     items,
     promos: arr(raw.promo).map(normalizePromo),
-    plan: normalizePlan(raw.plan),
     openingHours: normalizeOpeningHours(raw.otvaracie_hodiny),
-    sources: arr(raw.zdroje_stav).map(s => ({ name: s.zdroj || '', ok: s.ok !== false })),
+    sources: arr(raw.zdroje_stav).map(s => ({
+      name: String(s.zdroj || '').slice(0, 160),
+      ok: s.ok !== false,
+      note: String(s.poznamka || '').slice(0, 500),
+      url: safeUrl(s.url),
+    })),
     top: top.length ? top : rankByDiscount(items.filter(i => i.verdict === 'realna')),
   };
 }
@@ -181,14 +184,23 @@ export function oldFinalPrice(i) {
   return state.settings.dph === 'platca' ? (i.oldPrice ?? i.oldPriceVat) : (i.oldPriceVat ?? i.oldPrice);
 }
 
-// Reálna zľava má prednosť pred letákovou; ako posledná možnosť sa dopočíta
-// z prečiarknutej ceny. Môže byť aj záporná (tovar zdražel oproti norme).
-export function discountOf(i) {
-  if (i.realDiscount != null) return i.realDiscount;
+// Letákové percento a rozdiel oproti referenčnej cene sú dve odlišné metriky.
+// Z prečiarknutej ceny dopočítavame iba letákové percento.
+export function flyerDiscountOf(i) {
   if (i.flyerDiscount != null) return i.flyerDiscount;
   const p = finalPrice(i);
   const o = oldFinalPrice(i);
   return p != null && o != null && o > p ? Math.round(((o - p) / o) * 100) : null;
+}
+
+export function referenceDiscountOf(i) {
+  return i.realDiscount;
+}
+
+// Kompozitná hodnota sa používa iba tam, kde treba jeden číselný sort/rank.
+// UI musí pri jej zobrazení vždy uviesť, z ktorej bázy pochádza.
+export function discountOf(i) {
+  return referenceDiscountOf(i) ?? flyerDiscountOf(i);
 }
 
 export function rankByDiscount(items, count = TOP_COUNT) {
@@ -223,7 +235,7 @@ export function sortedStores() {
   });
 }
 
-// História cien: overené body z dát + aktuálna cena tohto týždňa.
+// História cien: pozorované body z dát + aktuálna cena tohto týždňa.
 // Vždy preferujeme cenu s DPH, aby sa v grafe nemiešali cenové bázy
 // (aktuálny bod preto NEZÁVISÍ od nastavenia Platca DPH).
 export function historySeries(i) {
@@ -278,11 +290,63 @@ export async function loadLegislativa() {
   }
 }
 
-export async function loadReference() {
+export function normalizePipelineStatus(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return false;
+  const allowedOutcomes = new Set(['PASS', 'NO_CHANGE', 'DEGRADED_SAFE', 'DEGRADED', 'BLOCKED']);
+  const boundedCount = value => {
+    const parsed = Number(value);
+    return Number.isInteger(parsed) && parsed >= 0 && parsed <= 30000 ? parsed : 0;
+  };
+  const countMap = value => Object.fromEntries(
+    ['kaufland', 'lidl', 'metro'].map(store => [store, boundedCount(value?.[store])]),
+  );
+  const outcome = String(raw.outcome || '').toUpperCase();
+  const openingHours = arr(raw.freshness?.opening_hours).slice(0, 10).map(store => ({
+    id: ['kaufland', 'lidl', 'metro'].includes(store?.id) ? store.id : '',
+    status: ['success', 'no_change', 'stale', 'failed'].includes(store?.status) ? store.status : 'failed',
+    verifiedAt: String(store?.verified_at || '').slice(0, 10),
+  })).filter(store => store.id);
+  const legislationRaw = raw.freshness?.legislation;
+  const legislation = legislationRaw && typeof legislationRaw === 'object' && !Array.isArray(legislationRaw)
+    ? {
+        status: ['success', 'no_change', 'degraded', 'failed'].includes(legislationRaw.status)
+          ? legislationRaw.status
+          : 'failed',
+        checkedAt: String(legislationRaw.checked_at || '').slice(0, 10),
+        changedPortals: arr(legislationRaw.changed_portals).slice(0, 20).map(value => String(value).slice(0, 100)),
+      }
+    : null;
+  const offerStores = Object.fromEntries(['kaufland', 'lidl', 'metro'].map(store => {
+    const value = raw.freshness?.offers?.[store];
+    return [store, {
+      lastGoodAt: String(value?.last_good_at || '').slice(0, 10),
+    }];
+  }));
+  return {
+    generated: String(raw.generovane || '').slice(0, 40),
+    runId: String(raw.run_id || '').slice(0, 100),
+    outcome: allowedOutcomes.has(outcome) ? outcome : 'BLOCKED',
+    validationOk: raw.validation_ok === true,
+    anomalies: arr(raw.anomalies).slice(0, 10).map(value => String(value).slice(0, 300)),
+    counts: countMap(raw.counts),
+    fresh: countMap(raw.fresh),
+    carryForward: countMap(raw.carry_forward),
+    reviewItems: boundedCount(raw.needs_review_items),
+    warnings: arr(raw.warnings).slice(0, 10).map(value => String(value).slice(0, 300)),
+    freshness: { openingHours, legislation, offerStores },
+  };
+}
+
+export async function loadPipelineStatus() {
   try {
-    const res = await fetch('data/referencne-ceny.json', { cache: 'no-cache' });
-    if (res.ok) state.refData = await res.json();
+    const res = await fetch('data/pipeline-status.json', { cache: 'no-cache' });
+    if (!res.ok) throw new Error();
+    const declared = Number(res.headers.get('content-length'));
+    if (Number.isFinite(declared) && declared > 256 * 1024) throw new Error();
+    const text = await res.text();
+    if (text.length > 256 * 1024) throw new Error();
+    state.pipelineStatus = normalizePipelineStatus(JSON.parse(text));
   } catch {
-    // referenčné ceny sú voliteľné – bez nich sa len nezobrazí externá kotva
+    state.pipelineStatus = false;
   }
 }

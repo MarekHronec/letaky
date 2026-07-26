@@ -15,198 +15,335 @@
     "zdroje_stav"
   ],
   "properties": {
-    "schema_version": { "const": 2 },
-    "tyzden": { "type": "string", "pattern": "^[0-9]{4}-W[0-9]{2}$" },
-    "obdobie": { "type": ["string", "null"] },
-    "generovane": { "type": "string", "format": "date-time" },
+    "schema_version": { "type": "integer", "const": 2 },
+    "tyzden": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-W(?:0[1-9]|[1-4][0-9]|5[0-3])$",
+      "maxLength": 8
+    },
+    "obdobie": { "$ref": "#/$defs/nullableShortText" },
+    "generovane": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "maxLength": 35
+    },
     "promo": {
       "type": "array",
+      "maxItems": 200,
       "items": { "$ref": "#/$defs/promo" }
     },
     "top_ids": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": { "$ref": "#/$defs/slugId" },
       "uniqueItems": true,
       "minItems": 10,
       "maxItems": 10
     },
     "obchody": {
       "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
       "items": { "$ref": "#/$defs/store" }
     },
     "otvaracie_hodiny": { "$ref": "#/$defs/openingHours" },
-    "plan": { "$ref": "#/$defs/plan" },
     "zdroje_stav": {
       "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["zdroj", "ok"],
-        "properties": {
-          "zdroj": { "type": "string" },
-          "ok": { "type": "boolean" },
-          "url": { "type": ["string", "null"], "format": "uri" },
-          "poznamka": { "type": ["string", "null"] }
-        },
-        "additionalProperties": true
-      }
+      "minItems": 1,
+      "maxItems": 50,
+      "items": { "$ref": "#/$defs/sourceStatus" }
     }
   },
-  "additionalProperties": true,
+  "additionalProperties": false,
   "$defs": {
+    "slugId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "httpsUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Publish-valid URL na presne povolenej first-party doméne. Plný business kontrakt vždy overuje aj scripts/routine/validate_daily.py.",
+      "pattern": "^https://(?:predajne\\.kaufland\\.sk|www\\.lidl\\.sk|www\\.metro\\.sk|letaky\\.metro\\.sk|letak\\.billa\\.sk|www\\.billa\\.sk|www\\.coop\\.sk|www\\.tesco\\.sk|potravinydomov\\.itesco\\.sk|www\\.dm\\.sk|www\\.mojadm\\.sk|www\\.tetadrogerie\\.sk|www\\.vlada\\.gov\\.sk)(?::443)?(?:[/?#][^\\s]*)?$",
+      "maxLength": 2048
+    },
+    "nullableHttpsUrl": {
+      "anyOf": [
+        { "$ref": "#/$defs/httpsUrl" },
+        { "type": "null" }
+      ]
+    },
+    "nullableShortText": {
+      "anyOf": [
+        { "type": "string", "maxLength": 120 },
+        { "type": "null" }
+      ]
+    },
+    "nullableMediumText": {
+      "anyOf": [
+        { "type": "string", "maxLength": 500 },
+        { "type": "null" }
+      ]
+    },
+    "money": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "nullableMoney": {
+      "anyOf": [
+        { "$ref": "#/$defs/money" },
+        { "type": "null" }
+      ]
+    },
     "promo": {
       "type": "object",
-      "required": ["id", "obchod", "text", "plati_od", "plati_do", "priorita", "zdroj_url"],
+      "required": [
+        "id",
+        "obchod",
+        "text",
+        "plati_od",
+        "plati_do",
+        "podmienka",
+        "priorita",
+        "zdroj_url"
+      ],
       "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "obchod": { "type": "string" },
-        "text": { "type": "string" },
-        "plati_od": { "type": ["string", "null"], "format": "date" },
-        "plati_do": { "type": ["string", "null"], "format": "date" },
-        "podmienka": { "type": ["string", "null"] },
-        "priorita": { "type": ["integer", "null"], "minimum": 1, "description": "Poradie zobrazenia: 1 = najdôležitejšie. Bez hodnoty sa berie 3." },
-        "zdroj_url": { "type": ["string", "null"], "format": "uri", "description": "Odkaz na detail akcie (stránka obchodu alebo konkrétna strana letáku)." }
+        "id": { "$ref": "#/$defs/slugId" },
+        "obchod": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "description": "Stručná neutrálna parafráza faktov o ponuke; nie slogan, nákupná výzva ani skopírovaná marketingová veta."
+        },
+        "plati_od": { "type": "string", "format": "date", "maxLength": 10 },
+        "plati_do": { "type": "string", "format": "date", "maxLength": 10 },
+        "podmienka": { "$ref": "#/$defs/nullableMediumText" },
+        "priorita": { "type": "integer", "enum": [1, 2, 3] },
+        "zdroj_url": { "$ref": "#/$defs/httpsUrl" }
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
     "offer": {
       "type": "object",
-      "required": ["id", "product_id", "nazov", "kategoria", "cena", "verdikt", "dovod_verdiktu", "historia_cien"],
+      "required": [
+        "id",
+        "product_id",
+        "nazov",
+        "mnozstvo",
+        "kategoria",
+        "cena",
+        "cena_s_dph",
+        "cena_povodna",
+        "cena_povodna_s_dph",
+        "jednotkova_cena",
+        "jednotka",
+        "zlava_letak_pct",
+        "zlava_realna_pct",
+        "bezna_cena_60d",
+        "verdikt",
+        "dovod_verdiktu",
+        "podmienka",
+        "poznamka",
+        "zdroj_url",
+        "historia_cien"
+      ],
       "properties": {
-        "id": { "type": "string", "minLength": 1, "description": "Unikátne ID konkrétnej ponuky." },
+        "id": { "$ref": "#/$defs/slugId" },
         "product_id": {
           "type": "string",
           "minLength": 1,
-          "pattern": "^(?!(?:metro|kaufland|lidl|tesco|billa|coop|dm|teta)-).+",
-          "description": "Stabilné ID rovnakého produktu naprieč obchodmi a týždňami bez prefixu obchodu. ID konkrétnej ponuky ostáva obchodné a týždenné."
+          "maxLength": 120,
+          "pattern": "^(?!(?:metro|kaufland|lidl|tesco|billa|coop|dm|teta)-)[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "description": "Stabilné ID rovnakého produktu naprieč obchodmi a týždňami bez prefixu obchodu."
         },
-        "nazov": { "type": "string", "minLength": 1 },
-        "mnozstvo": { "type": ["string", "null"], "examples": ["250 g"] },
-        "kategoria": { "type": ["string", "null"] },
-        "cena": { "type": "number", "minimum": 0 },
-        "cena_s_dph": { "type": ["number", "null"], "minimum": 0 },
-        "cena_povodna": { "type": ["number", "null"], "minimum": 0 },
-        "cena_povodna_s_dph": { "type": ["number", "null"], "minimum": 0 },
-        "jednotkova_cena": { "type": ["number", "null"], "minimum": 0 },
-        "jednotka": { "type": ["string", "null"], "examples": ["kg", "l", "ks"] },
-        "zlava_letak_pct": { "type": ["number", "null"], "minimum": 0 },
-        "zlava_realna_pct": { "type": ["number", "null"], "description": "Rozdiel oproti historickej bežnej cene." },
-        "bezna_cena_60d": { "type": ["number", "null"], "minimum": 0 },
-        "verdikt": { "enum": ["realna", "umela", "neoverene"] },
-        "dovod_verdiktu": { "type": ["string", "null"] },
-        "podmienka": { "type": ["string", "null"] },
-        "plati_od": { "type": ["string", "null"], "format": "date" },
-        "plati_do": { "type": ["string", "null"], "format": "date" },
-        "poznamka": { "type": ["string", "null"] },
-        "zdroj_url": { "type": ["string", "null"], "format": "uri" },
-        "obrazok_url": { "type": ["string", "null"], "description": "Obrázok položky: absolútna URL, cesta relatívna k repozitáru alebo data:image URI. Keď chýba alebo sa nenačíta, UI použije kategóriové emoji." },
+        "nazov": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "mnozstvo": { "$ref": "#/$defs/nullableShortText" },
+        "kategoria": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "cena": { "$ref": "#/$defs/money" },
+        "cena_s_dph": { "$ref": "#/$defs/nullableMoney" },
+        "cena_povodna": { "$ref": "#/$defs/nullableMoney" },
+        "cena_povodna_s_dph": { "$ref": "#/$defs/nullableMoney" },
+        "jednotkova_cena": { "$ref": "#/$defs/nullableMoney" },
+        "jednotka": {
+          "anyOf": [
+            { "type": "string", "maxLength": 32 },
+            { "type": "null" }
+          ]
+        },
+        "zlava_letak_pct": {
+          "anyOf": [
+            { "type": "number", "minimum": 0, "maximum": 100 },
+            { "type": "null" }
+          ]
+        },
+        "zlava_realna_pct": {
+          "anyOf": [
+            { "type": "number", "minimum": -100, "maximum": 100 },
+            { "type": "null" }
+          ]
+        },
+        "bezna_cena_60d": { "$ref": "#/$defs/nullableMoney" },
+        "verdikt": { "type": "string", "enum": ["realna", "umela", "neoverene"] },
+        "dovod_verdiktu": { "$ref": "#/$defs/nullableMediumText" },
+        "podmienka": { "$ref": "#/$defs/nullableMediumText" },
+        "plati_od": { "type": ["string", "null"], "format": "date", "maxLength": 10 },
+        "plati_do": { "type": ["string", "null"], "format": "date", "maxLength": 10 },
+        "poznamka": {
+          "anyOf": [
+            { "type": "string", "maxLength": 1000 },
+            { "type": "null" }
+          ]
+        },
+        "zdroj_url": { "$ref": "#/$defs/nullableHttpsUrl" },
         "historia_cien": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["datum", "cena"],
-            "properties": {
-              "datum": { "type": "string", "format": "date" },
-              "cena": { "type": "number", "minimum": 0 },
-              "cena_s_dph": { "type": ["number", "null"], "minimum": 0, "description": "Spotrebiteľská cena pre Metro; graf ju uprednostní pred cenou bez DPH." },
-              "obchod": { "type": ["string", "null"] },
-              "zdroj_url": { "type": ["string", "null"], "format": "uri" }
-            }
-          }
+          "maxItems": 16,
+          "items": { "$ref": "#/$defs/historyPoint" }
         }
       },
-      "additionalProperties": true
+      "additionalProperties": false
+    },
+    "historyPoint": {
+      "type": "object",
+      "required": ["datum", "cena", "obchod", "zdroj_url"],
+      "properties": {
+        "datum": { "type": "string", "format": "date", "maxLength": 10 },
+        "cena": { "$ref": "#/$defs/money" },
+        "cena_s_dph": { "$ref": "#/$defs/nullableMoney" },
+        "obchod": { "type": ["string", "null"], "maxLength": 80 },
+        "zdroj_url": { "$ref": "#/$defs/nullableHttpsUrl" }
+      },
+      "additionalProperties": false
     },
     "store": {
       "type": "object",
-      "required": ["id", "nazov", "polozky"],
+      "required": ["id", "nazov", "plati_od", "plati_do", "letak_url", "polozky"],
       "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "nazov": { "type": "string", "minLength": 1 },
-        "plati_od": { "type": ["string", "null"], "format": "date", "description": "Predvolený začiatok platnosti letáka pre položky bez vlastného dátumu." },
-        "plati_do": { "type": ["string", "null"], "format": "date", "description": "Predvolený koniec platnosti letáka pre položky bez vlastného dátumu." },
-        "letak_url": { "type": ["string", "null"], "format": "uri" },
-        "poznamka": { "type": ["string", "null"] },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "nazov": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "plati_od": { "type": ["string", "null"], "format": "date", "maxLength": 10 },
+        "plati_do": { "type": ["string", "null"], "format": "date", "maxLength": 10 },
+        "letak_url": { "$ref": "#/$defs/nullableHttpsUrl" },
+        "poznamka": {
+          "anyOf": [
+            { "type": "string", "maxLength": 1000 },
+            { "type": "null" }
+          ]
+        },
         "polozky": {
           "type": "array",
+          "maxItems": 5000,
           "items": { "$ref": "#/$defs/offer" }
         }
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
     "openingHours": {
-      "type": ["object", "null"],
-      "required": ["obdobie", "checked_through", "lokalita", "predajne"],
+      "type": "object",
+      "required": [
+        "obdobie",
+        "checked_through",
+        "lokalita",
+        "poznamka_sviatky",
+        "zdroj_sviatky_url",
+        "predajne"
+      ],
       "properties": {
-        "obdobie": { "type": "string" },
-        "checked_through": { "type": "string", "format": "date", "description": "Posledný deň, po ktorý boli overené sviatky a prevádzkové výnimky." },
-        "lokalita": { "type": "string" },
-        "poznamka_sviatky": { "type": ["string", "null"] },
-        "zdroj_sviatky_url": { "type": ["string", "null"], "format": "uri" },
+        "obdobie": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "checked_through": { "type": "string", "format": "date", "maxLength": 10 },
+        "lokalita": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "poznamka_sviatky": {
+          "anyOf": [
+            { "type": "string", "maxLength": 1000 },
+            { "type": "null" }
+          ]
+        },
+        "zdroj_sviatky_url": { "$ref": "#/$defs/nullableHttpsUrl" },
         "predajne": {
           "type": "array",
           "minItems": 3,
           "maxItems": 3,
-          "items": {
-            "type": "object",
-            "required": ["id", "nazov", "hodiny", "zdroj_url", "overene"],
-            "properties": {
-              "id": { "type": "string" },
-              "nazov": { "type": "string" },
-              "adresa": { "type": ["string", "null"] },
-              "hodiny": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "required": ["dni", "cas"],
-                  "properties": {
-                    "dni": { "type": "string" },
-                    "cas": { "type": "string" }
-                  }
-                }
-              },
-              "vynimky": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "required": ["datum", "nazov", "cas"],
-                  "properties": {
-                    "datum": { "type": "string", "format": "date" },
-                    "nazov": { "type": "string" },
-                    "cas": { "type": "string", "description": "Napr. Zatvorené alebo 08:00 – 18:00." }
-                  }
-                }
-              },
-              "zdroj_url": { "type": "string", "format": "uri" },
-              "overene": { "type": "string", "format": "date" }
-            },
-            "additionalProperties": true
-          }
+          "items": { "$ref": "#/$defs/openingStore" }
         }
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
-    "plan": {
-      "type": ["object", "null"],
+    "openingStore": {
+      "type": "object",
+      "required": ["id", "nazov", "adresa", "hodiny", "vynimky", "zdroj_url", "overene"],
       "properties": {
-        "zastavky": {
+        "id": { "type": "string", "enum": ["metro", "kaufland", "lidl"] },
+        "nazov": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "adresa": { "$ref": "#/$defs/nullableShortText" },
+        "hodiny": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["poradie", "nazov"],
-            "properties": {
-              "poradie": { "type": "integer", "minimum": 1 },
-              "nazov": { "type": "string" },
-              "den": { "type": ["string", "null"] },
-              "poznamka": { "type": ["string", "null"] },
-              "odhad_eur": { "type": ["number", "null"], "minimum": 0 }
-            }
-          }
+          "minItems": 1,
+          "maxItems": 14,
+          "items": { "$ref": "#/$defs/openingHoursRow" }
         },
-        "maps_url": { "type": ["string", "null"], "format": "uri" },
-        "spolu_eur": { "type": ["number", "null"], "minimum": 0 },
-        "uspora_eur": { "type": ["number", "null"], "minimum": 0 }
+        "vynimky": {
+          "type": "array",
+          "maxItems": 50,
+          "items": { "$ref": "#/$defs/openingException" }
+        },
+        "zdroj_url": { "$ref": "#/$defs/httpsUrl" },
+        "overene": { "type": "string", "format": "date", "maxLength": 10 },
+        "stav_overenia": {
+          "type": "string",
+          "enum": ["verified", "stale", "unavailable"]
+        },
+        "poznamka_overenia": {
+          "anyOf": [
+            { "type": "string", "maxLength": 300 },
+            { "type": "null" }
+          ]
+        }
       },
-      "additionalProperties": true
+      "additionalProperties": false
+    },
+    "openingHoursRow": {
+      "type": "object",
+      "required": ["dni", "cas"],
+      "properties": {
+        "dni": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "cas": { "type": "string", "minLength": 1, "maxLength": 40 }
+      },
+      "additionalProperties": false
+    },
+    "openingException": {
+      "type": "object",
+      "required": ["datum", "nazov", "cas"],
+      "properties": {
+        "datum": { "type": "string", "format": "date", "maxLength": 10 },
+        "nazov": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "cas": { "type": "string", "minLength": 1, "maxLength": 40 }
+      },
+      "additionalProperties": false
+    },
+    "sourceStatus": {
+      "type": "object",
+      "required": ["zdroj", "ok", "url", "poznamka"],
+      "properties": {
+        "zdroj": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "ok": { "type": "boolean" },
+        "url": { "$ref": "#/$defs/nullableHttpsUrl" },
+        "poznamka": {
+          "anyOf": [
+            { "type": "string", "maxLength": 2000 },
+            { "type": "null" }
+          ]
+        }
+      },
+      "additionalProperties": false
     }
   }
 }

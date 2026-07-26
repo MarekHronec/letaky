@@ -4,7 +4,8 @@
 // nikdy potichu neprepíše podľa názvu zoznamu.
 
 import { KEYS } from './config.js';
-import { arr, isoValue, num, readJSON, uid, writeJSON } from './lib/util.js';
+import { arr, isoValue, num, uid } from './lib/util.js';
+import { readProfileJSON, writeProfileJSON } from './profile-storage.js';
 
 function finiteMoney(value) {
   const parsed = num(value);
@@ -75,7 +76,7 @@ function sortNewest(values) {
 
 function loadRecords() {
   const byId = new Map();
-  arr(readJSON(KEYS.purchases))
+  arr(readProfileJSON(KEYS.purchases))
     .map(value => freezeTransaction(value))
     .filter(Boolean)
     .forEach(record => {
@@ -85,12 +86,16 @@ function loadRecords() {
 }
 
 function persist() {
-  writeJSON(KEYS.purchases, records);
+  writeProfileJSON(KEYS.purchases, records);
 }
 
 // Live binding: importujúce moduly vždy vidia aktuálne pole. Samotné pole,
 // transakcie aj položky sú zmrazené, takže históriu nemožno omylom editovať.
 export let records = loadRecords();
+
+export function reloadProfile() {
+  records = loadRecords();
+}
 
 export function recordPurchase(items, purchasedAt = new Date().toISOString()) {
   const checked = arr(items).filter(item => item?.checked === true);

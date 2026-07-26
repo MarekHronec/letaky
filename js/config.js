@@ -30,6 +30,8 @@ export const KEYS = {
   purchases: 'letaky.purchases.v1',
   trackedProducts: 'letaky.trackedProducts.v1',
   listViewMode: 'letaky.listViewMode.v1',
+  profilePrefix: 'letaky.profile.v1',
+  profileMigration: 'letaky.profileMigration.v1',
 };
 
 // Časy a limity (predtým magické čísla roztrúsené po kóde).
@@ -40,6 +42,14 @@ export const PUSH_DEBOUNCE_MS = 800; // odklad odoslania zmien do cloudu
 export const SHARE_URL_MAX = 14000; // dlhší zdieľací link odmietneme vytvoriť
 export const SHARE_HASH_MAX = 20000; // dlhší prijatý #share= fragment odmietneme čítať
 export const SHARE_ITEMS_MAX = 200; // max položiek prijatých z linku alebo importu
+export const IMPORT_FILE_MAX_BYTES = 1024 * 1024; // JSON import: najviac 1 MiB
+export const LIST_ITEM_LIMITS = Object.freeze({
+  id: 160,
+  name: 160,
+  short: 120,
+  condition: 500,
+  quantity: 999,
+});
 export const HISTORY_MAX_POINTS = 16; // max bodov cenovej histórie v grafe
 export const TRACKING_HISTORY_MAX_POINTS = 104; // cca dva roky týždenných pozorovaní pre odporúčania
 export const PROMO_PREVIEW_COUNT = 4; // koľko špeciálnych akcií vidno bez rozbalenia
@@ -55,6 +65,6 @@ export const VOICE_LANG = 'sk-SK';
 export const SUPABASE = {
   url: 'https://ihtwxmxmkwigbbkcgubs.supabase.co',
   key: 'sb_publishable_4BCQJlSVTq-cfFAAgTvs1Q_WbEY57_7',
-  // Presne pripnutá verzia klienta – zmena verzie je vedomé rozhodnutie, nie náhoda.
-  clientUrl: 'https://esm.sh/@supabase/supabase-js@2.45.4',
+  // Auditovaný ESM bundle je uložený pri aplikácii; prehliadač nespúšťa kód z CDN.
+  clientUrl: './js/vendor/supabase-js.mjs',
 };

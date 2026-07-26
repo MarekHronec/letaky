@@ -13,7 +13,7 @@ Redizajn na seriózny osobný analytický a nákupný nástroj. Nie promo landin
 ## 2. Vizuálny smer
 
 - Zdržanlivá **neutrálna sivá plocha** + **jeden akcent** (indigová modrá) pre interaktívne/primárne prvky. Tmavé aplikačné plochy používajú tlmenú navy, nie čiernu.
-- Farba inak nesie **iba význam**: zelená = reálna zľava, jantárová = podozrivá, červená = urgentné/chyba. Identita obchodu = malý 3 px indikátor, nie plocha.
+- Farba inak nesie **iba význam**: zelená = priaznivá cena podľa histórie aplikácie, jantárová = nepotvrdené históriou, červená = urgentné/chyba. Identita obchodu = malý 3 px indikátor, nie plocha.
 - **Ploché povrchy**, hairline separátory namiesto kariet všade. Tiene minimálne (len sheet a sticky lišty).
 - Silná **dátová tabuľka** pre katalóg akcií (desktop) → riadky (mobil).
 - Kompaktné, ale pohodlné rozostupy; jasná typografická hierarchia; tabulárne číslice pre ceny.
@@ -56,22 +56,23 @@ Sidebar `236px` (desktop), topbar `56px` (Primer-kompaktná). Obsah max šírka 
 
 | Komponent | Zmena |
 |---|---|
-| **Page header** | Na Prehľade bez duplicitného nadpisu obdobia; obdobie je súčasťou výberu týždňa v topbare |
+| **Page header** | Na Prehľade bez duplicitného nadpisu obdobia; obdobie je súčasťou výberu týždňa v topbare. Pod výberom sa pravdivo uvádza najstarší dostupný archív, napr. „Archív dostupný od W29“ |
 | **App navigácia** | Kompaktný tlmený navy sidebar (desktop) / topbar + bottom-nav (mobil), profil vždy na pravom okraji |
+| **Data health** | Nenápadný stavový bod v topbare. Po rozbalení ukazuje stav pipeline, rozsah archívu, review backlog a čerstvosť jednotlivých obchodov; červená ani zelená sa nepoužíva bez dátového dôvodu |
 | **Filter obchodov** | Segmentovaná lišta s indigovým aktívnym stavom a jemnými indikátormi obchodov, priamo pod KPI pásom |
-| **Sledované produkty** | Samostatný core-sortiment: na desktope tri kompaktné karty, na mobile jeden stĺpec. Primárne sú rozhodnutie, cena, zásoba, percentilový cenový bar a 1–3 bodky kvality; dôkazy, história a nastavenia sú v jednom rozbaliteľnom paneli. Žiadna falošná percentuálna istota ani zmiešané skóre |
+| **Sledované produkty** | Samostatný core-sortiment: na desktope tri kompaktné karty, na mobile jeden stĺpec. V zatvorenom stave sú iba rozhodnutie, cena, trend a odporúčané množstvo; zásoba, cenová pozícia, kvalita podkladov, dôkazy, história a nastavenia sú v jednom rozbaliteľnom paneli. Žiadna falošná percentuálna istota ani zmiešané skóre |
 | **Môj zoznam a nákupy** | Hore je prepínač „V obchode / Správa zoznamu“. Nákupný režim na mobile skryje súhrny, formulár, share/import a históriu; ponechá šablóny, 44 px check/remove a explicitné potvrdenie. Uložený zoznam je obnoviteľná šablóna, nie nákupná udalosť |
 | **Katalóg akcií** | Nahradený: karta-grid → **hustá dátová tabuľka** (názov · obchod · cena · zľava · verdikt · platnosť · akcia); na mobile štruktúrované riadky |
 | **Top príležitosti** | Rebríček ako tabuľkový list s poradím, cenou, zľavou |
 | **Špeciálne akcie (promo)** | Kompaktný list bez dekoratívneho ľavého akcentu; prvá akcia má dátový TOP badge, priorita → top 4 + rozbalenie |
-| **Otváracie hodiny** | Týždenný panel konkrétnych pobočiek s first-party zdrojom, dátumom overenia a výraznou sviatočnou výnimkou |
+| **Otváracie hodiny** | Týždenný panel konkrétnych pobočiek s first-party zdrojom, dátumom overenia, malým stavom čerstvosti pre každý obchod a výraznou sviatočnou výnimkou. Povolené stavy sú „overené dnes“, „posledné dobré pred N dňami“ a „vyžaduje kontrolu“ |
 | **Panely/sekcie** | Ploché sekcie oddelené hairline namiesto tieňových kariet |
 | **Tlačidlá** | primary (akcent) · secondary (hairline) · ghost/text · okrúhle +/✓ |
-| **Odznaky** | verdikt (reálna/podozrivá/neoverená), zľava, status — jemné, nie balónové |
+| **Odznaky** | hodnotenie (priaznivá podľa dostupnej histórie/letáková zľava nepodporená históriou/nedostatok cenovej histórie), letáková zľava a rozdiel oproti referencii — jemné, nie balónové. Percento vždy priamo uvádza bázu „leták“ alebo „ref. aplikácie“ |
 | **KPI pásik** | Prvý blok pod topbarom; kompaktný riadok metrík spojený s filtrom obchodov |
 | **Detail sheet** | Prepracovaný: sekcie definičných riadkov, graf, porovnanie obchodov |
 | **Formuláre** | GOV.UK vzor: jasné labely, chybové hlásenia, dostatočné ciele dotyku (login, vlastná položka, nastavenia) |
-| **Legislatíva** | Timeline termínov + list povinností so závažnosťou |
+| **Legislatíva** | Globálny banner oddeľuje dátum poslednej právnej kontroly obsahu od technického stavu monitorovania zdrojov („oficiálny zdroj sa zmenil“ / bez zistenej zmeny / vyžaduje kontrolu). Nasleduje timeline termínov a list povinností so závažnosťou |
 | **Legislatívne filtre** | Oblasť a stav sú kompaktné selecty; stav podporuje nevyriešené, hotové aj skrytie ignorovaných/nerelevantných |
 | **Stavy** | Prázdny / načítava / chyba (inline retry) / úspech (toast) — jednotné |
 
@@ -81,14 +82,14 @@ Rozhranie má používateľovi najprv povedať **čo spraviť a kedy**, potom uk
 
 Cena sa porovnáva vždy v jednej báze a história zachováva obchod. Cenová pozícia má byť robustná voči extrémom a UI má rozlíšiť pozíciu v konkrétnom obchode od porovnania trhu. Rytmus spotreby používa iba potvrdené append-only nákupy so stabilným `product_id`; uložené zoznamy a podobné názvy produktov nie sú nákupnou históriou.
 
-Na zatvorenej karte majú byť podľa dostupnosti viditeľné:
+Na zatvorenej karte majú byť podľa dostupnosti viditeľné iba:
 
 - odporúčaná akcia a jej časovanie,
-- aktuálna alebo najbližšia cena a robustná cenová pozícia,
-- stav zásoby s rýchlym `−/+`, minimum a odporúčané množstvo,
-- cenová pozícia ako označený bar a kvalita podkladov ako slovný štítok s 1–3 bodkami.
+- aktuálna alebo najbližšia cena,
+- trend z porovnateľných historických meraní,
+- odporúčané množstvo.
 
-Potvrdené nákupy, typický interval, úspora, skladovateľnosť, detailné dôvody, problémy vstupov a formulár pravidiel patria do rozbalenia „Viac informácií“. Na mobile globálna hlavička v nákupnom režime neukazuje týždeň ani vyhľadávanie; obsah má bezpečný spodný odstup od bottom-nav aj `safe-area-inset-bottom`.
+Stav zásoby s rýchlym `−/+`, minimum, cenová pozícia, kvalita podkladov, potvrdené nákupy, typický interval, úspora, skladovateľnosť, detailné dôvody, problémy vstupov a formulár pravidiel patria do rozbalenia „Viac informácií“. Na mobile globálna hlavička v nákupnom režime neukazuje týždeň ani vyhľadávanie; obsah má bezpečný spodný odstup od bottom-nav aj `safe-area-inset-bottom`.
 
 Odporúčané množstvo je konzervatívne a rešpektuje zásobu, minimum, skladovateľnosť a používateľské nastavenia. Dizajn nesmie naznačovať ML predikciu, kým aplikácia nemá dostatok pravdivých udalostí na tréning a spätné vyhodnotenie; aktuálne pravidlá sú pevné, vysvetliteľné a deterministicky testovateľné.
 
@@ -96,4 +97,4 @@ Odporúčané množstvo je konzervatívne a rešpektuje zásobu, minimum, sklado
 Viditeľný `:focus-visible`, kontrast textu ≥ 4.5:1, primárne ciele dotyku ≥ 44 px na mobile, `aria-label` na ikonových tlačidlách, `role="dialog"`+focus-trap v detaile, redukcia pohybu rešpektovaná.
 
 ## 6. Závislosti
-Bez build-stepu, natívne ES moduly. Jediná runtime závislosť: `@supabase/supabase-js` (MIT) cez esm.sh. Grafy sú ručne písané SVG (bez React/Tremor — nekompatibilné s vanilla architektúrou; rozhodnutie zdokumentované). Licencie v `THIRD_PARTY_NOTICES.md`.
+Bez build-stepu, natívne ES moduly. Jediná runtime závislosť je auditovaný, pripnutý a same-origin bundle `@supabase/supabase-js` (MIT) v `js/vendor/`; JavaScript z CDN CSP nepovoľuje. Grafy sú ručne písané SVG (bez React/Tremor — nekompatibilné s vanilla architektúrou; rozhodnutie zdokumentované). Licencie v `THIRD_PARTY_NOTICES.md`.

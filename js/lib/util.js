@@ -33,23 +33,19 @@ export const num = value => {
 export const esc = s =>
   String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-// Povolí iba http(s) odkazy – všetko ostatné (javascript:, file: …) zahodí.
+// Externé odkazy musia byť HTTPS. HTTP je povolené iba na rovnakom origin-e,
+// aby fungoval lokálny vývoj cez http://127.0.0.1; javascript:, file:, userinfo
+// a downgrade na cudzí nezabezpečený server sa zahodia.
 export function safeUrl(url) {
   if (!url) return '';
   try {
     const parsed = new URL(url, location.href);
-    return ['http:', 'https:'].includes(parsed.protocol) ? parsed.href : '';
+    if (parsed.username || parsed.password) return '';
+    if (parsed.protocol === 'https:') return parsed.href;
+    return parsed.protocol === 'http:' && parsed.origin === location.origin ? parsed.href : '';
   } catch {
     return '';
   }
-}
-
-// Ako safeUrl, ale pre obrázky navyše povolí data:image URI.
-export function safeImg(url) {
-  if (!url) return '';
-  const s = String(url).trim();
-  if (/^data:image\//i.test(s)) return s;
-  return safeUrl(s);
 }
 
 const eur = new Intl.NumberFormat('sk-SK', { style: 'currency', currency: 'EUR' });

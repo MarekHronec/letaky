@@ -80,6 +80,7 @@ function renderOpeningHours() {
   const opening = state.data.openingHours;
   if (!opening) return '';
   const hasExceptions = opening.stores.some(store => store.exceptions.length);
+  const openingSource = state.data.sources.find(source => /otváracie hodiny/i.test(source.name));
   const stores = opening.stores
     .map(store => {
       const hours = store.hours
@@ -91,11 +92,48 @@ function renderOpeningHours() {
       const title = store.sourceUrl
         ? `<a href="${esc(store.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(store.name)} ${svg('external')}</a>`
         : esc(store.name);
+      const publishedFreshness = state.pipelineStatus?.freshness?.openingHours.find(item => item.id === store.id);
+      const verificationStatus = publishedFreshness?.status === 'stale'
+        ? 'stale'
+        : publishedFreshness?.status === 'failed'
+          ? 'unavailable'
+          : store.verificationStatus;
+      const verifiedAt = publishedFreshness?.verifiedAt || store.verified;
+      const verifiedAge = verifiedAt ? Math.max(0, -(daysTo(verifiedAt) ?? 999)) : 999;
+      let freshness = { cls: 'check', text: 'vyžaduje kontrolu' };
+      if (verificationStatus === 'stale' && verifiedAge <= 7) {
+        freshness = {
+          cls: 'warn',
+          text: verifiedAge === 0
+            ? 'posledné dobré dnes'
+            : verifiedAge === 1
+              ? 'posledné dobré pred 1 dňom'
+              : `posledné dobré pred ${verifiedAge} dňami`,
+        };
+      } else if (
+        verificationStatus === 'verified'
+        && (publishedFreshness
+          ? ['success', 'no_change'].includes(publishedFreshness.status)
+          : openingSource?.ok !== false)
+        && verifiedAge <= 2
+      ) {
+        freshness = {
+          cls: verifiedAge === 0 ? 'ok' : 'warn',
+          text: verifiedAge === 0
+            ? 'overené dnes'
+            : verifiedAge === 1
+              ? 'overené pred 1 dňom'
+              : `overené pred ${verifiedAge} dňami`,
+        };
+      }
+      const verification = `<div class="hours-verified ${freshness.cls}">
+        <i></i><span>${esc(freshness.text)}${freshness.cls !== 'ok' && verifiedAt ? ` · ${esc(fmtDate(verifiedAt, true))}` : ''}${store.verificationNote ? ` · ${esc(store.verificationNote)}` : ''}</span>
+      </div>`;
       return `<article class="hours-store" style="${storeStyle(store.id)}">
         <div class="hours-store-head"><i class="store-dot"></i><div><h3>${title}</h3><p>${esc(store.address)}</p></div></div>
         <div class="hours-table">${hours}</div>
         ${exceptions}
-        ${store.verified ? `<div class="hours-verified">Overené ${esc(fmtDate(store.verified, true))}</div>` : ''}
+        ${verification}
       </article>`;
     })
     .join('');
@@ -106,6 +144,42 @@ function renderOpeningHours() {
     <div class="panel-head"><div><h2>Otváracie hodiny tento týždeň</h2><p>${esc([opening.location, opening.period].filter(Boolean).join(' · '))}</p></div>${svg('calendar')}</div>
     <div class="holiday-status ${hasExceptions ? 'has-exception' : ''}">${svg(hasExceptions ? 'alert' : 'check')}<span>${esc(opening.holidayNote || (hasExceptions ? 'Počas sviatkov platia výnimky nižšie.' : 'Bez sviatočných výnimiek.'))}</span>${holidayLink}</div>
     <div class="hours-list">${stores}</div>
+  </section>`;
+}
+
+function renderPipelineNotice() {
+  if (state.week !== 'latest') return '';
+  const status = state.pipelineStatus;
+  if (!status) {
+    return `<section class="pipeline-notice warning" role="status">
+      ${svg('alert')}<div><strong>Aktuálnosť automatickej aktualizácie sa nepodarilo overiť.</strong>
+      <span>Zobrazené sú posledné lokálne dostupné dáta.</span></div>
+    </section>`;
+  }
+
+  const generatedAt = Date.parse(status.generated);
+  const ageHours = Number.isFinite(generatedAt) ? (Date.now() - generatedAt) / 3600000 : Infinity;
+  const carry = Object.entries(status.carryForward).filter(([, count]) => count > 0);
+  const critical = status.outcome === 'BLOCKED'
+    || !status.validationOk
+    || status.anomalies.length > 0
+    || ageHours < -1
+    || ageHours > 48;
+  const degraded = critical
+    || !['PASS', 'NO_CHANGE'].includes(status.outcome)
+    || carry.length > 0
+    || status.reviewItems > 0
+    || ageHours > 36;
+  if (!degraded) return '';
+
+  const details = [];
+  if (Number.isFinite(generatedAt)) details.push(`aktualizované ${fmtDate(status.generated.slice(0, 10), true)}`);
+  carry.forEach(([store, count]) => details.push(`${store}: ${count} prenesených`));
+  if (status.reviewItems) details.push(`${status.reviewItems} čaká na kontrolu`);
+  const warning = status.warnings[0] || status.anomalies[0];
+  return `<section class="pipeline-notice ${critical ? 'critical' : 'warning'}" role="status">
+    ${svg('alert')}<div><strong>${critical ? 'Aktuálnosť dát nie je potvrdená.' : 'Časť dát používa posledný validný stav.'}</strong>
+    <span>${esc(details.join(' · ') || 'Automatická pipeline hlási zníženú kvalitu.')}${warning ? ` · ${esc(warning)}` : ''}</span></div>
   </section>`;
 }
 
@@ -157,7 +231,7 @@ export function renderOverview() {
   // ohľadu na verdikt (rovnaké správanie ako pôvodná verzia appky)
   if (!top.length) top = rankByDiscount(items);
 
-  const best = top[0];
+  const best = top.find(item => item.verdict === 'realna');
   const sources = state.data.sources;
 
   const tipCard = best
@@ -168,14 +242,18 @@ export function renderOverview() {
         ${primaryToggleButton(best, 'margin-top:13px')}
         ${watchButton(best, true)}
       </section>`
-    : '';
+    : `<section class="panel insight-card neutral">
+        <div class="icon-wrap">${svg('clock')}</div>
+        <h2>Nedostatok cenovej histórie</h2>
+        <p>Aktuálne ponuky nemajú dosť vlastnej cenovej histórie na poctivé označenie za výhodný nákup.</p>
+      </section>`;
 
   const sourcesCard = `<section class="panel panel-pad">
     <h2 style="font-size:14px;margin:0">Dôveryhodnosť dát</h2>
-    <p style="font-size:11px;color:var(--muted);margin:5px 0 0">Reálna zľava porovnáva akciovú cenu s bežnou cenou, nie iba s prečiarknutou cenou z letáku.</p>
+    <p style="font-size:11px;color:var(--muted);margin:5px 0 0">Hodnotenie porovnáva ponuku iba s dostupnou cenovou históriou aplikácie; nejde o právne overenie zľavy.</p>
     <div class="source-list">${sources
       .map(
-        s => `<div class="source-row"><i class="source-ok" style="${s.ok ? '' : 'background:var(--red)'}"></i>${esc(s.name)}${s.ok ? '' : ' – nedostupný'}</div>`,
+        s => `<div class="source-row"><i class="source-ok" style="${s.ok ? '' : 'background:var(--red)'}"></i><span>${esc(s.name)}${s.ok ? '' : ' – nedostupný'}${s.note ? `<small>${esc(s.note)}</small>` : ''}</span></div>`,
       )
       .join('')}</div>
   </section>`;
@@ -183,9 +261,9 @@ export function renderOverview() {
   const kpiStrip = `<div class="status-strip">
       <span class="status-label">Stav prehľadu</span>
       <span><strong>${items.length}</strong> ponúk</span>
-      <span><strong>${real.length}</strong> reálne výhodných</span>
+      <span><strong>${real.length}</strong> priaznivých podľa dostupnej histórie</span>
       <span><strong>${ending.length}</strong> končia do ${ENDING_SOON_DAYS} dní</span>
-      <span><strong>${suspicious.length}</strong> podozrivých</span>
+      <span><strong>${suspicious.length}</strong> letákových zliav nepodporených históriou</span>
       <span><strong>${shopping.items.reduce((sum, i) => sum + i.quantity, 0)}</strong> v zozname</span>
     </div>`;
 
@@ -197,14 +275,14 @@ export function renderOverview() {
     </div>
   </section>`;
 
-  return `${overviewSummary}
+  return `${renderPipelineNotice()}${overviewSummary}
     ${archiveNote()}
     ${renderPromoSection()}
     <div class="overview-layout">
       <div class="column">
         <section class="panel">
           <div class="panel-head">
-            <div><h2>Top príležitosti</h2><p>Najväčší rozdiel oproti bežnej cene</p></div>
+            <div><h2>Top príležitosti</h2><p>Výber podľa dostupných dát; verdikt pri každej ponuke ukazuje silu dôkazu</p></div>
             <button class="text-btn" data-view="deals">Všetky akcie →</button>
           </div>
           ${top.map(dealRow).join('') || '<div class="empty-state">Pre tento obchod zatiaľ nie sú dáta.</div>'}

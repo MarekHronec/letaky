@@ -4,7 +4,7 @@
 
 import { VIEWS, DEALS_PAGE_SIZE, SEARCH_DEBOUNCE_MS } from './config.js';
 import { state, setLegState, saveSettings, setListMode, addSavedList, deleteSavedList } from './state.js';
-import { loadWeek, loadArchiveWeeks, loadLegislativa, loadReference, offerByKey } from './data.js';
+import { loadWeek, loadArchiveWeeks, loadLegislativa, loadPipelineStatus, offerByKey } from './data.js';
 import * as shopping from './shopping.js';
 import * as purchases from './purchases.js';
 import * as tracking from './tracking.js';
@@ -19,9 +19,94 @@ import { renderLegislativa } from './views/legislativa.js';
 import { renderProfil } from './views/profil.js';
 import { initIcons, svg } from './lib/icons.js';
 import { showToast, announce } from './lib/toast.js';
-import { $, esc } from './lib/util.js';
+import { $, esc, daysTo, fmtDate } from './lib/util.js';
 
 const app = $('#app');
+const STORE_NAMES = { kaufland: 'Kaufland', lidl: 'Lidl', metro: 'Metro' };
+
+function weekNumberLabel(week) {
+  const match = String(week || '').match(/^\d{4}-W(\d{2})$/);
+  return match ? `W${Number(match[1])}` : String(week || '');
+}
+
+function ageText(days, verified = 'overené') {
+  if (days === 0) return `${verified} dnes`;
+  if (days === 1) return `${verified} pred 1 dňom`;
+  if (days >= 2 && days <= 4) return `${verified} pred ${days} dňami`;
+  return `${verified} pred ${days} dňami`;
+}
+
+function offerFreshness(storeId) {
+  const status = state.pipelineStatus;
+  if (!status) return { cls: 'check', label: 'vyžaduje kontrolu' };
+  const total = status.counts[storeId] || 0;
+  const fresh = status.fresh[storeId] || 0;
+  const carried = status.carryForward[storeId] || 0;
+  const age = status.generated ? Math.max(0, -(daysTo(status.generated.slice(0, 10)) ?? 999)) : 999;
+  if (total > 0 && fresh === total && carried === 0 && age <= 1) {
+    return { cls: 'ok', label: ageText(age) };
+  }
+  if (carried > 0 && fresh === 0) {
+    const lastGoodAt = status.freshness?.offerStores?.[storeId]?.lastGoodAt;
+    const lastGoodAge = lastGoodAt ? Math.max(0, -(daysTo(lastGoodAt) ?? 999)) : null;
+    return {
+      cls: 'warn',
+      label: lastGoodAge != null && lastGoodAge <= 14
+        ? `${ageText(lastGoodAge, 'posledné dobré')} · ${carried} prenesených`
+        : `posledné dobré dáta prenesené · ${carried} položiek`,
+    };
+  }
+  if (carried > 0 || !status.validationOk || status.anomalies.length || age > 1) {
+    return { cls: 'check', label: 'vyžaduje kontrolu' };
+  }
+  return { cls: fresh > 0 ? 'warn' : 'check', label: fresh > 0 ? ageText(age) : 'vyžaduje kontrolu' };
+}
+
+function renderDataHealth() {
+  const root = $('#data-health');
+  if (!root) return;
+  const wasOpen = root.open;
+  const status = state.pipelineStatus;
+  const weeks = state.archiveWeeks.slice().sort();
+  const earliest = weeks[0] || '';
+  const generatedAt = status && Date.parse(status.generated);
+  const ageHours = Number.isFinite(generatedAt) ? (Date.now() - generatedAt) / 3600000 : Infinity;
+  const carryCount = status
+    ? Object.values(status.carryForward).reduce((sum, value) => sum + value, 0)
+    : 0;
+  const critical = !status
+    || status.outcome === 'BLOCKED'
+    || !status.validationOk
+    || status.anomalies.length > 0
+    || ageHours > 48
+    || ageHours < -1;
+  const warning = critical
+    || !['PASS', 'NO_CHANGE'].includes(status?.outcome)
+    || carryCount > 0
+    || (status?.reviewItems || 0) > 0
+    || ageHours > 36;
+  const cls = critical ? 'check' : warning ? 'warn' : 'ok';
+  const pipelineLabel = critical ? 'Vyžaduje kontrolu' : warning ? 'Čiastočne prenesené dáta' : 'V poriadku';
+  const archiveLabel = earliest
+    ? `Od ${weekNumberLabel(earliest)} · ${weeks.length} ${weeks.length === 1 ? 'týždeň' : weeks.length <= 4 ? 'týždne' : 'týždňov'}`
+    : 'Archív zatiaľ nie je dostupný';
+  const reviewCount = status?.reviewItems ?? null;
+  const stores = Object.keys(STORE_NAMES).map(storeId => {
+    const freshness = offerFreshness(storeId);
+    return `<div class="data-health-store"><span>${STORE_NAMES[storeId]}</span><strong class="${freshness.cls}">${esc(freshness.label)}</strong></div>`;
+  }).join('');
+  root.className = `data-health ${cls}`;
+  root.innerHTML = `<summary aria-label="Stav dát: ${esc(pipelineLabel)}"><i class="data-health-dot"></i><span>Dáta</span></summary>
+    <div class="data-health-popover">
+      <div class="data-health-head"><strong>Stav dát</strong>${status?.generated ? `<span>${esc(fmtDate(status.generated.slice(0, 10), true))}</span>` : ''}</div>
+      <div class="data-health-row"><span>Pipeline</span><strong class="${cls}">${esc(pipelineLabel)}</strong></div>
+      <div class="data-health-row"><span>Archív</span><strong>${esc(archiveLabel)}</strong></div>
+      <div class="data-health-row"><span>Review backlog</span><strong>${reviewCount == null ? 'neoverený' : reviewCount}</strong></div>
+      <div class="data-health-stores">${stores}</div>
+      <p>Detail rozlišuje čerstvú extrakciu, bezpečne prenesený posledný stav a položky čakajúce na kontrolu.</p>
+    </div>`;
+  root.open = wasOpen;
+}
 
 // ---------------------------------------------------------------------------
 // Render so zachovaním fokusu (innerHTML by inak zhodil fokus na <body>,
@@ -442,6 +527,7 @@ $('#import-file').addEventListener('change', async e => {
 // Prázdny hash (návrat na prvú položku histórie) znamená prehľad.
 function handleLocationHash() {
   if (location.hash.startsWith('#share=')) {
+    if (!state.identityReady) return;
     if (consumeSharedLink()) schedulePush();
     updateNav();
     if (state.data) render();
@@ -504,6 +590,7 @@ if ('serviceWorker' in navigator) {
 
 async function initWeekSelect() {
   const weeks = await loadArchiveWeeks();
+  state.archiveWeeks = weeks;
   const select = $('#week');
   weeks.forEach(week => {
     const option = document.createElement('option');
@@ -511,6 +598,13 @@ async function initWeekSelect() {
     option.textContent = week;
     select.appendChild(option);
   });
+  const earliest = weeks.slice().sort()[0];
+  const note = $('#archive-availability');
+  if (note && earliest) {
+    note.textContent = `Archív dostupný od ${weekNumberLabel(earliest)}`;
+    note.hidden = false;
+  }
+  renderDataHealth();
 }
 
 function updateWeekSelectLabel() {
@@ -525,12 +619,16 @@ function updateWeekSelectLabel() {
 async function showWeek(week) {
   app.innerHTML = '<div class="empty-state">Načítavam aktuálne akcie…</div>';
   try {
-    await loadWeek(week);
+    await Promise.all([
+      loadWeek(week),
+      week === 'latest' ? loadPipelineStatus() : Promise.resolve(),
+    ]);
     // Archív je iba na prezeranie. Sledovanému produktu nesmie prepísať
     // poslednú cenu ani dátum starším snapshotom.
     if (state.week === 'latest') tracking.refreshFromOffers(state.items, state.data.generated);
     state.dealsLimit = DEALS_PAGE_SIZE;
     updateWeekSelectLabel();
+    renderDataHealth();
     render();
   } catch (e) {
     app.innerHTML = `<div class="empty-state"><strong>Dáta sa nepodarilo načítať.</strong><br>${esc(e.message)}<br><button class="primary-btn" id="retry" style="margin-top:14px">Skúsiť znova</button></div>`;
@@ -538,27 +636,23 @@ async function showWeek(week) {
   }
 }
 
-// Nefunkčné obrázky (hotlink ochrana, expirované URL) odstraňujeme globálnym
-// listenerom, aby presvitlo emoji – inline onerror atribúty blokuje CSP.
-// Event 'error' nebublá, preto capture fáza.
-const removeBrokenImage = e => {
-  if (e.target?.tagName === 'IMG') e.target.remove();
-};
-app.addEventListener('error', removeBrokenImage, true);
-$('#sheet-body').addEventListener('error', removeBrokenImage, true);
-
 initIcons();
-if (consumeSharedLink()) schedulePush();
-updateNav();
-initWeekSelect();
-loadLegislativa().then(() => {
-  if (state.view === 'legislativa') render();
-});
-loadReference();
-showWeek('latest');
-initSync(({ authOnly } = {}) => {
+
+async function start() {
+  // Najprv urč vlastníka osobných lokálnych dát. Inak by sa share import alebo
+  // refresh sledovaných produktov mohol zapísať do guest profilu tesne pred
+  // obnovením prihlásenej session.
+  await initSync(({ authOnly } = {}) => {
+    updateNav();
+    if (!authOnly || state.view === 'profil') render();
+  });
+  if (consumeSharedLink()) schedulePush();
   updateNav();
-  // pri tichých auth eventoch (obnova tokenu) stačí indikátor v topbare;
-  // celý view prekresľujeme len na profile alebo po merge dát z cloudu
-  if (!authOnly || state.view === 'profil') render();
-});
+  initWeekSelect();
+  loadLegislativa().then(() => {
+    if (state.view === 'legislativa') render();
+  });
+  showWeek('latest');
+}
+
+start();

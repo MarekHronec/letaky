@@ -1,13 +1,13 @@
 // Komponenty zdieľané viacerými pohľadmi: hlavička stránky, logá obchodov,
-// platnosť akcie, obrázok/emoji položky, odznaky a tlačidlá do zoznamu.
+// platnosť akcie, kategóriové emoji, odznaky a tlačidlá do zoznamu.
 
 import { STORE_COLORS } from '../config.js';
 import { state } from '../state.js';
-import { storeId, sortedStores, discountOf } from '../data.js';
+import { storeId, sortedStores, referenceDiscountOf, flyerDiscountOf } from '../data.js';
 import { inShopping } from '../shopping.js';
 import { isTracked } from '../tracking.js';
 import { svg } from '../lib/icons.js';
-import { esc, daysTo, fmtDate, safeImg, norm } from '../lib/util.js';
+import { esc, daysTo, fmtDate, norm } from '../lib/util.js';
 
 // ---------------------------------------------------------------------------
 // Hlavička stránky (jedno miesto pre eyebrow/nadpis/popis aj archívnu poznámku)
@@ -78,7 +78,7 @@ export function validityHtml(i, meta = validityMeta(i)) {
 }
 
 // ---------------------------------------------------------------------------
-// Obrázok položky s emoji fallbackom podľa kategórie/názvu
+// Vlastná vizuálna skratka podľa kategórie/názvu.
 // ---------------------------------------------------------------------------
 
 const CATEGORY_EMOJI = [
@@ -108,12 +108,8 @@ function mediaEmoji(item) {
 
 // kind: 'card' (predvolené) | 'detail'
 export function mediaHtml(item, kind = 'card') {
-  const img = safeImg(item.image);
   const cls = kind === 'detail' ? 'detail-media' : 'product-media';
-  // Bez inline onerror (blokuje ho CSP) – nefunkčné obrázky odstraňuje
-  // globálny error listener v app.js, aby presvitlo emoji pod nimi.
-  const imgTag = img ? `<img src="${esc(img)}" alt="${esc(item.name)}" loading="lazy">` : '';
-  return `<div class="${cls}"><span class="ph">${mediaEmoji(item)}</span>${imgTag}</div>`;
+  return `<div class="${cls}" role="img" aria-label="${esc(item.category || item.name)}"><span class="ph">${mediaEmoji(item)}</span></div>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -122,18 +118,23 @@ export function mediaHtml(item, kind = 'card') {
 
 // Odznak zľavy. Zápornú alebo nulovú „zľavu" nezobrazujeme – tovar nezlacnel.
 export function discountBadge(i) {
-  const d = discountOf(i);
+  const reference = referenceDiscountOf(i);
+  const d = reference ?? flyerDiscountOf(i);
   if (d == null || Math.round(d) <= 0) return '';
-  return `<span class="discount ${i.verdict === 'umela' ? 'suspicious' : ''}">−${Math.round(d)} %</span>`;
+  const basis = reference != null ? 'ref. aplikácie' : 'leták';
+  const explanation = reference != null
+    ? 'Rozdiel oproti referenčnej cene aplikácie'
+    : 'Zľava uvedená obchodníkom v letáku';
+  return `<span class="discount ${i.verdict === 'umela' ? 'suspicious' : ''}" title="${explanation}" aria-label="${explanation}: ${Math.round(d)} percent">−${Math.round(d)} % <small>${basis}</small></span>`;
 }
 
 export function cardBadges(i) {
   const verdictBadge =
     i.verdict === 'realna'
-      ? `<span class="badge good">${svg('check')} Reálna</span>`
+      ? `<span class="badge good">${svg('check')} Priaznivá podľa dostupnej histórie</span>`
       : i.verdict === 'umela'
-        ? `<span class="badge warn">${svg('alert')} Podozrivá</span>`
-        : '<span class="badge good">Neoverená</span>';
+        ? `<span class="badge warn">${svg('alert')} Letáková zľava nepodporená históriou</span>`
+        : '<span class="badge good">Nedostatok cenovej histórie</span>';
   return `<div class="top-badges">${verdictBadge}${discountBadge(i)}${storeLogo(i.store)}</div>`;
 }
 

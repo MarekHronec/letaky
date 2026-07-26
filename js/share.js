@@ -1,7 +1,13 @@
 // Prenos zoznamu medzi zariadeniami: zdieľací link (#share= fragment sa
 // neposiela serveru), JSON export/import a hlasové zadávanie položky.
 
-import { SHARE_URL_MAX, SHARE_HASH_MAX, SHARE_ITEMS_MAX, VOICE_LANG } from './config.js';
+import {
+  SHARE_URL_MAX,
+  SHARE_HASH_MAX,
+  SHARE_ITEMS_MAX,
+  IMPORT_FILE_MAX_BYTES,
+  VOICE_LANG,
+} from './config.js';
 import { state } from './state.js';
 import * as shopping from './shopping.js';
 import { showToast } from './lib/toast.js';
@@ -65,8 +71,27 @@ export async function shareList() {
   }
 }
 
-// Spracuje #share= fragment z URL. Vracia true, ak fragment existoval
-// (volajúci má potom prekresliť UI); zoznam nahradí len po potvrdení.
+function sanitizeExternalItems(items) {
+  if (!Array.isArray(items) || items.length > SHARE_ITEMS_MAX) throw new Error('invalid-items');
+  const clean = items.map(shopping.sanitizeListItem);
+  // Import je atómový: jediná chybná položka nesmie viesť k tichému
+  // čiastočnému prepísaniu existujúceho zoznamu.
+  if (clean.some(item => !item)) throw new Error('invalid-item');
+  const ids = new Set(clean.map(item => item.id));
+  if (ids.size !== clean.length) throw new Error('duplicate-id');
+  return clean;
+}
+
+function confirmReplacement(incomingCount) {
+  if (typeof confirm !== 'function') return false;
+  const currentCount = shopping.items.length;
+  return confirm(
+    `Načítať nový zoznam (${incomingCount})? Nahradí aktuálny zoznam (${currentCount}) v tomto zariadení.`,
+  );
+}
+
+// Spracuje #share= fragment z URL. Vracia true iba keď používateľ potvrdil
+// platný zoznam a stav sa skutočne zmenil; zrušenie ani chyba nespustia sync.
 export function consumeSharedLink() {
   if (!location.hash.startsWith('#share=')) return false;
   state.view = 'list';
@@ -76,21 +101,21 @@ export function consumeSharedLink() {
     if (value.length > SHARE_HASH_MAX) throw new Error();
     const parsed = decodeSharePayload(value);
     const items = Array.isArray(parsed) ? parsed : parsed.items;
-    if (!Array.isArray(items) || items.length > SHARE_ITEMS_MAX) throw new Error();
-    const clean = items.map(shopping.sanitizeListItem).filter(Boolean);
-    if (!clean.length && items.length) throw new Error();
-    if (shopping.items.length && !confirm('V tomto zariadení už máš nákupný zoznam. Chceš ho nahradiť zoznamom z linku?')) {
+    const clean = sanitizeExternalItems(items);
+    if (!confirmReplacement(clean.length)) {
       history.replaceState(null, '', cleanHash);
-      return true;
+      showToast('Načítanie zoznamu bolo zrušené');
+      return false;
     }
     shopping.replaceAll(clean);
     history.replaceState(null, '', cleanHash);
     showToast('Zoznam z linku je načítaný');
+    return true;
   } catch {
     history.replaceState(null, '', cleanHash);
     showToast('Link neobsahuje platný nákupný zoznam');
+    return false;
   }
-  return true;
 }
 
 // ---------------------------------------------------------------------------
@@ -112,11 +137,23 @@ export function exportList() {
 // Vracia true pri úspechu (volajúci prekreslí UI).
 export async function importList(file) {
   try {
-    const parsed = JSON.parse(await file.text());
+    const size = Number(file?.size);
+    if (!Number.isFinite(size) || size < 0 || size > IMPORT_FILE_MAX_BYTES) throw new Error('invalid-size');
+    const type = String(file?.type || '').split(';', 1)[0].trim().toLowerCase();
+    if (type && type !== 'application/json' && type !== 'text/json') throw new Error('invalid-type');
+
+    const text = await file.text();
+    if (new TextEncoder().encode(text).byteLength > IMPORT_FILE_MAX_BYTES) throw new Error('invalid-size');
+    const parsed = JSON.parse(text);
+    if (!Array.isArray(parsed) && (!parsed || ![2, 3].includes(parsed.version))) {
+      throw new Error('invalid-version');
+    }
     const items = Array.isArray(parsed) ? parsed : parsed.items;
-    if (!Array.isArray(items)) throw new Error();
-    const clean = items.map(shopping.sanitizeListItem).filter(Boolean);
-    if (!clean.length && items.length) throw new Error();
+    const clean = sanitizeExternalItems(items);
+    if (!confirmReplacement(clean.length)) {
+      showToast('Import bol zrušený');
+      return false;
+    }
     shopping.replaceAll(clean);
     showToast('Zoznam bol importovaný');
     return true;

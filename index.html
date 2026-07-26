@@ -4,9 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#2f56d0">
-  <meta name="description" content="Akcie z letákov bez marketingovej hmly, s nákupným zoznamom do mobilu.">
+  <meta name="description" content="Nezávislý prehľad verejne dostupných ponúk, cenová história a nákupný zoznam.">
   <meta name="color-scheme" content="light">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://esm.sh; connect-src 'self' https://*.supabase.co; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self' https://ihtwxmxmkwigbbkcgubs.supabase.co wss://ihtwxmxmkwigbbkcgubs.supabase.co; img-src 'self' data:; style-src 'self' 'unsafe-inline'; worker-src 'self'; manifest-src 'self'; font-src 'self'; frame-src 'none'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/app-icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/app-icon.svg">
@@ -42,9 +43,16 @@
         <span class="sr-only">Hľadať produkt alebo obchod</span>
         <input id="search" type="search" placeholder="Hľadať produkt alebo obchod…" autocomplete="off">
       </label>
-      <select class="week-select" id="week" aria-label="Výber týždňa">
-        <option value="latest">(Tento týždeň) Aktuálne obdobie</option>
-      </select>
+      <div class="week-picker">
+        <select class="week-select" id="week" aria-label="Výber týždňa">
+          <option value="latest">(Tento týždeň) Aktuálne obdobie</option>
+        </select>
+        <span class="archive-availability" id="archive-availability" hidden></span>
+      </div>
+      <details class="data-health" id="data-health">
+        <summary><i class="data-health-dot"></i><span>Dáta</span></summary>
+        <div class="data-health-popover"><span>Načítavam stav dát…</span></div>
+      </details>
       <button class="topbar-profile" type="button" data-view="profil" aria-label="Profil a nastavenia" title="Profil a nastavenia">
         <span data-icon="user"></span>
       </button>
@@ -52,6 +60,17 @@
     <main class="main" id="app">
       <div class="empty-state">Načítavam aktuálne akcie…</div>
     </main>
+    <footer class="site-disclaimer">
+      <p class="site-disclaimer-lead"><strong>Nezávislý informačný nástroj na vlastné plánovanie.</strong> Nesprostredkúva predaj a nenahrádza oficiálne letáky obchodníkov.</p>
+      <details>
+        <summary>Viac o projekte a zdrojoch</summary>
+        <p>Projekt nie je prepojený s uvedenými obchodníkmi ani nimi schválený. Obchodné názvy a ochranné známky sa používajú iba na identifikáciu zdroja ponuky.</p>
+        <p>Údaje sa získavajú a vyhodnocujú automaticky, preto môžu byť neúplné, oneskorené alebo nesprávne. Pred nákupom over cenu, DPH, podmienky, platnosť, dostupnosť a otváracie hodiny v odkazovanom oficiálnom zdroji alebo priamo v predajni.</p>
+        <p>Cenové označenia a nákupné odporúčania vychádzajú iba z dostupnej histórie aplikácie. Nie sú garanciou úspory, právnym posúdením zľavy ani spotrebiteľským overením.</p>
+        <p>Legislatívna časť je iba orientačný rozcestník. Môže byť neúplná, neaktuálna alebo nepresná a nenahrádza znenie zákona ani odborné poradenstvo. Pred rozhodnutím vždy otvor odkazovaný oficiálny zdroj a aktuálnu časovú verziu príslušného predpisu.</p>
+        <p class="site-disclaimer-links"><a href="PRIVACY.md">Ochrana súkromia</a> · <a href="SECURITY.md">Bezpečné nahlásenie problému</a></p>
+      </details>
+    </footer>
   </div>
 </div>
 

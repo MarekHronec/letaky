@@ -80,6 +80,38 @@ function presentedBasisShortLabel(analysis) {
   return state.settings.dph === 'platca' && hasExplicitPair ? 'bez DPH' : 's DPH';
 }
 
+function trendMeta(analysis) {
+  const grouped = new Map();
+  analysis.histories.selected.forEach(point => {
+    const prices = grouped.get(point.date) || [];
+    prices.push(point.price);
+    grouped.set(point.date, prices);
+  });
+  const dated = [...grouped.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([date, prices]) => {
+    const sorted = prices.slice().sort((a, b) => a - b);
+    const middle = Math.floor(sorted.length / 2);
+    const price = sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+    return { date, price };
+  });
+  if (dated.length < 2) return { cls: 'unknown', arrow: '—', label: 'Trend zatiaľ nie je dostupný' };
+  const delta = dated.at(-1).price - dated[0].price;
+  const measurements = dated.length <= 4 ? 'merania' : 'meraní';
+  if (Math.abs(delta) < 0.005) return { cls: 'flat', arrow: '→', label: `Bez zmeny · ${dated.length} ${measurements}` };
+  const falling = delta < 0;
+  return {
+    cls: falling ? 'down' : 'up',
+    arrow: falling ? '↓' : '↑',
+    label: `${falling ? 'Pokles' : 'Rast'} o ${fmtPrice(Math.abs(delta))} · ${dated.length} ${measurements}`,
+  };
+}
+
+function trendVisual(analysis) {
+  const trend = trendMeta(analysis);
+  return `<div class="tracked-trend ${trend.cls}" aria-label="Cenový trend: ${esc(trend.label)}">
+    <span>${trend.arrow}</span><div><small>Cenový trend</small><strong>${esc(trend.label)}</strong></div>
+  </div>`;
+}
+
 function recordAction(analysis, wide = false) {
   if (analysis.best) return watchButton(analysis.best, wide);
   return `<button class="watch-btn ${wide ? 'wide' : ''} tracked" data-action="untrack-record" data-product-id="${esc(analysis.record.productId)}" aria-label="Prestať sledovať ${esc(analysis.record.name)}" title="Prestať sledovať">${svg('bookmark')}${wide ? '<span>Sledované</span>' : ''}</button>`;
@@ -170,6 +202,12 @@ function evidenceDetails(analysis) {
     <summary><span>Viac informácií</span><small>${compactEvidenceLabel(analysis)}</small></summary>
     <div class="tracked-insights-body">
       <p class="track-detail-summary">${esc(analysis.detail)}</p>
+      <div class="tracked-detail-context">${offerMeta(analysis)}</div>
+      <div class="tracked-quick-grid tracked-quick-grid-details">
+        ${inventoryControl(analysis)}
+        ${pricePositionVisual(analysis)}
+        ${qualityVisual(analysis)}
+      </div>
       <div class="track-evidence-grid track-evidence-details">
         <div>${pricePosition(analysis)}</div>
         <div>${savingsFact(analysis)}</div>
@@ -228,20 +266,15 @@ function dashboardCard(analysis) {
     </header>
     <div class="tracked-price-row tracked-price-compact${timingClass}">
       <div><span>${esc(analysis.offerState === 'upcoming' ? 'Budúca cena' : analysis.offerState === 'active' ? 'Aktuálna cena' : 'Posledná známa cena')}</span><strong>${shownPrice != null ? fmtPrice(shownPrice) : '—'}</strong><small title="${esc(presentedBasisLabel(analysis))}">${esc(presentedBasisShortLabel(analysis))}</small></div>
-      <div class="tracked-offer-meta">${offerMeta(analysis)}</div>
+      ${trendVisual(analysis)}
     </div>
     <section class="track-decision track-decision-compact">
       <div class="track-decision-main">
         <div class="track-decision-head">${signalBadge(analysis)}<span class="track-timing">${esc(analysis.timing)}</span></div>
-        <h3>${esc(analysis.title)}</h3><p>${esc(analysis.detail)}</p>
+        <h3>${esc(analysis.title)}</h3>
       </div>
-      ${analysis.quantity ? `<div class="track-quantity track-quantity-compact"><strong>${analysis.quantity} ks</strong><span>odporúčané</span></div>` : ''}
+      <div class="track-quantity track-quantity-compact"><strong>${analysis.quantity || 0} ks</strong><span>odporúčané</span></div>
     </section>
-    <div class="tracked-quick-grid">
-      ${inventoryControl(analysis)}
-      ${pricePositionVisual(analysis)}
-      ${qualityVisual(analysis)}
-    </div>
     ${evidenceDetails(analysis)}
   </article>`;
 }
@@ -249,14 +282,12 @@ function dashboardCard(analysis) {
 function listRow(analysis) {
   const best = analysis.best;
   const shownPrice = presentedPrice(analysis);
-  const priceNote = analysis.price.count
-    ? `${analysis.price.positionLabel} · ${analysis.quality.label}`
-    : analysis.quality.label;
+  const trend = trendMeta(analysis);
   return `<div class="tracked-list-row signal-${esc(analysis.signal)}">
     <div class="tracked-list-product"><strong>${esc(analysis.record.name)}</strong><span>${esc(analysis.record.amount || analysis.record.category || '')}</span></div>
     <div class="tracked-list-decision">${signalBadge(analysis)}<span class="track-row-note">${esc(analysis.title)} · ${esc(analysis.timing)}</span></div>
-    <div class="tracked-list-stock">${inventoryControl(analysis)}</div>
-    <div class="tracked-list-price"><strong>${shownPrice != null ? fmtPrice(shownPrice) : '—'}</strong><span>${esc(priceNote)}</span>${best ? storeLogo(best.store) : ''}</div>
+    <div class="tracked-list-quantity"><strong>${analysis.quantity || 0} ks</strong><span>odporúčané</span></div>
+    <div class="tracked-list-price"><strong>${shownPrice != null ? fmtPrice(shownPrice) : '—'}</strong><span>${esc(trend.label)}</span>${best ? storeLogo(best.store) : ''}</div>
     <div class="product-actions">${recordAction(analysis)}${best ? circleAddButton(best) : ''}</div>
   </div>`;
 }
@@ -306,12 +337,12 @@ export function renderTracked() {
     <select class="sort-select" id="tracked-sort" aria-label="Triedenie sledovaných produktov">
       <option value="urgency" ${sort === 'urgency' ? 'selected' : ''}>Najnaliehavejšie</option>
       <option value="savings" ${sort === 'savings' ? 'selected' : ''}>Najvyššia očakávaná úspora</option>
-      <option value="price-position" ${sort === 'price-position' ? 'selected' : ''}>Najlepšia cenová pozícia</option>
+      <option value="price-position" ${sort === 'price-position' ? 'selected' : ''}>Najnižšia cenová pozícia</option>
       <option value="name" ${sort === 'name' ? 'selected' : ''}>Podľa názvu</option>
     </select>
   </div>`;
 
-  const method = `<details class="tracking-method"><summary>Ako vzniká odporúčanie</summary><p>Model porovnáva ceny vždy na rovnakej báze, oddeľuje aktuálne a budúce ponuky a používa iba potvrdené nákupy. Silné odporúčanie Kúpiť alebo Do zásoby vznikne až pri overenej ponuke, presnom balení a aspoň troch cenových bodoch z dvoch dátumov. Kvalita dát je označená slovne, nejde o predstieranú pravdepodobnosť.</p></details>`;
+  const method = `<details class="tracking-method"><summary>Ako vzniká odporúčanie</summary><p>Deterministický výpočet porovnáva ceny vždy na rovnakej báze, oddeľuje aktuálne a budúce ponuky a používa iba potvrdené nákupy. Silné odporúčanie Kúpiť alebo Do zásoby vznikne až pri hodnotení podporenom cenovou históriou, presnom balení a aspoň troch cenových bodoch z dvoch dátumov. Kvalita dát je označená slovne; nejde o trénované ML ani kalibrovanú pravdepodobnosť.</p></details>`;
 
   const content = !records.length
     ? `<div class="empty-state"><strong>Zatiaľ nič nesleduješ.</strong><br>Pri produktoch použi ikonu záložky. Odporúčania sa zlepšujú potvrdenými nákupmi, cenovými meraniami a nastavením domácej zásoby.<br><button class="primary-btn" data-view="deals" style="margin-top:14px">Vybrať produkty</button></div>`
@@ -319,9 +350,9 @@ export function renderTracked() {
       ? '<div class="empty-state"><strong>Filtru nič nezodpovedá.</strong><br>Skús iný obchod, stav alebo vyhľadávanie.</div>'
       : state.trackedMode === 'dashboard'
         ? `<div class="tracked-grid">${analyses.map(dashboardCard).join('')}</div>`
-        : `<div class="tracked-list"><div class="tracked-list-head"><span>Produkt</span><span>Odporúčanie</span><span>Zásoba</span><span>Cena</span><span>Akcie</span></div>${analyses.map(listRow).join('')}</div>`;
+        : `<div class="tracked-list"><div class="tracked-list-head"><span>Produkt</span><span>Odporúčanie</span><span>Množstvo</span><span>Cena a trend</span><span>Akcie</span></div>${analyses.map(listRow).join('')}</div>`;
 
-  return `<div class="tracked-view">${pageHead({ eyebrow: 'Core sortiment', title: 'Sledované produkty', desc: 'Pravdivá cenová pozícia, potvrdený nákupný rytmus a odporúčanie podľa tvojej zásoby.' })}
+  return `<div class="tracked-view">${pageHead({ eyebrow: 'Core sortiment', title: 'Sledované produkty', desc: 'Cenová pozícia z dostupných dát, potvrdený nákupný rytmus a odporúčanie podľa tvojej zásoby.' })}
     ${summary}
     ${renderStoreTabs()}
     ${toolbar}

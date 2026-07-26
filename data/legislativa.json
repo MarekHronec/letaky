@@ -1,7 +1,7 @@
 {
-  "aktualizovane": "2026-07-17",
-  "popis": "Prehľad hlavných povinností a termínov pre maloobchod s potravinami a drogériou na Slovensku. Zostavené a overené oproti oficiálnym zdrojom (slov-lex.sk, financnasprava.sk, soi.sk, svps.sk, uvzsr.sk, slovenskozalohuje.sk) k júlu 2026. Slúži ako pripomienka, čo nezabudnúť.",
-  "upozornenie": "Nie je to právne poradenstvo. Presné sumy pokút, čísla paragrafov a lehoty sa menia – pred konkrétnym rozhodnutím si ich potvrď v aktuálnom znení na slov-lex.sk alebo so svojím účtovníkom/právnikom. Položky označené „overiť“ sú obzvlášť citlivé na zmenu.",
+  "aktualizovane": "2026-07-26",
+  "popis": "Orientačný rozcestník vybraných povinností a termínov pre maloobchod s potravinami a drogériou na Slovensku. Obsah bol naposledy manuálne porovnaný s odkazovanými zdrojmi 26. 7. 2026; nemusí byť úplný, aktuálny ani presný a nezohľadňuje okolnosti konkrétnej prevádzky.",
+  "upozornenie": "Nie je to právne ani daňové poradenstvo a nemožno sa naň spoliehať ako na znenie práva. Pred každým rozhodnutím otvor odkazovaný oficiálny zdroj aj aktuálnu časovú verziu príslušného predpisu a svoju situáciu over s príslušným úradom, účtovníkom alebo právnikom. Rozhodujú iba platné predpisy, záväzné rozhodnutia a okolnosti konkrétneho prípadu; položky označené „orientačné – overiť“ vyžadujú zvýšenú kontrolu.",
   "terminy": [
     {
       "datum": "2026-07-27",
@@ -23,8 +23,8 @@
     },
     {
       "datum": "2027-02-28",
-      "nazov": "Ohlásenie o obaloch za rok 2026",
-      "detail": "Kto uvádza obaly na trh (RZV): ročné ohlásenie o obaloch a nakladaní s odpadmi z obalov. Plastové tašky sa hlásia štvrťročne."
+      "nazov": "Obaly a odpady – overiť ohlasovaciu povinnosť za rok 2026",
+      "detail": "Termín 28. 2. sa týka len zákonom určených ohlasovateľov. Výrobca obalov zapojený kolektívne cez OZV spravidla odovzdáva údaje OZV podľa zmluvy; samostatné ohlásenie ministerstvu sa netýka automaticky každého maloobchodníka. Plastové tašky sa evidujú osobitne, no zákonné ohlásenie podľa § 15 vyhlášky 366/2015 je ročné, nie štvrťročné."
     },
     {
       "datum": "2027-03-31",
@@ -41,8 +41,8 @@
       "polozky": [
         {
           "nazov": "Zľava = uveď najnižšiu cenu za posledných 30 dní (§ 7)",
-          "detail": "Pri každom oznámení o znížení ceny (leták, cenovka, web, Black Friday) musíš uviesť „predchádzajúcu cenu“ = najnižšiu cenu, za ktorú si tovar predával počas 30 dní pred zľavou. Ak predávaš kratšie ako 30 dní, berie sa najnižšia cena od začiatku predaja. Reálnosť zľavy sa počíta voči tejto cene, nie voči bežnej/odporúčanej. Letákový prehľad túto zákonnú povinnosť neoveruje: nepozná vlastné predajné ceny používateľa; pole zlava_realna_pct je iba analytický benchmark cudzích letákov a cenovej histórie. Výnimka: tovar rýchlo podliehajúci skaze (čerstvé potraviny).",
-          "kedy": "pri každej zľave",
+          "detail": "Pri oznámení zníženia ceny konkrétneho tovaru (napr. v letáku, na cenovke alebo webe) uveď „predchádzajúcu cenu“: najnižšiu cenu, za ktorú si tento tovar predával v danej prevádzke alebo predajnom kanáli počas 30 dní pred znížením. Pri predaji kratšom ako 30 dní ide o najnižšiu cenu od začiatku predaja. Zákon a výklad MH SR poznajú výnimky, napr. tovar podliehajúci rýchlemu zníženiu kvality alebo skaze a niektoré všeobecné, množstevné či personalizované akcie. Letákový prehľad túto povinnosť neoveruje: nepozná vlastné predajné ceny používateľa; zlava_realna_pct je iba analytický benchmark cudzích letákov a zaznamenanej histórie, nie zákonná 30-dňová cena ani dôkaz porušenia.",
+          "kedy": "pri oznámení zníženia ceny tovaru",
           "koho": "všetci obchodníci",
           "zdroj": "https://www.economy.gov.sk/obchod/ochrana-spotrebitela/najcastejsie-otazky/najcastejsie-otazky-obchodnikov/oznamenie-o-znizeni-ceny-7-zakona-o-ochrane-spotrebitela",
           "zdroj_nazov": "MH SR – FAQ § 7",
@@ -52,10 +52,10 @@
         },
         {
           "nazov": "Zákaz klamlivých / fiktívnych zliav",
-          "detail": "Umelé nadhodnotenie „pôvodnej“ ceny pred akciou a následné „zníženie“ je klamlivá obchodná praktika (§ 9–12). SOI to môže sankcionovať samostatne. Preto appka rozlišuje verdikt realna / umela / neoverene.",
+          "detail": "Zavádzajúce vytvorenie cenovej výhody môže byť nekalou obchodnou praktikou (§ 9 až 12), pričom posúdenie závisí od konkrétnej prezentácie a okolností. Verdikty realna / umela / neoverene v aplikácii sú len analytické označenia podľa dostupných cudzích letákov a histórie; nie sú právnym posúdením obchodnej praktiky ani dôkazom pre SOI.",
           "kedy": "priebežne",
           "koho": "všetci obchodníci",
-          "zdroj": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2024/108/20240701",
+          "zdroj": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2024/108/",
           "zdroj_nazov": "Zákon 108/2024",
           "confidence": "high",
           "zavaznost": 5,
@@ -63,33 +63,33 @@
         },
         {
           "nazov": "Predajná cena aj jednotková cena (§ 6)",
-          "detail": "Tovar musí byť označený predajnou cenou a jednotkovou cenou (za kg / l / m / ks) čitateľne a jednoznačne. Jednotková cena sa nemusí uvádzať pri baleniach do 50 g / 50 ml alebo ak je zhodná s predajnou cenou. Appka jednotkovú cenu počíta a zobrazuje.",
+          "detail": "Tovar musí byť označený predajnou cenou a, ak sa uplatní, aj jednotkovou cenou čitateľne a jednoznačne. § 6 obsahuje viac výnimiek; ods. 3 medzi nimi uvádza tovar najviac 50 g alebo 50 ml a pri zhodnej predajnej a jednotkovej cene stačí uviesť predajnú cenu. Aplikácia jednotkovú cenu počíta iba z dostupných údajov o balení; jej zobrazenie nie je potvrdením správnosti cenovky v prevádzke.",
           "kedy": "priebežne",
           "koho": "potraviny aj drogéria (balený tovar)",
-          "zdroj": "https://www.zakonypreludi.sk/zz/2024-108",
-          "zdroj_nazov": "Zákon 108/2024 § 6",
+          "zdroj": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2024/108/",
+          "zdroj_nazov": "Slov-Lex – zákon 108/2024 § 6",
           "confidence": "high",
           "zavaznost": 3,
           "ucinne_od": "2024-07-01"
         },
         {
           "nazov": "Reklamácie a zodpovednosť za vady",
-          "detail": "Reklamáciu treba vybaviť najneskôr do 30 dní od uplatnenia; spôsob vybavenia určiť ihneď, v zložitých prípadoch do 3 pracovných dní. Zákonná zodpovednosť za vady spotrebného tovaru je 24 mesiacov (Občiansky zákonník § 620). Reklamačný poriadok na viditeľnom mieste.",
+          "detail": "Pri spotrebiteľskej kúpe predávajúci zodpovedá za vadu, ktorú mala vec pri dodaní a ktorá sa prejaví do dvoch rokov (§ 619 Občianskeho zákonníka; pri použitej veci možno dohodnúť najmenej jeden rok). Po vytknutí vady vydaj písomné potvrdenie a uveď lehotu na odstránenie vady; tá spravidla nemá byť dlhšia ako 30 dní, dlhšia môže byť odôvodnená objektívnym dôvodom mimo tvojej kontroly. Staré pravidlo „ihneď / 3 pracovné dni / najneskôr 30 dní“ zo zrušeného zákona 250/2007 sa na bežnú spotrebiteľskú kúpu od 1. 7. 2024 nepoužíva.",
           "kedy": "priebežne",
           "koho": "všetci obchodníci",
-          "zdroj": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2024/108/20240701",
-          "zdroj_nazov": "Zákon 108/2024 + OZ",
+          "zdroj": "https://www.economy.gov.sk/obchod/ochrana-spotrebitela/najcastejsie-otazky/najcastejsie-otazky-obchodnikov/zodpovednost-za-vady-a-reklamacie",
+          "zdroj_nazov": "MH SR – zodpovednosť za vady",
           "confidence": "high",
           "zavaznost": 3
         },
         {
-          "nazov": "Pokuty za porušenie (percentom z obratu)",
-          "detail": "Za nekalé praktiky a závažné porušenia: od 200 € do 2 % obratu (max 200 000 €); pri opakovaní do 12 mesiacov až 3 % obratu (max 400 000 €); pri rozsiahlom porušení s únijovým rozmerom až 2 000 000 €. Existuje „druhá šanca“ – pri dobrovoľnej náprave môže SOI od pokuty upustiť alebo ju znížiť.",
+          "nazov": "Sankcie podľa zákona o ochrane spotrebiteľa",
+          "detail": "Sankcia podľa zákona 108/2024 závisí od konkrétnej povinnosti, závažnosti, následkov, obratu a od toho, či ide o opakované alebo rozsiahle porušenie. Zákon obsahuje viac odlišných sadzieb, stropov a pravidiel pre nápravu, preto z tohto checklistu neurčuj očakávanú pokutu; otvor aktuálne § 42 až 48 a rieš konkrétny prípad s odborníkom.",
           "kedy": "priebežne",
           "koho": "všetci obchodníci",
-          "zdroj": "https://www.soi.sk/kontrolna-cinnost",
-          "zdroj_nazov": "SOI",
-          "confidence": "medium",
+          "zdroj": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2024/108/",
+          "zdroj_nazov": "Slov-Lex – zákon 108/2024",
+          "confidence": "low",
           "zavaznost": 4,
           "ucinne_od": "2024-07-01"
         }
@@ -103,20 +103,20 @@
       "polozky": [
         {
           "nazov": "Nový zákon o evidencii tržieb 384/2025 od 1. 1. 2026",
-          "detail": "Od 1. 1. 2026 nahradil doterajší zákon 289/2008 nový zákon č. 384/2025 Z. z. Pojem „podnikateľ“ sa mení na „predávajúci“, ruší väčšinu výnimiek a prináša vyššie pokuty. Pri riešeniach vychádzaj z nového zákona.",
+          "detail": "Od 1. 1. 2026 nahradil zákon 289/2008 nový zákon č. 384/2025 Z. z. Používa pojem „predávajúci“, rozšíril okruh evidovaných služieb a upravil výnimky aj sankcie. Povinnosť vždy posúď podľa § 2 a § 3 aktuálneho znenia; nejde bez výnimky o každú prijatú platbu.",
           "kedy": "účinné od 1. 1. 2026",
           "koho": "všetci predávajúci",
-          "zdroj": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2025/384/20260101",
+          "zdroj": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2025/384/",
           "zdroj_nazov": "Zákon 384/2025",
           "confidence": "high",
           "zavaznost": 5,
           "ucinne_od": "2026-01-01"
         },
         {
-          "nazov": "eKasa je povinná (potraviny + drogéria = áno)",
-          "detail": "eKasu musí používať každý, kto má oprávnenie na podnikanie, predáva tovar a prijíma tržbu v hotovosti alebo náhradným prostriedkom (karta, stravné lístky, poukážky). Na výber: ORP (online pokladnica), SORP (softvérová) alebo bezplatná VRP prevádzkovaná Finančnou správou. Stará appka „Pokladnica“ bola nahradená VRP 2 (od 17. 10. 2022).",
+          "nazov": "Over povinnosť evidovať tržbu v eKasa",
+          "detail": "Pokladnicu eKasa používa predávajúci, ktorý spĺňa podmienky zákona, predáva tovar alebo poskytuje službu a prijíma na predajnom mieste tržbu v zákonom vymedzenej forme; § 3 ods. 2 obsahuje výnimky. Možnosti sú ORP, SORP alebo VRP. Konkrétny spôsob platby a činnosť over podľa aktuálneho výkladu Finančnej správy.",
           "kedy": "priebežne",
-          "koho": "všetci maloobchod s hotovosťou",
+          "koho": "predávajúci, na ktorých sa vzťahuje evidencia tržby",
           "zdroj": "https://www.financnasprava.sk/sk/podnikatelia/dane/ekasa/erp",
           "zdroj_nazov": "Finančná správa",
           "confidence": "high",
@@ -125,29 +125,29 @@
         },
         {
           "nazov": "Bezhotovostná platba nad 1 € (od 1. 5. 2026 – už platí)",
-          "detail": "Od 1. 5. 2026 musíš zákazníkovi umožniť bezhotovostnú platbu pri nákupe nad 1 €. Nemusí to byť terminál – stačí platba kartou ALEBO QR kódom (aj zobrazeným na displeji/doklade). Výnimkou je len výpadok internetu alebo systému FS. Skontroluj, že máš aspoň jednu bezhotovostnú metódu.",
+          "detail": "Od 1. 5. 2026 musí predávajúci, na ktorého sa vzťahuje evidencia tržby, umožniť aspoň jednu bezhotovostnú formu pri tržbe presahujúcej 1 €. Zákon nevyžaduje konkrétne terminál; môže ísť napríklad o kartu, QR platbu alebo okamžitý prevod. Povinnosť sa nevzťahuje na predávajúceho s povoleným odkladom pre nedostupný internet a neuplatní sa pri nedostupnom internetovom signále alebo výpadku technických prostriedkov, ktorými sa platba potvrdzuje.",
           "kedy": "účinné od 1. 5. 2026",
-          "koho": "všetci maloobchod",
-          "zdroj": "https://www.podnikajte.sk/ekasa/zmeny-v-evidencii-trzieb-od-2026",
-          "zdroj_nazov": "Podnikajte.sk",
+          "koho": "predávajúci s povinnosťou evidovať tržbu",
+          "zdroj": "https://www.financnasprava.sk/sk/pre-media/novinky/archiv-noviniek/detail-novinky/_bez-hotov-ts/bc",
+          "zdroj_nazov": "Finančná správa – bezhotovostné platby",
           "confidence": "high",
           "zavaznost": 4,
           "ucinne_od": "2026-05-01"
         },
         {
-          "nazov": "Oznámenie na predajnom mieste (min. A5) od 1. 1. 2026",
-          "detail": "Na každom predajnom mieste musí byť na viditeľnom mieste oznámenie o povinnosti evidovať tržbu a vydávať doklad, minimálne vo formáte A5. Za nesplnenie hrozí pokuta.",
+          "nazov": "Oznámenie na každom predajnom mieste od 1. 1. 2026",
+          "detail": "Na každom predajnom mieste umiestni oznámenie o povinnostiach podľa zákona tak, aby bolo kupujúcemu ľahko prístupné a dobre čitateľné. Použi aktuálny vzor a pokyny Finančného riaditeľstva. Jeho usmernenie z 7. 1. 2026 má odporúčací charakter a odporúča vzor vo formáte A4 na šírku; zákon ani usmernenie neurčujú všeobecné pravidlo „minimálne A5“.",
           "kedy": "od 1. 1. 2026",
-          "koho": "všetci maloobchod",
-          "zdroj": "https://www.podnikajte.sk/ekasa/zmeny-v-evidencii-trzieb-od-2026",
-          "zdroj_nazov": "Podnikajte.sk",
-          "confidence": "medium",
+          "koho": "predávajúci s predajným miestom podľa zákona",
+          "zdroj": "https://www.financnasprava.sk/sk/podnikatelia/dane/ekasa",
+          "zdroj_nazov": "Finančná správa – eKasa",
+          "confidence": "high",
           "zavaznost": 2,
           "ucinne_od": "2026-01-01"
         },
         {
-          "nazov": "Náležitosti dokladu vrátane QR kódu",
-          "detail": "Pokladničný doklad musí mať predpísané údaje (kód pokladnice, DIČ/IČ DPH, obchodné meno a miesto, dátum a čas, jasné označenie tovaru, cenu, DPH ak si platiteľ, celkovú sumu, jedinečný identifikátor, overovací kód OKP) a čitateľný QR kód. Doklad odovzdaj bezodkladne.",
+          "nazov": "Náležitosti pokladničného dokladu podľa režimu",
+          "detail": "Pokladničný doklad musí obsahovať údaje podľa § 10 zákona 384/2025; ich rozsah sa líši podľa typu pokladnice, režimu a platiteľa DPH. Doklad odovzdaj kupujúcemu bezodkladne po vytlačení alebo ho so súhlasom kupujúceho sprístupni elektronicky. Nepoužívaj tento skrátený checklist ako úplný zoznam náležitostí.",
           "kedy": "priebežne",
           "koho": "všetci maloobchod",
           "zdroj": "https://www.financnasprava.sk/sk/podnikatelia/dane/ekasa/erp",
@@ -157,13 +157,13 @@
           "ucinne_od": "2019-07-01"
         },
         {
-          "nazov": "Vyššie pokuty podľa nového zákona",
-          "detail": "Podľa výkladov k zákonu 384/2025: za závažné porušenie evidencie tržieb od 1 500 do 20 000 € (prvé porušenie) a od 3 000 do 40 000 € (opakované), v krajných prípadoch až 60 000 € či zákaz činnosti; za neumožnenie bezhotovostnej platby od 500 do 15 000 €. Presné sumy over v texte zákona.",
+          "nazov": "Sankcie podľa druhu porušenia a opakovania",
+          "detail": "Sankcie sa viažu na konkrétny delikt v § 16. Napríklad pri vybraných závažných porušeniach evidencie je sadzba 1 500 až 20 000 € a pri ďalšom zistení 3 000 až 40 000 €. Pri prvom zistení neumožnenia bezhotovostnej platby úrad pokutu neuloží, ale poučí; pri druhom zistení je sadzba 500 až 15 000 €. Ďalšie delikty majú iné sadzby a za zákonných podmienok môže nasledovať aj zákaz predaja.",
           "kedy": "od 1. 1. 2026",
           "koho": "všetci maloobchod",
-          "zdroj": "https://www.podnikajte.sk/ekasa/zmeny-v-evidencii-trzieb-od-2026",
-          "zdroj_nazov": "Podnikajte.sk",
-          "confidence": "low",
+          "zdroj": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2025/384/",
+          "zdroj_nazov": "Slov-Lex – zákon 384/2025 § 16–17",
+          "confidence": "high",
           "zavaznost": 5,
           "ucinne_od": "2026-01-01"
         }
@@ -173,7 +173,7 @@
       "id": "dane",
       "nazov": "Dane a odvody",
       "ikona": "doc",
-      "popis": "Sadzby a termíny – vždy potvrď s účtovníkom. Overené k 2026.",
+      "popis": "Orientačný stav sadzieb a termínov porovnaný k roku 2026; vždy potvrď s účtovníkom a v aktuálnom oficiálnom zdroji.",
       "polozky": [
         {
           "nazov": "Sadzby DPH: 23 % / 19 % / 5 %",
@@ -189,30 +189,30 @@
         },
         {
           "nazov": "Sladké a slané potraviny: 19 % → 23 % od 1. 1. 2026",
-          "detail": "Konsolidačný balíček (účinný od 1. 1. 2026) preraďuje vybrané potraviny so zvýšeným obsahom cukru a soli (cukrovinky, zákusky, zmrzlina, sladené nápoje, slané snacky) zo zníženej 19 % do základnej sadzby 23 %. Skontroluj si zaradenie svojho sortimentu.",
+          "detail": "Od 1. 1. 2026 sa viaceré druhy potravín presunuli z 19 % do 23 % sadzby, najmä niektoré konečné výrobky s vyšším obsahom cukru alebo soli. Rozhodujúce je zatriedenie konkrétneho výrobku podľa prílohy č. 7 zákona o DPH a Spoločného colného sadzobníka, nie iba obchodný názov alebo všeobecná kategória.",
           "kedy": "od 1. 1. 2026",
           "koho": "predajne potravín (platitelia DPH)",
-          "zdroj": "https://www.podnikajte.sk/dan-z-pridanej-hodnoty/sadzby-dph-od-1-1-2026",
-          "zdroj_nazov": "Podnikajte.sk",
+          "zdroj": "https://www.financnasprava.sk/sk/podnikatelia/dane/dan-z-pridanej-hodnoty/sadzby-dane",
+          "zdroj_nazov": "Finančná správa – sadzby DPH",
           "confidence": "high",
           "zavaznost": 4,
           "ucinne_od": "2026-01-01",
           "dph": "platca"
         },
         {
-          "nazov": "Daň z finančných transakcií – FO oslobodené od 1. 1. 2026",
-          "detail": "Transakčná daň platí od 1. 4. 2025 (0,4 % z odchádzajúcich platieb, max 40 € na transakciu; hotovostné výbery 0,8 %; ročný paušál 2 € za použitú debetnú kartu; platby kartou sú oslobodené). Od 1. 1. 2026 sú fyzické osoby – podnikatelia oslobodené bez ohľadu na obrat; daň ostáva len právnickým osobám (s.r.o. a pod.).",
-          "kedy": "FO oslobodené od 1. 1. 2026",
-          "koho": "právnické osoby (s.r.o.)",
-          "zdroj": "https://www.podnikajte.sk/dane/transakcna-dan-zmeny-od-1-1-2026",
-          "zdroj_nazov": "Podnikajte.sk",
+          "nazov": "Daň z finančných transakcií – FO podnikatelia už nie sú daňovníkmi od 1. 1. 2026",
+          "detail": "Od 1. 1. 2026 fyzická osoba – podnikateľ už nie je daňovníkom dane z finančných transakcií a zákon jej už neukladá mať transakčný účet. Daňovníkmi zostávajú zákonom vymedzené právnické osoby, pričom zákon obsahuje aj vylúčené osoby a transakcie. Sadzbu a režim preto posudzuj podľa aktuálneho zákona 279/2024 a usmernení Finančnej správy, nie iba podľa právnej formy „s.r.o.“.",
+          "kedy": "FO podnikatelia nie sú daňovníkmi od 1. 1. 2026",
+          "koho": "zákonom vymedzené právnické osoby",
+          "zdroj": "https://www.financnasprava.sk/sk/pre-media/novinky/archiv-noviniek/detail-novinky/_dan-z-financnych-ts",
+          "zdroj_nazov": "Finančná správa – DFT od 1. 1. 2026",
           "confidence": "high",
           "zavaznost": 3,
           "ucinne_od": "2025-04-01"
         },
         {
           "nazov": "Termíny DPH a dane z príjmov",
-          "detail": "DPH: mesační platitelia podávajú priznanie a kontrolný výkaz a platia do 25. dňa nasledujúceho mesiaca (štvrťroční po skončení štvrťroka). Daň z príjmov: ročné priznanie štandardne do 31. 3. nasledujúceho roka (možnosť odkladu). Platí aj minimálna daň (daňová licencia).",
+          "detail": "DPH: priznanie a platba sú spravidla do 25 dní po skončení zdaňovacieho obdobia; kontrolný výkaz má vlastné pravidlá a výnimky. Daň z príjmov: pri kalendárnom roku je štandardná lehota do 31. 3. nasledujúceho roka s možnosťou oznámeného predĺženia za zákonných podmienok. Minimálna daň právnickej osoby sa netýka automaticky fyzickej osoby – podnikateľa.",
           "kedy": "mesačne / štvrťročne / ročne",
           "koho": "PO aj FO – podnikatelia",
           "zdroj": "https://www.financnasprava.sk",
@@ -230,7 +230,7 @@
       "polozky": [
         {
           "nazov": "Registrácia prevádzkarne pred začatím činnosti",
-          "detail": "Každú prevádzkareň treba pred začatím činnosti oznámiť/registrovať na miestne príslušnej RVPS (§ 6 zákona 152/1995, čl. 6 nariadenia ES 852/2004) – osobne, poštou alebo cez slovensko.sk. Ak predávaš produkty živočíšneho pôvodu (mäso, ryby, mliečne pri pulte), treba osobitnú registráciu/schválenie podľa zákona 39/2007.",
+          "detail": "Potravinársku prevádzkareň oznám/registruj pred začatím činnosti na miestne príslušnej RVPS (§ 6 zákona 152/1995 a čl. 6 nariadenia 852/2004). Pri činnostiach s potravinami živočíšneho pôvodu sa podľa ich povahy a rozsahu môže vyžadovať ďalšia registrácia alebo schválenie; bežný maloobchod má osobitné pravidlá a výnimky, preto požiadavku potvrď s RVPS ešte pred otvorením.",
           "kedy": "pred otvorením",
           "koho": "predajne potravín",
           "zdroj": "https://svps.sk/potraviny/registracia-a-schvalovanie-potravinarskych-prevadzkarni/",
@@ -240,7 +240,7 @@
         },
         {
           "nazov": "HACCP a správna hygienická prax",
-          "detail": "Zavedený a udržiavaný systém HACCP (nariadenie ES 852/2004), prevádzkový poriadok, sanitačný program, evidencia teplôt a čistenia. Dokumentácia musí byť na prevádzke dostupná pri (spravidla neohlásenej) kontrole.",
+          "detail": "Zaveď, používaj a aktualizuj postupy založené na zásadách HACCP a správnej hygienickej praxi podľa povahy prevádzky. Rozsah dokumentácie, sanitačných postupov a záznamov (napr. teploty či čistenie) má zodpovedať rizikám a požiadavkám príslušných predpisov; dokumentáciu maj dostupnú kontrole.",
           "kedy": "priebežne",
           "koho": "predajne potravín",
           "zdroj": "https://www.svps.sk/potraviny/info_ppp.asp",
@@ -249,8 +249,8 @@
           "zavaznost": 5
         },
         {
-          "nazov": "Zdravotný preukaz a odborná spôsobilosť personálu",
-          "detail": "Zamestnanci pri manipulácii s potravinami potrebujú doklad o zdravotnej spôsobilosti (zdravotný preukaz – platí bez časového obmedzenia) a odbornú spôsobilosť. Od konca 2024 sa odborná spôsobilosť NEvyžaduje pri pomocných prácach (upratovanie, manipulácia s odpadom, balenie) a pri preprave balených potravín – zdravotnú spôsobilosť však títo naďalej potrebujú.",
+          "nazov": "Zdravotná a odborná spôsobilosť personálu",
+          "detail": "Pri epidemiologicky závažnej činnosti pri výrobe, manipulácii alebo uvádzaní potravín preukáž zdravotnú spôsobilosť potvrdením lekára; pri zmene zdravotného stavu sa nespoliehaj na starý doklad. Odborná spôsobilosť je samostatná požiadavka. Od 17. 12. 2024 ju nepreukazujú osoby vykonávajúce pomocné práce a prepravu balených potravín; rozsah pomocných prác od 1. 6. 2025 spresňuje vyhláška 585/2008 Z. z. Výnimka z odbornej spôsobilosti sama osebe neruší zdravotnú spôsobilosť.",
           "kedy": "pred nástupom / priebežne",
           "koho": "personál pri potravinách",
           "zdroj": "https://www.uvzsr.sk/web/uvz/odborna-sposobilost-na-epidemiologicky-zavazne-cinnosti-pri-vyrobe-manipulacii-a-uvadzani-do-obehu-potravin-a-pokrmov-vynimky",
@@ -260,7 +260,7 @@
         },
         {
           "nazov": "Označovanie potravín a alergény (1169/2011)",
-          "detail": "Balené potraviny označené v slovenčine: názov, zložky so zvýraznenými alergénmi, množstvo, dátum spotreby / minimálnej trvanlivosti, podmienky uchovávania, prevádzkovateľ, pri mäse krajina pôvodu, výživové údaje. Pri nebalených potravinách (pult, pečivo, mäso) musí byť dostupná aspoň informácia o alergénoch (14 skupín).",
+          "detail": "Balené potraviny označ v slovenčine povinnými údajmi podľa nariadenia (EÚ) 1169/2011, najmä názvom, zoznamom zložiek so zvýraznenými alergénmi, množstvom, dátumom spotreby alebo minimálnej trvanlivosti, podmienkami uchovávania, údajmi o zodpovednom prevádzkovateľovi a výživovými údajmi, ak sa neuplatní výnimka. Krajinu alebo miesto pôvodu uveď iba tam, kde to vyžaduje všeobecné alebo osobitné pravidlo; nejde o rovnakú povinnosť pre každé mäso a každý výrobok. Pri nebalených potravinách musí byť spotrebiteľovi dostupná najmä informácia o alergénoch v rozsahu platných pravidiel.",
           "kedy": "priebežne",
           "koho": "predajne potravín",
           "zdroj": "https://svps.sk/potraviny/oznacovanie-potravin/",
@@ -271,7 +271,7 @@
         },
         {
           "nazov": "Sledovateľnosť a dátumy spotreby",
-          "detail": "Musíš vedieť, od koho si tovar prijal a komu dodal (sledovateľnosť, čl. 18 nar. 178/2002), nepredávať po dátume spotreby, priebežne kontrolovať dátumy a nebezpečnú potravinu stiahnuť z trhu a nahlásiť.",
+          "detail": "Zabezpeč sledovateľnosť aspoň „o krok späť a o krok vpred“ medzi potravinárskymi podnikmi; pri bežnom predaji konečnému spotrebiteľovi sa jeho totožnosť na tento účel neeviduje. Nepredávaj potraviny po dátume spotreby. Ak zistíš, že potravina nie je bezpečná, bezodkladne začni jej stiahnutie a informuj príslušný orgán podľa čl. 19 nariadenia 178/2002.",
           "kedy": "priebežne",
           "koho": "predajne potravín",
           "zdroj": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/1995/152/",
@@ -291,8 +291,8 @@
           "ucinne_od": "2026-01-01"
         },
         {
-          "nazov": "Krajina pôvodu a povinné údaje potravín",
-          "detail": "Uvádzaj krajinu/miesto pôvodu tam, kde to vyžaduje nariadenie (EÚ) 1169/2011 a osobitné predpisy (napr. mäso, med, ovocie a zelenina).",
+          "nazov": "Pôvod potraviny iba podľa konkrétneho pravidla",
+          "detail": "Krajinu alebo miesto pôvodu uvádzaj iba v prípadoch, keď to pre danú potravinu a spôsob jej predaja vyžaduje nariadenie (EÚ) 1169/2011 alebo osobitný predpis. Pri mäse sa rozsah povinnosti líši podľa druhu, formy a uplatniteľného osobitného pravidla; z tejto položky nemožno odvodiť všeobecnú povinnosť označovať pôvod každého mäsa alebo mäsového výrobku.",
           "kedy": "priebežne",
           "koho": "predajne potravín",
           "zdroj": "https://eur-lex.europa.eu/legal-content/SK/TXT/?uri=CELEX:32011R1169",
@@ -311,7 +311,7 @@
       "polozky": [
         {
           "nazov": "Predávaj len správne označené výrobky (CLP)",
-          "detail": "Nebezpečné chemické zmesi (čistiace, pracie) musia mať označenie podľa CLP (ES 1272/2008) v slovenčine: piktogramy, signálne slovo, H-vety, P-vety, údaje dodávateľa. Ako distribútor neklasifikuješ, ale nesmieš predávať nesprávne alebo neslovensky označený výrobok. Ak výrobok prebalíš/prelepíš etiketu, preberáš zodpovednosť výrobcu.",
+          "detail": "Nebezpečné chemické zmesi musia byť pred uvedením na trh klasifikované, zabalené a označené podľa CLP; povinné informácie pre slovenský trh majú byť v slovenčine. Distribútor preveruje označenie a nesmie sprístupniť zjavne nevyhovujúci výrobok. Prebalenie, zmena etikety alebo predaj pod vlastným menom môže podstatne rozšíriť tvoje povinnosti, preto takú zmenu nerob bez posúdenia podľa CLP/REACH.",
           "kedy": "priebežne",
           "koho": "predaj drogérie a chémie",
           "zdroj": "https://echa.europa.eu/sk/support/getting-started/distributor",
@@ -331,7 +331,7 @@
         },
         {
           "nazov": "Biocídy a obmedzené chemikálie",
-          "detail": "Biocídny výrobok (dezinfekcia, repelenty, insekticídy) sa smie predávať, len ak je autorizovaný/zapísaný v registri MH SR (nariadenie EÚ 528/2012). REACH príloha XVII obmedzuje/zakazuje predaj niektorých nebezpečných látok spotrebiteľom. Over, že výrobok je v registri a spĺňa obmedzenia; zoznam sa priebežne mení.",
+          "detail": "Biocídny výrobok možno sprístupniť na trhu iba v súlade s nariadením (EÚ) 528/2012 a uplatniteľným autorizačným alebo prechodným režimom. Over rozhodnutie/registráciu v príslušnej oficiálnej databáze, povolené použitie a etiketu; samotná neprítomnosť alebo prítomnosť v jednom zozname nemusí pokryť všetky režimy. REACH príloha XVII zároveň obmedzuje niektoré látky a zmesi.",
           "kedy": "priebežne",
           "koho": "predaj drogérie a chémie",
           "zdroj": "https://www.mhsr.sk/obchod/centrum-pre-chemicke-latky-a-pripravky/biocidy/uvod",
@@ -352,7 +352,7 @@
         },
         {
           "nazov": "Karta bezpečnostných údajov (KBÚ) na požiadanie",
-          "detail": "KBÚ tvorí výrobca/dovozca, nie ty. Ako distribútor ju musíš vedieť poskytnúť profesionálnemu odberateľovi v slovenčine na vyžiadanie a predložiť ju kontrole; archivuj ju.",
+          "detail": "Dodávateľ poskytuje kartu bezpečnostných údajov profesionálnemu príjemcovi v prípadoch a spôsobom podľa čl. 31 REACH; pri niektorých neklasifikovaných zmesiach až na žiadosť. Ako distribútor zabezpeč odovzdanie aktuálnej slovenskej KBÚ v dodávateľskom reťazci, ak sa povinnosť uplatní, a uchovávaj informácie podľa čl. 36. Spotrebiteľovi sa KBÚ bežne neposkytuje automaticky.",
           "kedy": "na požiadanie",
           "koho": "predaj chémie",
           "zdroj": "https://www.economy.gov.sk/obchod/centrum-pre-chemicke-latky-a-pripravky/chemikalie-1/reach/zdroje-informacii/karta-bezpecnostnych-udajov",
@@ -370,18 +370,18 @@
       "polozky": [
         {
           "nazov": "Odberné miesto záloh: povinné nad 300 m²",
-          "detail": "Predajňa, ktorá predáva zálohované nápoje na predajnej ploche najmenej 300 m², MUSÍ byť odberným miestom (zákon 302/2019, účinné od 1. 1. 2022): uzavrieť zmluvu so Správcom zálohového systému, registrovať odberné miesto a odoberať všetky zálohované obaly + vyplácať zálohu. Predajne pod 300 m² sa zapájajú dobrovoľne. Výnimka: prevádzky, kde nápoje nie sú hlavný tovar (drogérie, čerpacie stanice).",
+          "detail": "Distribútor, ktorý predáva zálohované nápoje konečnému používateľovi na predajnej ploche najmenej 300 m², musí plniť povinnosti odberného miesta podľa § 5 zákona 302/2019. Výnimkou je distribútor, ktorý na takej ploche predáva potraviny a nápoje iba ako doplnkový tovar; zákon neurčuje automatickú výnimku len podľa názvu typu prevádzky. Menšia predajňa sa môže zapojiť dobrovoľne.",
           "kedy": "platí od 1. 1. 2022",
           "koho": "predaj nápojov, plocha ≥ 300 m²",
-          "zdroj": "https://slovenskozalohuje.sk/obchodnik/",
-          "zdroj_nazov": "Slovensko zálohuje",
+          "zdroj": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2019/302/",
+          "zdroj_nazov": "Slov-Lex – zákon 302/2019 § 5",
           "confidence": "high",
           "zavaznost": 4,
           "ucinne_od": "2022-01-01"
         },
         {
           "nazov": "Záloha 0,15 € za PET fľašu aj plechovku",
-          "detail": "Jednotná záloha 0,15 € (15 centov) za PET fľašu aj plechovku, objem 0,1–3 l. Nezálohujú sa: mlieko a mliečne nápoje, sirupy a alkohol nad 15 %. Zálohu uvádzaj na cenovke oddelene a viditeľne; vedie sa ako nezdaniteľná predajná položka. Zálohované obaly nesú symbol „Z“ a text ZÁLOHOVANÉ.",
+          "detail": "Záloh je 0,15 € za zálohovaný jednorazový plastový alebo kovový nápojový obal s objemom 0,1 až 3 litre. Systém sa nevzťahuje napríklad na obaly od mlieka a mliečnych nápojov, sirupov a alkoholických nápojov s obsahom alkoholu nad 15 %. Pri predajnej cene uveď aj výšku zálohu a v účtovných záznamoch veď cenu tovaru a záloh oddelene. Rozhodujúce je označenie obalu symbolom Z a textom „ZÁLOHOVANÉ“.",
           "kedy": "priebežne",
           "koho": "predaj zálohovaných nápojov",
           "zdroj": "https://www.minzp.sk/zalohovanie/najcastejsie-otazky.html",
@@ -391,23 +391,23 @@
           "ucinne_od": "2022-01-01"
         },
         {
-          "nazov": "Rozšírená zodpovednosť za obaly (RZV) – ohlásenie do 28. 2.",
-          "detail": "Ak ako prvý uvádzaš obaly na trh SR (dovoz, plnenie, privátna značka), si „výrobca obalov“ podľa zákona 79/2015: registrácia, evidencia obalov a ročné ohlásenie do 28. februára (plastové tašky štvrťročne), spravidla cez OZV. Pozor: bežný ďalší predaj tovaru, ktorý na trh uviedol niekto iný, túto povinnosť zvyčajne nezakladá – posúď s účtovníkom/poradcom.",
-          "kedy": "ročne do 28. 2.",
+          "nazov": "Rozšírená zodpovednosť za obaly (RZV)",
+          "detail": "Ak napĺňaš definíciu výrobcu obalov (napr. dovoz, plnenie alebo vybrané prípady vlastnej značky), vznikajú ti registračné, evidenčné a ďalšie vyhradené povinnosti podľa zákona 79/2015. Pri kolektívnom plnení odovzdávaš údaje zmluvnej OZV v dohodnutých lehotách; pri individuálnom plnení a v osobitných prípadoch sa ohlásenie ministerstvu podáva do 28. februára. Plastové tašky sa evidujú osobitne, zákonné ohlásenie podľa § 15 vyhlášky 366/2015 je však ročné. Bežný ďalší predaj obalu, ktorý už na trh SR uviedol iný registrovaný výrobca, sám osebe nemusí z predajcu urobiť výrobcu obalov.",
+          "kedy": "priebežne; ohlásenie do 28. 2. iba ak sa uplatní",
           "koho": "kto uvádza obaly na trh SR",
-          "zdroj": "https://www.enviroportal.sk/odpady/zodpovednost-vyrobcov",
-          "zdroj_nazov": "Enviroportál",
+          "zdroj": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2015/79/",
+          "zdroj_nazov": "Slov-Lex – zákon 79/2015",
           "confidence": "medium",
           "zavaznost": 3,
           "ucinne_od": "2016-01-01"
         },
         {
           "nazov": "Jednorazové plasty (SUP)",
-          "detail": "Zákaz predaja vybraných jednorazových plastov (príbory, taniere, slamky, miešadlá, oxo-plasty) platí od 3. 7. 2021. Nápojové obaly do 3 l musia mať od 3. 7. 2024 pripevnený uzáver (tethered caps); PET fľaše musia od 2025 obsahovať min. 25 % recyklátu (od 2030 min. 30 %). Tieto povinnosti zaťažujú najmä výrobcu/dovozcu, ale predajca nesmie predávať zakázané výrobky.",
+          "detail": "Vybrané jednorazové plastové výrobky sa od 3. 7. 2021 nesmú uvádzať na trh (presný zoznam je v prílohe č. 7a zákona 79/2015). Od 3. 7. 2024 sa požiadavka pripevneného plastového uzáveru týka zákonom vymedzených jednorazových plastových nápojových obalov do 3 litrov, nie všetkých nápojových obalov. Cieľ 25 % recyklovaného plastu od roku 2025 sa počíta ako priemer pre PET nápojové fľaše uvedené na trh; od roku 2030 je cieľ 30 % priemerne pre vymedzené nápojové fľaše. Ide najmä o povinnosti pri uvádzaní na trh, distribútor však nesmie ďalej sprístupňovať zakázaný výrobok.",
           "kedy": "zákaz od 3. 7. 2021",
           "koho": "predaj jednorazových plastov",
-          "zdroj": "https://www.podnikajte.sk/zakonne-povinnosti-podnikatela/zakaz-pouzivania-jednorazovych-plastov-od-3-7-2021",
-          "zdroj_nazov": "Podnikajte.sk",
+          "zdroj": "https://eur-lex.europa.eu/legal-content/SK/TXT/?uri=CELEX:32019L0904",
+          "zdroj_nazov": "EUR-Lex – smernica (EÚ) 2019/904",
           "confidence": "high",
           "zavaznost": 3,
           "ucinne_od": "2021-07-03"
@@ -417,14 +417,14 @@
           "detail": "Podľa sortimentu môžeš mať povinnosti spätného zberu (elektrozariadenia, batérie a akumulátory) a triedeného zberu odpadov z obalov (zákon 79/2015). Rozsah závisí od toho, čo predávaš.",
           "kedy": "priebežne",
           "koho": "podľa sortimentu",
-          "zdroj": "https://www.enviroportal.sk/odpady/zodpovednost-vyrobcov",
-          "zdroj_nazov": "Enviroportál",
+          "zdroj": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2015/79/",
+          "zdroj_nazov": "Slov-Lex – zákon 79/2015",
           "confidence": "medium",
           "zavaznost": 2
         },
         {
           "nazov": "Odpady prevádzky – evidencia a ohlásenie",
-          "detail": "Nad rámec záloh a RZV obalov máš ako pôvodca odpadu povinnosť triediť odpad, viesť evidenciu a podávať ohlásenie o odpadoch. Zákon 79/2015 Z. z.",
+          "detail": "Ako pôvodca odpadu zabezpeč triedenie a nakladanie s odpadom podľa zákona 79/2015. Evidenčné a ohlasovacie povinnosti závisia od druhu, kategórie a množstva odpadu a od výnimiek vo vyhláške 366/2015; ročné ohlásenie sa preto nepodáva automaticky za každú prevádzku a každý odpad.",
           "kedy": "priebežne / ročné ohlásenie",
           "koho": "všetci",
           "zdroj": "https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2015/79/",
@@ -443,7 +443,7 @@
       "polozky": [
         {
           "nazov": "Limit platieb v hotovosti 5 000 € (od 1. 1. 2026)",
-          "detail": "Od 1. 1. 2026 sa limity platieb v hotovosti zjednotili na 5 000 € pre platby, kde je aspoň jednou stranou podnikateľ (dovtedy 5 000 € medzi podnikateľmi a 15 000 € s nepodnikateľmi). Platbu nad limit treba vykonať bezhotovostne. Pre maloobchod relevantné najmä pri veľkých B2B odberoch a platbách dodávateľom – nad 5 000 € neprijímaj ani neodovzdávaj hotovosť. Výnimky a presné znenie over v zákone č. 394/2012 Z. z.",
+          "detail": "Od 1. 1. 2026 je všeobecný limit 5 000 €; limit 15 000 € platí len medzi fyzickými osobami – nepodnikateľmi. Zákaz sa vzťahuje na sumu presahujúcu limit a pri čiastkových platbách sa posudzuje súčet platieb z jedného právneho vzťahu. Zákon obsahuje výnimky, preto pri neobvyklej transakcii otvor aktuálne § 4 až 8 zákona 394/2012.",
           "kedy": "od 1. 1. 2026",
           "koho": "všetci podnikatelia",
           "zdroj": "https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2012/394/",
@@ -454,7 +454,7 @@
         },
         {
           "nazov": "BOZP – bezpečnosť a ochrana zdravia pri práci",
-          "detail": "Posúdenie rizík, prevádzkové predpisy, vstupné a periodické školenia zamestnancov, pracovná zdravotná služba. Zákon 124/2006 Z. z.",
+          "detail": "Zamestnávateľ posudzuje riziká, prijíma ochranné opatrenia a zamestnancov preukázateľne oboznamuje s pravidlami BOZP. Intervaly opakovaného oboznamovania, dokumentácia a rozsah pracovnej zdravotnej služby sa určujú podľa zákona, osobitných predpisov, rizík a kategórie práce; nejde o jeden rovnaký balík pre každú prevádzku.",
           "kedy": "priebežne",
           "koho": "zamestnávateľ",
           "zdroj": "https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2006/124/",
@@ -465,7 +465,7 @@
         },
         {
           "nazov": "Ochrana pred požiarmi",
-          "detail": "Protipožiarne opatrenia, požiarny poriadok pracoviska, školenia, revízie a kontrola hasiacich prístrojov. Zákon 314/2001 Z. z.",
+          "detail": "Právnická osoba alebo podnikateľ plní povinnosti ochrany pred požiarmi podľa charakteru priestorov a činnosti, najmä zabezpečuje preventívne opatrenia, odborné kontroly a školenie v rozsahu, ktorý sa na ňu vzťahuje. Potreba konkrétnej dokumentácie, požiarnych zariadení a lehôt kontrol vyplýva aj z vykonávacích predpisov a posúdenia objektu.",
           "kedy": "priebežne",
           "koho": "prevádzka",
           "zdroj": "https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2001/314/",
@@ -476,11 +476,11 @@
         },
         {
           "nazov": "GDPR a kamerový systém",
-          "detail": "Ak spracúvaš osobné údaje (zamestnanci, vernostné programy, kamery) platí GDPR + zákon 18/2018 Z. z. Pri kamerách informačná tabuľka, vymedzený účel a doba uchovania záznamov.",
+          "detail": "Pri spracúvaní osobných údajov uplatni GDPR a zákon 18/2018. Pri kamerovom systéme nestačí iba tabuľka: zdokumentuj účel a právny základ, nevyhnutnosť a primeranosť záberu, dobu uchovávania, prístupy a bezpečnosť a splň transparentnosť voči dotknutým osobám; podľa rizika môže byť potrebné posúdenie vplyvu.",
           "kedy": "priebežne",
           "koho": "všetci",
-          "zdroj": "https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2018/18/",
-          "zdroj_nazov": "Zákon 18/2018 / GDPR",
+          "zdroj": "https://eur-lex.europa.eu/legal-content/SK/TXT/?uri=CELEX:32016R0679",
+          "zdroj_nazov": "EUR-Lex – GDPR",
           "confidence": "medium",
           "zavaznost": 4,
           "ucinne_od": "2018-05-25"
@@ -490,15 +490,15 @@
           "detail": "Písomné pracovné zmluvy, evidencia pracovného času/dochádzky (§ 99), príplatky. Minimálna mzda 915 € mesačne od 1. 1. 2026.",
           "kedy": "priebežne",
           "koho": "zamestnávateľ",
-          "zdroj": "https://www.employment.gov.sk",
-          "zdroj_nazov": "Zákonník práce 311/2001",
+          "zdroj": "https://www.employment.gov.sk/showdoc.do?docid=1097&forceBrowserDetector=blind",
+          "zdroj_nazov": "MPSVR SR – minimálna mzda 2026",
           "confidence": "medium",
           "zavaznost": 4,
           "ucinne_od": "2026-01-01"
         },
         {
           "nazov": "Prihlásenie zamestnancov do SP a ZP",
-          "detail": "Zamestnanca prihlás do Sociálnej poisťovne PRED začatím práce (aj dohody), do zdravotnej poisťovne do 8 dní. Mesačné výkazy a odvody.",
+          "detail": "Zamestnanca prihlás do registra Sociálnej poisťovne najneskôr pred začatím výkonu práce; pravidlá sa vzťahujú aj na dohodárov podľa typu vzťahu. Zmenu platiteľa poistného oznám príslušnej zdravotnej poisťovni v zákonnej lehote, ktorá je spravidla osem pracovných dní. Výkazy a odvody podávaj v lehotách podľa konkrétneho poistného vzťahu.",
           "kedy": "pred nástupom / mesačne",
           "koho": "zamestnávateľ",
           "zdroj": "https://www.socpoist.sk",
@@ -519,12 +519,12 @@
           "ucinne_od": "2018-04-01"
         },
         {
-          "nazov": "Autorské odmeny za hudbu (SOZA + SLOVGRAM)",
-          "detail": "Ak v predajni verejne znie hudba (rádio, TV, playlist), potrebuješ licenčnú zmluvu a platíš odmeny SOZA (autori) aj SLOVGRAM (výkonní umelci/výrobcovia). Zákon 185/2015 Z. z.",
+          "nazov": "Autorské a súvisiace práva pri hudbe",
+          "detail": "Verejný prenos alebo vykonanie chránenej hudby v predajni spravidla vyžaduje vysporiadanie práv autorov, výkonných umelcov a výrobcov záznamov. Spôsob môže závisieť od zdroja hudby, repertoáru a už získaných licencií; nie je správne bez ďalšieho tvrdiť, že každá prevádzka musí vždy uzavrieť presne dve konkrétne zmluvy. Over použitie podľa Autorského zákona a sadzobníkov príslušných organizácií kolektívnej správy.",
           "kedy": "ročne",
           "koho": "predajne s hudbou",
-          "zdroj": "https://www.soza.sk/",
-          "zdroj_nazov": "SOZA / SLOVGRAM",
+          "zdroj": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2015/185/",
+          "zdroj_nazov": "Slov-Lex – Autorský zákon 185/2015",
           "confidence": "medium",
           "zavaznost": 3,
           "ucinne_od": "2016-01-01"
@@ -552,18 +552,18 @@
           "ucinne_od": "2011-01-01"
         },
         {
-          "nazov": "Zákaz maloobchodného predaja cez štátne sviatky",
-          "detail": "Vo vymedzené štátne sviatky (napr. 1. 1., Veľkonočná nedeľa, 24. 12. od 12:00, 25. a 26. 12. …) nemožno nariadiť ani dohodnúť maloobchodný predaj konečnému spotrebiteľovi. § 94 ods. 5 Zákonníka práce.",
+          "nazov": "Obmedzenie práce pri maloobchodnom predaji cez vybrané sviatky",
+          "detail": "Od 1. 11. 2025 sa zákaz podľa § 94 ods. 5 zúžil na 1. január, Veľký piatok, Veľkonočnú nedeľu, 24. december po 12:00, 25. december a 26. december. V tieto dni nemožno zamestnancovi nariadiť ani s ním dohodnúť maloobchodný predaj a súvisiace práce, okrem predaja podľa prílohy č. 1a Zákonníka práce. Nejde o zákaz otvorenia založený iba na kalendári; ustanovenie reguluje prácu zamestnanca a má výnimky.",
           "kedy": "vo sviatky",
           "koho": "maloobchod",
           "zdroj": "https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2001/311/",
           "zdroj_nazov": "§ 94 ZP",
-          "confidence": "medium",
+          "confidence": "high",
           "zavaznost": 4
         },
         {
           "nazov": "Označenie prevádzkarne a prevádzkový čas",
-          "detail": "Prevádzka trvalo a viditeľne označená zvonka (obchodné meno, IČO, sídlo, zodpovedná osoba, prevádzkový čas); zriadenie a čas oznámiť obci. Živnostenský zákon 455/1991 (§ 15, 30).",
+          "detail": "Prevádzkareň označ najneskôr v deň začatia prevádzkovania živnosti; spôsob označenia určujú aj osobitné predpisy. Konkrétne identifikačné údaje, zverejnenie prevádzkového času a prípadné oznamovacie povinnosti posúď podľa typu prevádzky, aktuálneho zákona o ochrane spotrebiteľa a všeobecne záväzných nariadení obce. Živnostenský zákon sám neustanovuje univerzálnu povinnosť oznámiť obci každý prevádzkový čas v podobe uvedenej v starom texte.",
           "kedy": "priebežne",
           "koho": "všetci",
           "zdroj": "https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/1991/455/",
@@ -612,10 +612,10 @@
       "newsletter": "HELPDESK biocidy@mhsr.sk"
     },
     {
-      "nazov": "Slovensko zálohuje",
-      "url": "https://slovenskozalohuje.sk",
-      "co": "Zálohový systém PET fliaš a plechoviek, povinnosti odberného miesta.",
-      "newsletter": "áno – odber noviniek"
+      "nazov": "MŽP SR – zálohovanie",
+      "url": "https://www.minzp.sk/zalohovanie/",
+      "co": "Oficiálne informácie o zálohovom systéme PET fliaš a plechoviek.",
+      "newsletter": "aktuality MŽP SR"
     },
     {
       "nazov": "Sociálna poisťovňa",
@@ -636,10 +636,10 @@
       "newsletter": "áno – notifikácie o doručení"
     },
     {
-      "nazov": "Podnikajte.sk",
-      "url": "https://www.podnikajte.sk",
-      "co": "Odborný portál pre podnikateľov – dane, účtovníctvo, legislatívne zmeny (neoficiálny, spoľahlivý).",
-      "newsletter": "áno – e-mail + push"
+      "nazov": "EUR-Lex",
+      "url": "https://eur-lex.europa.eu",
+      "co": "Oficiálny prístup k právu EÚ vrátane konsolidovaných znení nariadení a smerníc.",
+      "newsletter": "RSS a upozornenia podľa služby"
     }
   ]
 }

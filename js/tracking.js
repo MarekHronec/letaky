@@ -3,7 +3,8 @@
 // týždenné ID konkrétnej ponuky.
 
 import { KEYS, TOMBSTONE_TTL_MS, TRACKING_HISTORY_MAX_POINTS } from './config.js';
-import { arr, isoValue, num, readJSON, slug, writeJSON } from './lib/util.js';
+import { arr, isoValue, num, slug } from './lib/util.js';
+import { readProfileJSON, writeProfileJSON } from './profile-storage.js';
 
 export let records = load();
 
@@ -92,13 +93,17 @@ export function sanitizeTrackedRecord(value) {
 }
 
 function load() {
-  return arr(readJSON(KEYS.trackedProducts)).map(sanitizeTrackedRecord).filter(Boolean);
+  return arr(readProfileJSON(KEYS.trackedProducts)).map(sanitizeTrackedRecord).filter(Boolean);
 }
 
 export function persist() {
   const cutoff = Date.now() - TOMBSTONE_TTL_MS;
   records = records.filter(record => record.active || Date.parse(record.updatedAt) >= cutoff);
-  writeJSON(KEYS.trackedProducts, records);
+  writeProfileJSON(KEYS.trackedProducts, records);
+}
+
+export function reloadProfile() {
+  records = load();
 }
 
 export function activeRecords() {

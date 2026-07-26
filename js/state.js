@@ -2,7 +2,8 @@
 // a histórie nákupov. Nákupný zoznam má vlastný modul (shopping.js).
 
 import { KEYS, VIEWS, DEALS_PAGE_SIZE, TOMBSTONE_TTL_MS } from './config.js';
-import { arr, num, isoValue, norm, readJSON, writeJSON, removeStored } from './lib/util.js';
+import { arr, num, isoValue, norm, readJSON, writeJSON } from './lib/util.js';
+import { readProfileJSON, writeProfileJSON, removeProfileStored } from './profile-storage.js';
 
 export const LEG_STATE_VALUES = ['done', 'irrelevant', 'ignored'];
 
@@ -27,6 +28,8 @@ export const state = {
   items: [],
   top: [],
   week: 'latest',
+  archiveWeeks: [],
+  pipelineStatus: null, // null = načítava sa, false = stav sa nepodarilo overiť
 
   // UI stav
   view: initialView(),
@@ -41,14 +44,14 @@ export const state = {
   trackedSort: 'priority',
   listMode: loadListMode(),
 
-  // legislatíva a referenčné ceny
+  // legislatíva
   legData: null, // null = načítava sa, false = zlyhalo
   legCat: 'all',
   legVisibility: 'all',
-  refData: null,
 
   // účet a synchronizácia
   user: null,
+  identityReady: false,
   sync: '', // '' | 'syncing' | 'saved' | 'error'
   syncUnavailable: false, // nepodarilo sa načítať Supabase klienta (offline / blokované CDN)
   loginErr: '',
@@ -80,11 +83,11 @@ export function sanitizeSettings(raw) {
 }
 
 function loadSettings() {
-  return sanitizeSettings(readJSON(KEYS.settings));
+  return sanitizeSettings(readProfileJSON(KEYS.settings));
 }
 
 export function saveSettings() {
-  writeJSON(KEYS.settings, state.settings);
+  writeProfileJSON(KEYS.settings, state.settings);
 }
 
 // ---------------------------------------------------------------------------
@@ -114,13 +117,13 @@ export function sanitizeLegStates(rawObj) {
 }
 
 function loadLegStates() {
-  const v2 = readJSON(KEYS.legStates);
+  const v2 = readProfileJSON(KEYS.legStates);
   if (v2) return sanitizeLegStates(v2);
-  const v1 = readJSON(KEYS.legStatesV1); // jednorazová migrácia zo starého formátu
+  const v1 = readProfileJSON(KEYS.legStatesV1); // jednorazová migrácia zo starého formátu
   if (v1) {
     const migrated = sanitizeLegStates(v1);
-    writeJSON(KEYS.legStates, migrated);
-    removeStored(KEYS.legStatesV1);
+    writeProfileJSON(KEYS.legStates, migrated);
+    removeProfileStored(KEYS.legStatesV1);
     return migrated;
   }
   return {};
@@ -139,7 +142,7 @@ export function setLegState(key, st) {
 
 export function saveLegStates() {
   state.legStates = sanitizeLegStates(state.legStates);
-  writeJSON(KEYS.legStates, state.legStates);
+  writeProfileJSON(KEYS.legStates, state.legStates);
 }
 
 // Zlúči vzdialené stavy s lokálnymi – pre každý kľúč vyhráva novší zápis.
@@ -191,12 +194,12 @@ function sanitizeSavedTombstone(x) {
 }
 
 function loadSavedLists() {
-  return dedupeSavedListsByName(arr(readJSON(KEYS.savedLists)).map(sanitizeSavedList).filter(Boolean));
+  return dedupeSavedListsByName(arr(readProfileJSON(KEYS.savedLists)).map(sanitizeSavedList).filter(Boolean));
 }
 
 function loadSavedListsDeleted() {
   const cutoff = Date.now() - TOMBSTONE_TTL_MS;
-  return arr(readJSON(KEYS.savedListsDeleted))
+  return arr(readProfileJSON(KEYS.savedListsDeleted))
     .map(sanitizeSavedTombstone)
     .filter(Boolean)
     .filter(t => Date.parse(t.deletedAt) >= cutoff);
@@ -205,8 +208,8 @@ function loadSavedListsDeleted() {
 export function saveSavedLists() {
   const cutoff = Date.now() - TOMBSTONE_TTL_MS;
   state.savedListsDeleted = state.savedListsDeleted.filter(t => Date.parse(t.deletedAt) >= cutoff);
-  writeJSON(KEYS.savedLists, state.savedLists);
-  writeJSON(KEYS.savedListsDeleted, state.savedListsDeleted);
+  writeProfileJSON(KEYS.savedLists, state.savedLists);
+  writeProfileJSON(KEYS.savedListsDeleted, state.savedListsDeleted);
 }
 
 export function addSavedList(entry) {
@@ -249,4 +252,13 @@ export function mergeSavedLists(remoteLists, remoteDeleted) {
     .filter(l => !deletedIds.has(l.id))
     .sort((a, b) => String(b.savedAt).localeCompare(String(a.savedAt))));
   saveSavedLists();
+}
+
+// Pri prepnutí guest/účtu znovu načítame iba osobné dáta. UI stav a
+// listViewMode zostávajú vlastnosťou zariadenia, nie účtu.
+export function reloadProfileState() {
+  state.settings = loadSettings();
+  state.legStates = loadLegStates();
+  state.savedLists = loadSavedLists();
+  state.savedListsDeleted = loadSavedListsDeleted();
 }

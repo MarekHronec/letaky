@@ -1,31 +1,34 @@
 # Letákový prehľad
 
-Responzívna statická aplikácia na prehľad potravinových akcií, rozlíšenie reálnych a podozrivých zliav, nákupný zoznam a prehľad legislatívy pre rodinný obchod.
+Nezávislá statická aplikácia na vlastné plánovanie nákupov z verejne dostupných ponúk, s cenovou analýzou z dostupnej histórie, nákupným zoznamom a orientačným legislatívnym checklistom.
 
 **Live:** https://marekhronec.github.io/letaky/
 
 ## Čo aplikácia robí
 
-- **Prehľad:** najlepšie overené ponuky, špeciálne akcie, stav zdrojov a aktuálne otváracie hodiny pobočiek vrátane sviatočných výnimiek.
-- **Všetky akcie:** vyhľadávanie, obchodné filtre, verdikt zľavy, triedenie a vývoj ceny z overenej histórie. V aktuálnom týždni zobrazuje iba ešte platné ponuky; staršie ostávajú v archíve a cenovej histórii.
-- **Sledované produkty:** vlastný core sortiment s dashboardom/zoznamom, filtrami a vysvetliteľným odporúčaním. Kompaktná karta ukazuje najprv rozhodnutie, cenu, zásobu, cenovú pozíciu a slovnú kvalitu dát; dôkazy a nastavenia sú rozbaliteľné. Oddeľuje aktívnu a budúcu ponuku a zohľadňuje iba potvrdené nákupy.
+- **Prehľad:** ponuky s najsilnejším dostupným dátovým podkladom, špeciálne akcie, stav zdrojov a otváracie hodiny pobočiek vrátane sviatočných výnimiek. Každá pobočka rozlišuje dnešné overenie, posledný dobrý stav a potrebu kontroly.
+- **Všetky akcie:** vyhľadávanie, obchodné filtre, hodnotenie podľa histórie aplikácie, triedenie a vývoj ceny z dostupných pozorovaní. V aktuálnom týždni zobrazuje iba ešte platné ponuky; staršie ostávajú v archíve a cenovej histórii.
+- **Sledované produkty:** vlastný core sortiment s dashboardom/zoznamom, filtrami a vysvetliteľným odporúčaním. Karta predvolene ukazuje iba rozhodnutie, cenu, cenový trend a odporúčané množstvo; zásoba, cenová pozícia, kvalita podkladov, dôkazy a nastavenia sú rozbaliteľné. Oddeľuje aktívnu a budúcu ponuku a zohľadňuje iba potvrdené nákupy.
 - **Môj zoznam:** má režim **V obchode** s celoplošným zoznamom, 44 px odškrtávaním, odstránením položky a načítaním šablóny; na mobile je predvolený. Režim **Správa zoznamu** pridáva množstvá, ručné/hlasové zadanie, ceny, zdieľanie, import, šablóny a históriu. Až výslovné potvrdenie označených položiek vytvorí nemenný záznam nákupu.
 - **Legislatíva:** prehľad povinností a termínov pre maloobchod s potravinami a drogériou (eKasa, dane, hygiena, chémia, zálohy, ceny/spotrebiteľ) z `data/legislativa.json`, s odkazmi na oficiálne zdroje. Orientačné, nie právne poradenstvo. Položky s `confidence: "low"` sú v UI označené „orientačné – overiť“; ostatné hodnoty poľa `confidence` sa nezobrazujú.
-- **Detail produktu:** obrázok položky (`obrazok_url`, s kategóriovým emoji ako fallback), graf vývoja ceny, jednotková cena, podmienky akcie a porovnanie rovnakého `product_id` medzi obchodmi.
+- **Detail produktu:** vlastná kategóriová ikona, graf vývoja ceny, jednotková cena, podmienky akcie, porovnanie rovnakého `product_id` medzi obchodmi a odkaz na oficiálny leták.
 - **PWA/offline:** stránku možno pridať na plochu mobilu; posledné načítané dáta a nákupný zoznam fungujú aj bez signálu. Pri novej verzii appky sa zobrazí banner „Obnoviť“.
+- **Transparentnosť dát:** týždenný výber uvádza začiatok dostupného archívu a globálny indikátor „Dáta“ vysvetľuje stav pipeline, archívu, obchodov a review backlogu. Legislatíva samostatne uvádza dátum poslednej obsahovej právnej kontroly a signál zmeny oficiálneho zdroja.
 
 ## Súkromie a účty
 
 - Appka funguje **bez účtu**: zoznam, šablóny, potvrdené nákupy, sledované produkty, nastavenia a stavy legislatívy sa ukladajú iba do `localStorage` tohto prehliadača. Zdieľací link prenáša iba snapshot nákupného zoznamu, nie potvrdenú históriu ani analytické preferencie.
-- **Voliteľné prihlásenie (Supabase):** po prihlásení e-mailom a heslom sa nákupný zoznam, jeho šablóny, append-only potvrdené nákupy, sledované produkty, nastavenia a stavy legislatívy synchronizujú medzi zariadeniami. Účty vytvára správca; verejné registrácie sú vypnuté. Dáta každého používateľa chráni Row Level Security – presné pravidlá sú v [`supabase/schema.sql`](supabase/schema.sql).
+- **Rodinné prihlásenie (Supabase):** účty sú určené výlučne vlastníkovi aplikácie a jeho bratovi na osobné/domáce používanie. Verejná registrácia nie je dostupná. Po prihlásení e-mailom a heslom sa nákupný zoznam, jeho šablóny, append-only potvrdené nákupy, sledované produkty, nastavenia a stavy legislatívy synchronizujú medzi zariadeniami. Izolácia účtov vyžaduje, aby živý projekt mal aplikované Row Level Security pravidlá zo [`supabase/schema.sql`](supabase/schema.sql) a vypnutú verejnú registráciu; repozitár sám stav dashboardu negarantuje.
+- Účtová synchronizácia je vedená ako výlučne osobná alebo domáca činnosť podľa čl. 2 ods. 2 písm. c) GDPR. Pred pridaním ďalších používateľov, verejným prístupom alebo profesijným či komerčným použitím sa musí toto posúdenie zopakovať.
 - Žiadna analytika ani cookies tretích strán.
+- Podrobnosti sú v [`PRIVACY.md`](PRIVACY.md); bezpečné hlásenie zraniteľností a hranice dôvery opisuje [`SECURITY.md`](SECURITY.md).
 
 ## Architektúra
 
-Projekt nemá build step ani npm závislosti – GitHub Pages servuje priamo tieto súbory. Jediná externá runtime závislosť je `@supabase/supabase-js`, importovaná za behu z esm.sh (presne pripnutá verzia v `js/config.js`); bez pripojenia appka beží ďalej, len bez prihlásenia a synchronizácie.
+Projekt nemá build step ani npm závislosti – GitHub Pages servuje priamo tieto súbory. Jediná runtime závislosť je auditovaný, presne pripnutý bundle `@supabase/supabase-js` uložený v `js/vendor/supabase-js.mjs`; prehliadač nespúšťa JavaScript z CDN. Bez klienta alebo pripojenia appka beží ďalej, len bez prihlásenia a synchronizácie.
 
 ```text
-index.html                  # HTML shell (bez inline skriptov a štýlov) + CSP
+index.html                  # HTML shell bez inline skriptov + obmedzujúca CSP
 styles.css                  # všetky štýly vrátane responzívnych breakpointov
 sw.js                       # offline cache (network-first) + update flow
 manifest.webmanifest        # PWA manifest
@@ -33,6 +36,7 @@ icons/app-icon.svg          # ikona aplikácie
 
 js/app.js                   # vstupný bod: action registry, routing, render, SW registrácia
 js/config.js                # konštanty (obchody, kľúče úložiska, limity, Supabase)
+js/profile-storage.js       # oddelené úložiská hosťa a jednotlivých účtov
 js/state.js                 # zdieľaný stav + nastavenia, legislatíva, uložené zoznamy/šablóny
 js/data.js                  # fetch + normalizácia dát (JEDINÉ miesto, kde sa čítajú kľúče schémy)
 js/shopping.js              # nákupný zoznam + tombstone merge pre sync
@@ -57,22 +61,50 @@ js/views/profil.js          # Profil a nastavenia
 scripts/test_tracked_foundations.mjs # deterministický test nákupov, histórie a sync základov
 scripts/test_tracked_analytics.mjs   # rozhodovacie brány, ceny, balenie, ponuky a zásoba
 scripts/test_list_mode.mjs           # mobilný nákupný režim a skrytý obsah plnej správy
+scripts/test_account_isolation.mjs   # oddelenie hosťa/účtov a ochrana pred oneskoreným syncom
+scripts/test_input_hardening.mjs     # limity a sanitizácia importu/zdieľania
+scripts/test_pipeline_status.mjs     # pravdivé zobrazenie degraded/stale stavu
+scripts/test_static_security.mjs     # CSP, vendoring a statické bezpečnostné invarianty
+scripts/test_legal_copy.mjs          # disclaimer, opatrné labely, zdrojové odkazy a oddelenie cenových báz
+scripts/routine/validate_daily.py    # deterministická publish brána používaná pipeline
+scripts/routine/validate_pipeline_status.py # kontrakt verejného zdravotného statusu
+scripts/routine/validate_legislativa.py # tvar checklistu + allowlist oficiálnych zdrojov
+scripts/routine/scan_secrets.py      # blokovanie secrets a podpísaných URL pred publishom
 
 data/latest.json            # aktuálny týždeň (schema v2)
-data/schema-v2.json         # JSON Schema pre routine
+data/schema-v2.json         # JSON Schema pre dátovú pipeline a validator
 data/legislativa.json       # obsah pohľadu Legislatíva
-data/referencne-ceny.json   # voliteľná externá referenčná cena
+data/pipeline-status.json   # verejný stav posledného behu súkromnej pipeline
 data/archive/index.json     # zoznam archívnych týždňov
 data/archive/<tyzden>.json  # archívne kópie týždňov
+
+docs/routine/review.md      # read-only Mon/Wed/Fri kontrola zdravia a publikačných hraníc
+.claude/agents/             # dva read-only kontrolné subagenty
 
 supabase/schema.sql         # DDL + RLS policies pre tabuľku user_data
 ```
 
+CI používa pri commitnutom `latest.json` režim `--snapshot`: schému, väzby,
+platnosti a týždeň posudzuje k dátumu generovania, pričom stále odmietne
+timestamp z budúcnosti. Živú zastaranosť voči dnešnému dňu zámerne kontroluje
+`data/pipeline-status.json` a read-only monitor; opätovný CI beh historického
+commitu preto časom nezačne zlyhávať iba plynutím času.
+
 GitHub Pages je nastavený na deploy z `main`, root `/`. Každý push do `main` sa nasadí automaticky.
+
+Pred produkčným používaním musí vlastník manuálne overiť:
+
+- ruleset pre `main`, ktorý blokuje priame ľudské pushy a vyžaduje zelený `validate`; úzky bypass smie mať iba validovaný data-only pipeline writer,
+- GitHub Secret Scanning Push Protection a Private Vulnerability Reporting,
+- Dependabot alerts/security updates (týždenné version PR už konfiguruje `.github/dependabot.yml`),
+- aplikovanie `supabase/schema.sql`, vypnutý signup a auth rate/session/recovery nastavenia,
+- dvojúčtový test, v ktorom účet A nedokáže čítať ani meniť riadok účtu B.
 
 **Dôležité pravidlo údržby:** pri pridaní, premenovaní alebo zmazaní súboru aplikácie treba upraviť zoznam `SHELL` v [`sw.js`](sw.js) a bumpnúť tam verziu `CACHE` (`letaky-app-vX`). Inak nainštalované PWA ostanú offline na starej verzii.
 
 ## Úložisko v prehliadači (localStorage)
+
+Tabuľka uvádza logické kľúče. Osobné dáta sa fyzicky ukladajú do obálky pod `letaky.profile.v1.guest.<kľúč>` alebo `letaky.profile.v1.user.<uuid>.<kľúč>`. Hosť a každý účet majú oddelený namespace; prepnutie účtu ich automaticky nezlučuje. `listViewMode` je iba neosobná lokálna voľba zobrazenia a ostáva spoločná pre daný browser profil.
 
 | Kľúč | Obsah |
 |------|-------|
@@ -130,10 +162,10 @@ Zásady rozhodovania:
 
 1. Aktívna ponuka a ponuka, ktorá ešte len začne platiť, sú samostatné stavy. Budúca cena sa nesmie označiť ako dnešná ani viesť k pokynu kúpiť ihneď.
 2. Jedno porovnanie používa vždy koherentnú cenovú bázu (s DPH alebo bez DPH). História uchováva bázu aj obchod; cenová pozícia pre konkrétnu predajňu sa nemieša s iným obchodom a samostatne možno ukázať trhové porovnanie.
-3. Cenová pozícia je robustná voči ojedinelým extrémom. Silné odporúčanie vyžaduje overenú ponuku a dostatočný počet porovnateľných pozorovaní; inak UI otvorene uvedie, že dát je málo.
+3. Cenová pozícia je robustná voči ojedinelým extrémom. Silné odporúčanie vyžaduje hodnotenie podporené cenovou históriou a dostatočný počet porovnateľných pozorovaní; inak UI otvorene uvedie nedostatok cenovej histórie.
 4. Frekvencia a typické množstvo vychádzajú len z potvrdených nákupov. Pri nedostatočnej histórii môže používateľ zadať vlastný interval, no systém si ho nesmie zameniť za naučenú predikciu.
 5. Odporúčanie množstva zohľadňuje evidovanú zásobu, minimálnu zásobu, cieľovú cenu, skladovateľnosť a používateľský profil produktu. Bez týchto vstupov zostáva konzervatívne.
-6. UI používa zrozumiteľné štítky kvality dát (napríklad málo/stredne/dosť údajov a overená/neoverená ponuka), nie falošnú „istotu 68 %“ ani zmiešané skóre 55/25/20.
+6. UI používa zrozumiteľné štítky kvality dát (napríklad hodnotenie podporené cenovou históriou alebo nedostatok cenovej histórie), nie falošnú „istotu 68 %“ ani zmiešané skóre 55/25/20.
 
 Hranice a pravidlá sú zámerne pevné, kontrolovateľné a deterministicky testované. Pokročilejší predikčný model má zmysel až po nazbieraní dostatočnej, pravdivej histórie potvrdených nákupov; dovtedy sa README ani UI nesmú tváriť, že aplikácia používa ML.
 
@@ -146,16 +178,17 @@ Najdôležitejšie zásady:
 1. `id` jednoznačne identifikuje konkrétnu ponuku. Praktický formát je `<obchod>-<product_id>-<tyzden>`.
 2. `product_id` zostáva rovnaké pre ten istý produkt naprieč obchodmi a týždňami; vďaka nemu funguje porovnanie cien. **Nesmie obsahovať prefix obchodu** – `maslo-82-250g`, nie `lidl-maslo-82-250g`. (Appka známy prefix obchodu defenzívne odstráni, ale správne je negenerovať ho.) Variant s inou gramážou má iné `product_id`.
 3. `top_ids` odkazuje na položky v `obchody[].polozky` a neduplikuje celé objekty.
-4. `zlava_letak_pct` a `zlava_realna_pct` sú oddelené. Marketingové percento z letáku sa nesmie zameniť za reálnu úsporu oproti historickej cene. `zlava_realna_pct` môže byť aj záporná (tovar je drahší než jeho bežná cena) – UI vtedy odznak zľavy nezobrazí.
-5. `mnozstvo`, `jednotkova_cena` a `jednotka` sú voliteľné, ale zlepšia porovnávanie; jednotková cena sa zobrazuje v detaile. `kategoria` riadi emoji fallback obrázka a párovanie s referenčnými cenami – vypĺňaj ju. `obrazok_url` prijíma absolútnu URL, relatívnu cestu v repozitári alebo `data:` obrázok.
+4. `zlava_letak_pct` a `zlava_realna_pct` sú oddelené. Marketingové percento z letáku sa nesmie zameniť za rozdiel oproti referenčnej cene aplikácie. `zlava_realna_pct` môže byť aj záporná (tovar je drahší než táto referencia) – UI vtedy odznak zľavy nezobrazí.
+5. `mnozstvo`, `jednotkova_cena` a `jednotka` sú v publish kontrakte povinné kľúče, ale ich hodnota môže byť `null`. Vyplnené hodnoty zlepšia porovnávanie; jednotková cena sa zobrazuje v detaile. `kategoria` riadi vlastnú emoji skratku.
 6. Metro môže mať cenu bez DPH v `cena` a spotrebiteľskú cenu v `cena_s_dph`; UI uprednostní cenu podľa nastavenia Platca DPH. Graf histórie vždy používa cenu s DPH, aby sa nemiešali bázy.
 7. `obchody[].plati_od` a `obchody[].plati_do` určujú spoločnú platnosť letáka. Produkt ich zdedí; vlastné dátumy uvádzaj len pri odlišnej platnosti.
 8. `historia_cien` obsahuje iba skutočne pozorované ceny rovnakého `product_id` v rovnakom obchode. UI vykreslí graf až od dvoch meraní; prečiarknutá cena nie je historické meranie.
-9. `promo[]` podporuje `priorita` (1 = najdôležitejšie, default 3 – určuje poradie) a `zdroj_url` (odkaz „Detail akcie“).
-10. `otvaracie_hodiny` obsahuje konkrétne pobočky, bežné hodiny, dátum overenia, first-party zdroj a `vynimky[]`. Routine musí pri každom týždni skontrolovať sviatky/dni pracovného pokoja a každú výnimku uviesť explicitne; UI ich zvýrazní na Prehľade.
-11. Staré `plan` môže zostať v historických súboroch kvôli spätnej čitateľnosti schémy, nové behy ho už negenerujú.
+9. Každá položka `promo[]` má povinnú `priorita` (1 = jediná Top akcia, 2 alebo 3 = ostatné poradie) a `zdroj_url` (odkaz „Detail akcie“).
+10. `otvaracie_hodiny` obsahuje konkrétne pobočky, bežné hodiny, dátum overenia, first-party zdroj a `vynimky[]`. Dátová pipeline musí pri každom týždni skontrolovať sviatky/dni pracovného pokoja a každú výnimku uviesť explicitne; UI ich zvýrazní na Prehľade.
 
-Minimálny odporúčaný príklad:
+Skrátený ilustračný výrez:
+
+> Tento výrez zámerne neobsahuje desať `top_ids`, všetky tri obchody, úplné povinné polia ponuky ani `otvaracie_hodiny`, a preto sa **nesmie publikovať samostatne**. Ako plný validný fixture používaj `data/latest.json`; záväzný tvar je `data/schema-v2.json` spolu so sémantickou bránou `scripts/routine/validate_daily.py`.
 
 ```json
 {
@@ -169,6 +202,7 @@ Minimálny odporúčaný príklad:
       "id": "lidl-plus-5-eur-w30",
       "obchod": "Lidl",
       "text": "Kupón −5 € pri nákupe nad 40 €",
+      "plati_od": "2026-07-27",
       "plati_do": "2026-08-02",
       "podmienka": "Lidl Plus",
       "priorita": 1,
@@ -189,7 +223,6 @@ Minimálny odporúčaný príklad:
           "nazov": "Maslo 82 %",
           "mnozstvo": "250 g",
           "kategoria": "mliečne výrobky",
-          "obrazok_url": null,
           "cena": 1.59,
           "cena_povodna": 2.39,
           "jednotkova_cena": 6.36,
@@ -202,7 +235,7 @@ Minimálny odporúčaný príklad:
           "plati_od": "2026-07-27",
           "plati_do": "2026-08-02",
           "podmienka": null,
-          "poznamka": "najnižšia cena za 90 dní"
+          "poznamka": "najnižšie z dostupných 90-dňových meraní aplikácie"
         }
       ]
     }
@@ -213,7 +246,7 @@ Minimálny odporúčaný príklad:
 }
 ```
 
-### Pravidlá pre routine
+### Pravidlá pre dátovú pipeline
 
 - `verdikt` je presne `realna`, `umela` alebo `neoverene`.
 - `id` musí byť unikátne v celom týždennom súbore.
@@ -221,38 +254,37 @@ Minimálny odporúčaný príklad:
 - Peňažné hodnoty sú JSON čísla bez symbolu meny; mena je vždy EUR.
 - Dátumy používajú `YYYY-MM-DD`, `generovane` ISO 8601 s časovou zónou.
 - Pri každom obchode uveď spoločnú platnosť letáka cez `plati_od` a `plati_do`. Na produkte dátumy opakuj iba pri odlišnej platnosti.
-- Množstevné, kartové a aplikačné obmedzenia zapisuj doslovne do `podmienka`, napríklad `od 3 ks`, `len s Kaufland Card` alebo `cena za kus, od 1 balenia`.
-- Vypĺňaj `kategoria` (a keď je k dispozícii, aj `obrazok_url`) – bez kategórie sa zhorší emoji fallback aj párovanie referenčných cien.
-- Do `historia_cien` prenes najviac posledných 16 overených meraní toho istého produktu a obchodu. Deduplikuj podľa dátumu; pri Metro doplň aj `cena_s_dph`.
-- Ak história nestačí na reálnu zľavu, použi `verdikt: "neoverene"` a `zlava_realna_pct: null`.
+- Množstevné, kartové a aplikačné obmedzenia zapisuj ako presné fakty do `podmienka`, napríklad `od 3 ks`, `len s Kaufland Card` alebo `cena za kus, od 1 balenia`. Nekopíruj slogan ani kreatívnu marketingovú vetu.
+- Vypĺňaj `kategoria`, aby mala položka stabilnú vlastnú emoji skratku.
+- Do `historia_cien` prenes najviac posledných 16 pozorovaných meraní toho istého produktu a obchodu. Deduplikuj podľa dátumu; pri Metro doplň aj `cena_s_dph`.
+- Pri METRO publikuj iba vecné polia potrebné na porovnanie: identitu produktu, balenie, cenu s jasnou DPH bázou, číselnú podmienku, platnosť, pobočku a odkaz na zdroj. `promo.text`, `poznamka` a `dovod_verdiktu` musia byť nová stručná analytická formulácia; nekopíruj slogan, výzvu na nákup, kreatívny názov kampane ani vetu z letáka.
+- Ak história nestačí na hodnotenie podľa referenčnej ceny aplikácie, použi `verdikt: "neoverene"` a `zlava_realna_pct: null`.
 - `top_ids` má obsahovať len existujúce `id` z `obchody[].polozky`.
 - Chýbajúce voliteľné hodnoty majú byť `null`, nie vymyslené.
 
-## Ako denná routine aktualizuje dáta
+## Automatická dátová pipeline a read-only dozor
 
-Claude Code routine beží denne s change detection; celé nezmenené letáky znovu nečíta. Globálne dáta a personalizovaná analytika majú oddelené vlastníctvo:
+Globálne dáta a personalizovaná analytika majú oddelené vlastníctvo:
 
-- routine zbiera a overuje ponuky, ceny, históriu, verdikty, TOP/promo, otváracie hodiny, sviatky a legislatívu,
+- súkromná automatická pipeline je **jediný zapisovateľ** ponúk, histórie, TOP/promo, otváracích hodín, sviatkov, archívu a verejného `pipeline-status`,
 - prehliadač počíta používateľské Sledované produkty zo stabilného `product_id`, cenovej histórie podľa obchodu, potvrdených nákupov, evidovanej zásoby a používateľských preferencií,
-- analytika používa deterministické dátové brány a vysvetliteľné pravidlá; uložené zoznamy/šablóny sa do spotreby nepočítajú a nejde o trénované ML.
+- analytika používa deterministické dátové brány a vysvetliteľné pravidlá; uložené zoznamy/šablóny sa do spotreby nepočítajú a nejde o trénované ML,
+- Claude Cloud Routine beží pondelok, stredu a piatok iba ako nezávislý read-only monitor. Dáta neopravuje, necommitne a nepushuje.
 
-Denný update upravuje:
+Pipeline publikuje:
 
-1. `data/latest.json` — iba aktívne a jasne datované blízke ponuky.
+1. `data/latest.json` — aktívne a jasne datované blízke ponuky.
 2. `data/archive/<tyzden>.json` — kumulatívny týždenný snapshot; expirované pozorované ponuky sa z neho nemažú.
 3. `data/archive/index.json` — každý ISO týždeň najviac raz.
-4. `data/legislativa.json` — iba po skutočnej kontrole oficiálnych zdrojov.
-5. `data/routine-state.json` — trvalý source manifest, posledný úspešný beh, metriky a audit dokončenej jednorazovej migrácie.
+4. `data/pipeline-status.json` — verejný zdravotný kontrakt s výsledkom, čerstvosťou, validáciou, anomáliami, carry-forward a veľkosťou review fronty; UI z neho odvodzuje iba vysvetliteľné stavy, nie vlastné skóre.
 
-Kanonický workflow je v `docs/routine/daily.md`, cloudové nastavenie v `docs/routine/cloud-setup.md` a projektoví subagenti v `.claude/agents/`. V Claude Cloud Routine sa repozitár pri každom behu klonuje nanovo, preto sú tieto súbory trackované. GitHub Contents API ani PAT nie sú súčasťou workflow.
+`data/legislativa.json` nie je automaticky prepisovaný monitorom ani extrakčnou pipeline. Pole `aktualizovane` znamená dátum poslednej ľudskej obsahovej/právnej kontroly. Pipeline iba signalizuje zmenu oficiálneho portálu do súkromnej review fronty a verejného stavu zdrojov; tento signál nie je právnym záverom a obsahový update vyžaduje samostatnú skontrolovanú zmenu.
 
-Predvolený cloudový publish vytvorí `claude/routine-<run_id>` a outcome `NEEDS_MERGE`, aby zmena prešla reviewom. Priamy push do `main` je voliteľný explicitný režim až po PASS validačných, bezpečnostných a deploy bránach.
+Kanonický monitor je v [`docs/routine/review.md`](docs/routine/review.md) a jeho cloudové nastavenie v [`docs/routine/cloud-setup.md`](docs/routine/cloud-setup.md). Má najviac dvoch read-only subagentov a technicky obmedzené GitHub oprávnenia. Okrem zdravia dát kontroluje viditeľný disclaimer, first-party odkaz v detaile, rozlíšenie zdroja percentuálneho odznaku a neutrálnu analytickú formuláciu METRO promo textov. Nevykonáva právne posúdenie a zmenu podmienok zdroja iba eskaluje na ľudskú kontrolu. Nevidí súkromnú review frontu ani pipeline logy; pri probléme uvedie dôkaz a krok pre vlastníka.
+
+Stavy monitora sú úmyselne prísne: `HEALTHY` znamená čerstvé validné dáta bez carry-forward a backlogu, `DEGRADED` znamená použitie posledných validných, ale neúplných/stale dát alebo čakajúce review a `BLOCKED` znamená nedôveryhodnú čerstvosť, validáciu, deploy či kritické prevádzkové údaje. `DEGRADED` nie je zelený úspech.
 
 Dáta sa čítajú za behu, takže čisto dátový update nevyžaduje bump service worker cache. Pri zmene HTML/CSS/JS alebo app shell súborov bump povinný zostáva.
-
-## Referenčné ceny (voliteľné)
-
-`data/referencne-ceny.json` môže obsahovať externé referenčné ceny komodít (`komodity[]` s poľami `klice`, `nazov`, `cena`, `jednotka`, `typ`, `zdroj_nazov`, `zdroj`, `datum`). Detail produktu zobrazí typ ceny, zdroj a hodnotu; reálna úspora sa však vždy počíta primárne z `bezna_cena_60d`. Kým je `komodity` prázdne, sekcia sa v UI nezobrazuje.
 
 ## Lokálne spustenie
 
@@ -270,4 +302,19 @@ Deterministické základy potvrdených nákupov, cenových pozorovaní, použív
 node scripts/test_tracked_foundations.mjs
 node scripts/test_tracked_analytics.mjs
 node scripts/test_list_mode.mjs
+node scripts/test_account_isolation.mjs
+node scripts/test_input_hardening.mjs
+node scripts/test_pipeline_status.mjs
+node scripts/test_static_security.mjs
+node scripts/test_legal_copy.mjs
 ```
+
+## Licencia, zdroje a zodpovednosť
+
+Repozitár zatiaľ nemá zvolenú projektovú open-source licenciu. Verejná dostupnosť zdrojového kódu preto sama osebe neudeľuje všeobecné právo na jeho ďalšie použitie; licencie vendornutých komponentov sú uvedené v [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+
+Projekt slúži na vlastné informačné a plánovacie účely a nesprostredkúva predaj. Nie je prevádzkovaný v mene uvedených obchodníkov ani nimi schválený a nenahrádza ich oficiálne letáky. Obchodné názvy a ochranné známky sa používajú iba na identifikáciu zdroja ponuky.
+
+Pipeline publikuje obmedzený súbor faktických údajov potrebných na porovnanie a odkaz na pôvodný zdroj; nemá reprodukovať grafickú úpravu, slogany ani kreatívne marketingové texty obchodníka. Osobitne pri METRO sa propagačné formulácie vždy nahradia suchým opisom ceny, množstva, podmienky a platnosti. Verejná dostupnosť zdroja sama osebe nie je právnym záverom o oprávnení na automatizované spracovanie; zmeny podmienok zdroja sa preto monitorujú a eskalujú na samostatnú ľudskú kontrolu.
+
+Údaje sa získavajú a vyhodnocujú automaticky, preto môžu byť neúplné, oneskorené alebo nesprávne. Pred nákupom treba v odkazovanom oficiálnom zdroji alebo priamo v predajni overiť cenu, DPH, podmienky, platnosť, dostupnosť a otváracie hodiny. Cenové označenia a nákupné odporúčania vychádzajú iba z dostupnej histórie aplikácie; nie sú garanciou úspory, právnym posúdením zľavy ani spotrebiteľským overením. Legislatívna časť je iba orientačný rozcestník, môže byť neúplná, neaktuálna alebo nepresná a nenahrádza aktuálne znenie predpisu ani odborné poradenstvo.

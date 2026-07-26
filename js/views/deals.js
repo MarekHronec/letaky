@@ -4,17 +4,21 @@
 
 import { DEALS_PAGE_SIZE, ENDING_SOON_DAYS } from '../config.js';
 import { state } from '../state.js';
-import { visibleItems, finalPrice, oldFinalPrice, discountOf } from '../data.js';
+import { visibleItems, finalPrice, oldFinalPrice, flyerDiscountOf, referenceDiscountOf } from '../data.js';
 import { pageHead, renderStoreTabs, validityMeta, validityHtml, storeLogo, discountBadge, circleAddButton, watchButton } from './shared.js';
 import { esc, norm, daysTo, fmtPrice } from '../lib/util.js';
 
-const VERDICT_LABEL = { realna: 'Reálna', umela: 'Podozrivá', neoverene: 'Neoverená' };
+const VERDICT_LABEL = {
+  realna: 'Priaznivá podľa dostupnej histórie',
+  umela: 'Letáková zľava nepodporená históriou',
+  neoverene: 'Nedostatok cenovej histórie',
+};
 
 const FILTERS = [
   ['all', 'Všetko'],
-  ['realna', 'Reálne výhodné'],
-  ['neoverene', 'Neoverené'],
-  ['umela', 'Podozrivé'],
+  ['realna', 'Priaznivé podľa dostupnej histórie'],
+  ['neoverene', 'Nedostatok cenovej histórie'],
+  ['umela', 'Letáková zľava nepodporená históriou'],
   ['ending', 'Končí čoskoro'],
 ];
 
@@ -38,7 +42,9 @@ export function filterItems() {
       ? (finalPrice(a) ?? Infinity) - (finalPrice(b) ?? Infinity)
       : state.sort === 'name'
         ? a.name.localeCompare(b.name, 'sk')
-        : (discountOf(b) || 0) - (discountOf(a) || 0),
+        : state.sort === 'reference-discount'
+          ? (referenceDiscountOf(b) ?? -Infinity) - (referenceDiscountOf(a) ?? -Infinity)
+          : (flyerDiscountOf(b) ?? -Infinity) - (flyerDiscountOf(a) ?? -Infinity),
   );
 }
 
@@ -47,7 +53,7 @@ function dealRow(i) {
   const price = finalPrice(i);
   const old = oldFinalPrice(i);
   const meta = validityMeta(i);
-  const verdictPill = `<span class="verdict-pill ${i.verdict}">${VERDICT_LABEL[i.verdict] || 'Neoverená'}</span>`;
+  const verdictPill = `<span class="verdict-pill ${i.verdict}">${VERDICT_LABEL[i.verdict] || 'Nedostatok cenovej histórie'}</span>`;
   return `<div class="drow v-${i.verdict} ${meta.cls === 'expired' ? 'expired' : ''}">
     <div class="dc-name">
       <button class="dname" data-action="detail" data-key="${esc(i.key)}">${esc(i.name)}</button>
@@ -93,7 +99,8 @@ export function renderDeals() {
     .join('');
 
   const sortOptions = [
-    ['discount', 'Najväčšia zľava'],
+    ['discount', 'Najväčšia zľava uvedená v letáku'],
+    ['reference-discount', 'Najväčší rozdiel oproti referenčnej cene'],
     ['price', 'Najnižšia cena'],
     ['name', 'Podľa názvu'],
   ]
@@ -109,7 +116,7 @@ export function renderDeals() {
         <div class="dtable-head" role="row">
           <span role="columnheader">Produkt</span>
           <span class="dth-r" role="columnheader">Cena</span>
-          <span class="dth-r" role="columnheader">Zľava</span>
+          <span class="dth-r" role="columnheader">Zľava / rozdiel</span>
           <span role="columnheader">Platnosť</span>
           <span role="columnheader"><span class="sr-only">Produktové akcie</span></span>
         </div>

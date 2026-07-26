@@ -2,10 +2,11 @@
 // zariadeniami) a operácie nad zoznamom. Modul NErenderuje a NEpushuje do
 // cloudu – to orchestruje app.js po každej mutácii.
 
-import { KEYS, STORE_ORDER, TOMBSTONE_TTL_MS } from './config.js';
+import { KEYS, STORE_ORDER, TOMBSTONE_TTL_MS, LIST_ITEM_LIMITS } from './config.js';
 import { state } from './state.js';
 import { storeId } from './data.js';
-import { arr, num, uid, isoValue, readJSON, writeJSON } from './lib/util.js';
+import { arr, num, uid, isoValue } from './lib/util.js';
+import { readProfileJSON, writeProfileJSON } from './profile-storage.js';
 
 // Aktívne položky zoznamu a záznamy o zmazaní. Live bindings – importujúce
 // moduly vidia vždy aktuálny stav, prepisovať ich smie len tento modul.
@@ -26,28 +27,49 @@ export function nextUpdatedAt() {
 // (localStorage, cloud, zdieľací link, JSON import).
 // ---------------------------------------------------------------------------
 
+function boundedText(value, maxLength) {
+  return String(value ?? '')
+    .replace(/[\u0000-\u001f\u007f]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, maxLength);
+}
+
+function nullableText(value, maxLength) {
+  const clean = boundedText(value, maxLength);
+  return clean || null;
+}
+
+function safeQuantity(value) {
+  const quantity = Number(value);
+  if (!Number.isFinite(quantity)) return 1;
+  return Math.min(LIST_ITEM_LIMITS.quantity, Math.max(1, Math.trunc(quantity)));
+}
+
 export function sanitizeListItem(x) {
-  if (!x || !String(x.name || '').trim()) return null;
+  if (!x) return null;
+  const name = boundedText(x.name, LIST_ITEM_LIMITS.name);
+  if (!name) return null;
   const addedAt = isoValue(x.addedAt, new Date().toISOString());
   const updatedAt = isoValue(x.updatedAt || x.checkedAt || addedAt, addedAt);
   const deletedAt = isoValue(x.deletedAt, '') || null;
   return {
-    id: String(x.id || uid()),
+    id: boundedText(x.id, LIST_ITEM_LIMITS.id) || uid(),
     source: x.source === 'manual' ? 'manual' : 'deal',
-    offerId: x.offerId || '',
-    productId: x.productId || null,
-    name: String(x.name).trim(),
-    amount: x.amount || null,
-    store: x.store || null,
+    offerId: boundedText(x.offerId, LIST_ITEM_LIMITS.id),
+    productId: nullableText(x.productId, LIST_ITEM_LIMITS.id),
+    name,
+    amount: nullableText(x.amount, LIST_ITEM_LIMITS.short),
+    store: nullableText(x.store, LIST_ITEM_LIMITS.short),
     price: num(x.price),
     priceVat: num(x.priceVat),
     originalPrice: num(x.originalPrice),
     originalPriceVat: num(x.originalPriceVat),
     unitPrice: num(x.unitPrice),
-    condition: x.condition || '',
-    validFrom: x.validFrom || '',
-    validTo: x.validTo || '',
-    quantity: Math.max(1, Number(x.quantity) || 1),
+    condition: boundedText(x.condition, LIST_ITEM_LIMITS.condition),
+    validFrom: boundedText(x.validFrom, LIST_ITEM_LIMITS.short),
+    validTo: boundedText(x.validTo, LIST_ITEM_LIMITS.short),
+    quantity: safeQuantity(x.quantity),
     checked: Boolean(x.checked),
     addedAt,
     checkedAt: isoValue(x.checkedAt, '') || null,
@@ -58,11 +80,13 @@ export function sanitizeListItem(x) {
 
 export function sanitizeTombstone(x) {
   if (!x || !x.id) return null;
+  const id = boundedText(x.id, LIST_ITEM_LIMITS.id);
+  if (!id) return null;
   const deletedAt = isoValue(x.deletedAt || x.updatedAt, '');
   if (!deletedAt) return null;
   const rawUpdated = isoValue(x.updatedAt, deletedAt);
   const updatedAt = Date.parse(rawUpdated) >= Date.parse(deletedAt) ? rawUpdated : deletedAt;
-  return { id: String(x.id), updatedAt, deletedAt };
+  return { id, updatedAt, deletedAt };
 }
 
 // Najnovšia časová pečiatka záznamu – rozhoduje, ktorá verzia vyhrá pri merge.
@@ -76,7 +100,7 @@ export function versionTime(x) {
 }
 
 function loadList() {
-  const stored = readJSON(KEYS.list);
+  const stored = readProfileJSON(KEYS.list);
   if (Array.isArray(stored)) {
     return stored
       .map(sanitizeListItem)
@@ -88,7 +112,7 @@ function loadList() {
 
 function loadTombstones() {
   const cutoff = Date.now() - TOMBSTONE_TTL_MS;
-  return arr(readJSON(KEYS.listDeleted))
+  return arr(readProfileJSON(KEYS.listDeleted))
     .map(sanitizeTombstone)
     .filter(Boolean)
     .filter(t => versionTime(t) >= cutoff);
@@ -97,8 +121,13 @@ function loadTombstones() {
 export function persist() {
   const cutoff = Date.now() - TOMBSTONE_TTL_MS;
   deleted = deleted.map(sanitizeTombstone).filter(t => t && versionTime(t) >= cutoff);
-  writeJSON(KEYS.list, items);
-  writeJSON(KEYS.listDeleted, deleted);
+  writeProfileJSON(KEYS.list, items);
+  writeProfileJSON(KEYS.listDeleted, deleted);
+}
+
+export function reloadProfile() {
+  items = loadList();
+  deleted = loadTombstones();
 }
 
 // ---------------------------------------------------------------------------

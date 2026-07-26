@@ -1,2 +1,5 @@
 # Zjednotené konce riadkov na LF – žiadny CRLF šum v diffe na Windowse.
 * text=auto eol=lf
+
+# Vendornutý minifikovaný bundle sa uchováva byte-for-byte podľa upstream hashu.
+js/vendor/supabase-js.mjs -whitespace

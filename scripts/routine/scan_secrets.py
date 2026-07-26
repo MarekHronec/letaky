@@ -74,7 +74,10 @@ def main() -> int:
         if BLOCKED_NAMES.search(normalized) or path.suffix.lower() in BLOCKED_SUFFIXES:
             findings.append(f"blocked-file:{normalized}")
             continue
-        if not path.is_file() or path.stat().st_size > 20_000_000:
+        if not path.is_file():
+            continue
+        if path.stat().st_size > 20_000_000:
+            findings.append(f"unscanned-large-file:{normalized}")
             continue
         try:
             text = path.read_text(encoding="utf-8")
