@@ -78,8 +78,8 @@ data/pipeline-status.json   # verejný stav posledného behu súkromnej pipeline
 data/archive/index.json     # zoznam archívnych týždňov
 data/archive/<tyzden>.json  # archívne kópie týždňov
 
-docs/routine/review.md      # read-only Mon/Wed/Fri kontrola zdravia a publikačných hraníc
-.claude/agents/             # dva read-only kontrolné subagenty
+docs/routine/review.md      # read-only Codex cloud kontrola zdravia a malej review dávky
+docs/routine/codex-cloud-setup.md # cloudové nastavenie bez závislosti od lokálneho PC
 
 supabase/schema.sql         # DDL + RLS policies pre tabuľku user_data
 ```
@@ -269,7 +269,7 @@ Globálne dáta a personalizovaná analytika majú oddelené vlastníctvo:
 - súkromná automatická pipeline je **jediný zapisovateľ** ponúk, histórie, TOP/promo, otváracích hodín, sviatkov, archívu a verejného `pipeline-status`,
 - prehliadač počíta používateľské Sledované produkty zo stabilného `product_id`, cenovej histórie podľa obchodu, potvrdených nákupov, evidovanej zásoby a používateľských preferencií,
 - analytika používa deterministické dátové brány a vysvetliteľné pravidlá; uložené zoznamy/šablóny sa do spotreby nepočítajú a nejde o trénované ML,
-- Claude Cloud Routine beží pondelok, stredu a piatok iba ako nezávislý read-only monitor. Dáta neopravuje, necommitne a nepushuje.
+- Codex scheduled task vo webovom prostredí môže každé dva dni urobiť nezávislú read-only kontrolu a pripraviť návrhy pre malú dávku review položiek. Dáta necommitne ani nepushuje.
 
 Pipeline publikuje:
 
@@ -280,7 +280,7 @@ Pipeline publikuje:
 
 `data/legislativa.json` nie je automaticky prepisovaný monitorom ani extrakčnou pipeline. Pole `aktualizovane` znamená dátum poslednej ľudskej obsahovej/právnej kontroly. Pipeline iba signalizuje zmenu oficiálneho portálu do súkromnej review fronty a verejného stavu zdrojov; tento signál nie je právnym záverom a obsahový update vyžaduje samostatnú skontrolovanú zmenu.
 
-Kanonický monitor je v [`docs/routine/review.md`](docs/routine/review.md) a jeho cloudové nastavenie v [`docs/routine/cloud-setup.md`](docs/routine/cloud-setup.md). Má najviac dvoch read-only subagentov a technicky obmedzené GitHub oprávnenia. Okrem zdravia dát kontroluje viditeľný disclaimer, first-party odkaz v detaile, rozlíšenie zdroja percentuálneho odznaku a neutrálnu analytickú formuláciu METRO promo textov. Nevykonáva právne posúdenie a zmenu podmienok zdroja iba eskaluje na ľudskú kontrolu. Nevidí súkromnú review frontu ani pipeline logy; pri probléme uvedie dôkaz a krok pre vlastníka.
+Kanonický monitor je v [`docs/routine/review.md`](docs/routine/review.md) a jeho cloudové nastavenie v [`docs/routine/codex-cloud-setup.md`](docs/routine/codex-cloud-setup.md). Beží bez subagentov, s pevnými limitmi a technicky read-only GitHub oprávneniami. Okrem zdravia dát kontroluje disclaimer, first-party odkazy, cenové bázy a neutrálnu formuláciu METRO textov. Ak dostane read-only prístup aj k súkromnej pipeline, smie z nej načítať iba malé prevádzkové metadáta a maximálne šesť pending review položiek; pripraví návrh rozhodnutia, ale nič nezapíše. Právne signály vždy eskaluje na ľudskú kontrolu.
 
 Stavy monitora sú úmyselne prísne: `HEALTHY` znamená čerstvé validné dáta bez carry-forward a backlogu, `DEGRADED` znamená použitie posledných validných, ale neúplných/stale dát alebo čakajúce review a `BLOCKED` znamená nedôveryhodnú čerstvosť, validáciu, deploy či kritické prevádzkové údaje. `DEGRADED` nie je zelený úspech.
 

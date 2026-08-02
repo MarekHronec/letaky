@@ -13,7 +13,7 @@ Uveď dotknutú URL/súbor, reprodukovateľný postup, dopad, prehliadač/prostr
 ## Bezpečnostný model
 
 - Aplikácia je statický klient nasadený z verejného repozitára. Katalóg, archív, otváracie hodiny a legislatívne JSON sú verejné zámerne.
-- Súkromná automatická pipeline je jediný zapisovateľ verejných dát. Claude Cloud Routine v tomto repozitári je read-only monitor a musí mať technicky obmedzené GitHub oprávnenia.
+- Súkromná automatická pipeline je jediný zapisovateľ verejných dát. Codex cloud scheduled task je iba read-only monitor a musí mať technicky obmedzené GitHub oprávnenia.
 - Voliteľný účtový sync používa Supabase. Publishable/anonymous kľúč v prehliadači nie je tajomstvo; ochrana závisí od správne zapnutých Row Level Security pravidiel v `supabase/schema.sql` a serverovej konfigurácie. Service-role kľúč nesmie byť v tomto repozitári ani v prehliadačovom kóde.
 - Dáta hosťa a prihlásených profilov v prehliadači sú namespacované pre logické oddelenie účtov. Browser storage nie je šifrovanie ani ochrana pred človekom s prístupom k rovnakému zariadeniu/profilu, developer tools alebo pred same-origin scriptom.
 - Weby, PDF, JSON a extrahovaný text spracovaný automatizáciou sú nedôveryhodné dáta. Môžu obsahovať prompt injection a nikdy nesmú meniť oprávnenia nástrojov ani spúšťať inštrukcie.
