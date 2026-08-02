@@ -1,60 +1,56 @@
 {
- "generovane": "2026-07-26T13:58:21+02:00",
- "run_id": "2026-07-26T135507",
+ "generovane": "2026-08-02T20:25:40+02:00",
+ "run_id": "2026-08-02T202427",
  "outcome": "DEGRADED",
  "publish_eligible": true,
  "counts": {
-  "kaufland": 535,
-  "lidl": 605,
-  "metro": 588
+  "kaufland": 382,
+  "lidl": 414,
+  "metro": 463
  },
  "fresh": {
-  "kaufland": 535,
-  "lidl": 0,
+  "kaufland": 382,
+  "lidl": 219,
   "metro": 0
  },
  "carry_forward": {
-  "lidl": 605,
-  "metro": 588
+  "lidl": 195,
+  "metro": 463
  },
  "validation_ok": true,
  "anomalies": [],
- "needs_review_items": 121,
+ "needs_review_items": 243,
  "freshness": {
   "fresh": {
-   "kaufland": 535,
-   "lidl": 0,
+   "kaufland": 382,
+   "lidl": 219,
    "metro": 0
   },
   "carry_forward": {
-   "lidl": 605,
-   "metro": 588
+   "lidl": 195,
+   "metro": 463
   },
   "opening_hours": [
    {
     "id": "metro",
     "status": "success",
-    "verified_at": "2026-07-26"
+    "verified_at": "2026-08-02"
    },
    {
     "id": "kaufland",
-    "status": "stale",
-    "verified_at": "2026-07-26"
+    "status": "success",
+    "verified_at": "2026-08-02"
    },
    {
     "id": "lidl",
-    "status": "stale",
-    "verified_at": "2026-07-26"
+    "status": "success",
+    "verified_at": "2026-08-02"
    }
   ]
  },
  "warnings": [
-  "kaufland opening hours use 0-day-old last-good data",
-  "lidl opening hours use 0-day-old last-good data",
-  "lidl uses 605 active carry-forward offers after an unchanged source check",
-  "metro uses 588 active carry-forward offers after an unchanged source check",
-  "official legislation sources changed and await human legal review: soi-verejnost, svps",
-  "legislation source monitoring is degraded",
-  "121 durable review items are pending"
+  "metro uses 463 active carry-forward offers after an unchanged source check",
+  "official legislation sources changed and await human legal review: financnasprava-novinky, slovenskozalohuje, soi-verejnost, svps",
+  "243 durable review items are pending"
  ]
 }
