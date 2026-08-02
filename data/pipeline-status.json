@@ -1,6 +1,6 @@
 {
- "generovane": "2026-08-02T20:36:36+02:00",
- "run_id": "2026-08-02T203554",
+ "generovane": "2026-08-02T20:50:26+02:00",
+ "run_id": "2026-08-02T204947",
  "outcome": "DEGRADED",
  "publish_eligible": true,
  "counts": {
@@ -10,12 +10,12 @@
  },
  "fresh": {
   "kaufland": 382,
-  "lidl": 0,
-  "metro": 0
- },
- "carry_forward": {
   "lidl": 414,
   "metro": 463
+ },
+ "carry_forward": {
+  "lidl": 0,
+  "metro": 0
  },
  "validation_ok": true,
  "anomalies": [],
@@ -23,12 +23,12 @@
  "freshness": {
   "fresh": {
    "kaufland": 382,
-   "lidl": 0,
-   "metro": 0
-  },
-  "carry_forward": {
    "lidl": 414,
    "metro": 463
+  },
+  "carry_forward": {
+   "lidl": 0,
+   "metro": 0
   },
   "opening_hours": [
    {
@@ -49,8 +49,6 @@
   ]
  },
  "warnings": [
-  "lidl uses 414 active carry-forward offers after an unchanged source check",
-  "metro uses 463 active carry-forward offers after an unchanged source check",
   "official legislation sources changed and await human legal review: financnasprava-novinky, slovenskozalohuje, soi-verejnost, svps",
   "18 durable review items are pending"
  ]

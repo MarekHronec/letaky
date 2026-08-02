@@ -2,7 +2,7 @@
  "schema_version": 2,
  "tyzden": "2026-W31",
  "obdobie": "27. júl – 2. august 2026",
- "generovane": "2026-08-02T20:36:36+02:00",
+ "generovane": "2026-08-02T20:50:26+02:00",
  "top_ids": [
   "kaufland-kalinka-salama-600-g-2026-w31",
   "kaufland-efko-uhorky-670-g-2026-w31",
@@ -38973,13 +38973,13 @@
    "zdroj": "lidl.sk – letáky (schwarz v4 API + PDF)",
    "ok": true,
    "url": "https://www.lidl.sk/c/letaky",
-   "poznamka": "Čerstvo 0 položiek z PDF (bbox), 414 prenesených platných z posledného behu."
+   "poznamka": "Oficiálny zdroj overený bez zmeny; 414 aktívnych položiek zostáva platných."
   },
   {
    "zdroj": "letaky.metro.sk – oficiálne PDF (Publitas)",
-   "ok": false,
+   "ok": true,
    "url": "https://letaky.metro.sk/",
-   "poznamka": "Čerstvo 0 položiek z letaky.metro.sk PDF (bbox), 463 prenesených platných."
+   "poznamka": "Oficiálny zdroj overený bez zmeny; 463 aktívnych položiek zostáva platných."
   },
   {
    "zdroj": "otváracie hodiny pobočiek",
