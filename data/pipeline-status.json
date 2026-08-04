@@ -1,55 +1,57 @@
 {
- "generovane": "2026-08-02T20:50:26+02:00",
- "run_id": "2026-08-02T204947",
+ "generovane": "2026-08-04T05:44:41+02:00",
+ "run_id": "2026-08-04T054313",
  "outcome": "DEGRADED",
  "publish_eligible": true,
  "counts": {
-  "kaufland": 382,
+  "kaufland": 777,
   "lidl": 414,
   "metro": 463
  },
  "fresh": {
-  "kaufland": 382,
-  "lidl": 414,
-  "metro": 463
+  "kaufland": 777,
+  "lidl": 212,
+  "metro": 0
  },
  "carry_forward": {
-  "lidl": 0,
-  "metro": 0
+  "lidl": 202,
+  "metro": 463
  },
  "validation_ok": true,
  "anomalies": [],
- "needs_review_items": 18,
+ "needs_review_items": 20,
  "freshness": {
   "fresh": {
-   "kaufland": 382,
-   "lidl": 414,
-   "metro": 463
+   "kaufland": 777,
+   "lidl": 212,
+   "metro": 0
   },
   "carry_forward": {
-   "lidl": 0,
-   "metro": 0
+   "lidl": 202,
+   "metro": 463
   },
   "opening_hours": [
    {
     "id": "metro",
     "status": "success",
-    "verified_at": "2026-08-02"
+    "verified_at": "2026-08-04"
    },
    {
     "id": "kaufland",
     "status": "success",
-    "verified_at": "2026-08-02"
+    "verified_at": "2026-08-04"
    },
    {
     "id": "lidl",
-    "status": "success",
+    "status": "stale",
     "verified_at": "2026-08-02"
    }
   ]
  },
  "warnings": [
+  "lidl opening hours use 2-day-old last-good data",
+  "metro uses 463 active carry-forward offers after an incomplete current extraction",
   "official legislation sources changed and await human legal review: financnasprava-novinky, slovenskozalohuje, soi-verejnost, svps",
-  "18 durable review items are pending"
+  "20 durable review items are pending"
  ]
 }
